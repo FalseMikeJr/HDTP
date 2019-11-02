@@ -27,3 +27,54 @@
   (if (empty? a-list)
       (error 'our-last "...")
       (pair-right a-list)))
+
+(define (contains-flatt? alon)
+  (cond
+    [(empty? alon) #false]
+    [(cons? alon)
+     (or (string=? (first alon) "Flatt") (contains-flatt? (rest alon)))]))
+;134
+(define (contains? alon str)
+  (cond
+    [(empty? alon) #false]
+    [(string=? (first alon) str) #true]
+    [else (contains? (rest alon) str)]))
+
+
+(define (how-many alos)
+  (cond
+    [(empty? alos) 0]
+    [else
+     (+ 1 (how-many (rest alos)))]))
+
+(define (sum aloAmounts)
+  (cond
+    [(empty? aloAmounts) 0]
+    [else (+ (first aloAmounts) (sum (rest aloAmounts)))]))
+
+(define (pos? alon)
+  (cond
+    [(empty? alon) #true]
+    [else (and (<= 0 (first alon)) (pos? (rest alon)))]))
+;only adds positive numbers in a list of numbers
+(define (checked-sum alon)
+  (cond
+    [(empty? alon) 0] 
+    [(pos? (cons (first alon) '())) (+ (first alon) (checked-sum (rest alon)))]
+    [else (+ 0 (checked-sum (rest alon)))]))
+(checked-sum (cons -1 (cons 2 (cons -3 (cons 4 '())))))
+
+;140
+(define (all-true aloBools)
+  (cond
+    [(empty? aloBools) #true]
+    [(equal? #false (first aloBools)) #false]
+    [else (all-true (rest aloBools))]))
+
+(define (one-true aloBools)
+  (cond
+    [(empty? aloBools) #false]
+    [(equal? #true (first aloBools)) #true]
+    [else (one-true (rest aloBools))]))
+
+
