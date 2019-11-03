@@ -76,5 +76,54 @@
     [(empty? aloBools) #false]
     [(equal? #true (first aloBools)) #true]
     [else (one-true (rest aloBools))]))
+;141
+(define (cat l)
+  (cond
+    [(empty? l) ""]
+    [else (string-append (first l) (cat (rest l)))]))
 
+;142
+(define (ill-sized? loi n)
+  (cond
+    [(empty? loi) #false]
+    [(and (= (image-height (first loi)) n) (= (image-width (first loi)) n)) (ill-sized? (rest loi) n)]
+    [else (first loi)]))
+;143
+(define (average alot)
+  (/ (sum alot) (how-many alot)))
+(define (checked-average alot)
+  (cond
+    [(empty? alot) (error "list is empty")]
+    [else (/ (sum alot) (how-many alot))]))
 
+(define (sum-nel nel)
+  (cond
+    [(empty? (rest nel)) (first nel)]
+    [else (+ (first nel) (sum (rest nel)))]))
+;146
+(define (how-many-nel nel)
+  (cond
+    [(empty? (rest nel)) 1]
+    [else (+ 1 (how-many-nel (rest nel)))]))
+(define (avg-nel nel)
+  (/ (sum-nel nel) (how-many-nel nel)))
+
+;145
+(define (sorted>? nel)
+  (sorted-helper (rest nel) (first nel)))
+
+(define (sorted-helper nel num)
+  (cond
+    [(empty? nel) #true]
+    [(> num (first nel)) (sorted-helper (rest nel) (first nel))]
+    [else #false]))
+(define (all-true-nel nel)
+  (cond
+    [(empty? (rest nel)) (first nel)]
+    [(equal? #false (first nel)) #false]
+    [else (all-true-nel (rest nel))]))
+(define (one-true-nel nel)
+  (cond
+    [(empty? (rest nel)) (first nel)]
+    [(equal? #true (first nel)) #true]
+    [else (one-true-nel (rest nel))]))
