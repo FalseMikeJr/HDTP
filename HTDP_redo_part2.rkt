@@ -151,36 +151,36 @@
 ;  (cond
 ;    [(= 0 n) 0]
 ;    [else (+ x (multiply (sub1 n) x))]))
-;152
-(define (col n img)
-  (cond
-    [(= 1 n) img]
-    [else (above img (col (sub1 n) img))]))
-(define (row n img)
-  (cond
-    [(= 1 n) img]
-    [else (beside img (row (sub1 n) img))]))
-;153
-
-(define LECTURE_HALL
-  (place-image (col 18 (row 8 (rectangle 10 10 "outline" "black"))) 40 90 (empty-scene 80 180)))
-(define (add-balloons lop)
-  (cond
-    [(empty? lop) LECTURE_HALL]
-    [else (place-image (circle 2 "solid" "red") (posn-x (first lop)) (posn-y (first lop)) (add-balloons (rest lop)))]))
-(define-struct pair [balloon# lob])
-(define (riot w0)
-  
-  (big-bang (make-pair w0 '())
-    [to-draw render_riot]
-    [on-tick tock_riot]
-    ))
-(define (tock_riot p)
-  (cond
-    [(<= (pair-balloon# p) 0) p]
-    [else (make-pair (sub1 (pair-balloon# p)) (cons (make-posn (random 80) (random 180)) (pair-lob p)))]))
-(define (render_riot p)
-  (add-balloons (pair-lob p)))
+;;152
+;(define (col n img)
+;  (cond
+;    [(= 1 n) img]
+;    [else (above img (col (sub1 n) img))]))
+;(define (row n img)
+;  (cond
+;    [(= 1 n) img]
+;    [else (beside img (row (sub1 n) img))]))
+;;153
+;
+;(define LECTURE_HALL
+;  (place-image (col 18 (row 8 (rectangle 10 10 "outline" "black"))) 40 90 (empty-scene 80 180)))
+;(define (add-balloons lop)
+;  (cond
+;    [(empty? lop) LECTURE_HALL]
+;    [else (place-image (circle 2 "solid" "red") (posn-x (first lop)) (posn-y (first lop)) (add-balloons (rest lop)))]))
+;(define-struct pair [balloon# lob])
+;(define (riot w0)
+;  
+;  (big-bang (make-pair w0 '())
+;    [to-draw render_riot]
+;    [on-tick tock_riot]
+;    ))
+;(define (tock_riot p)
+;  (cond
+;    [(<= (pair-balloon# p) 0) p]
+;    [else (make-pair (sub1 (pair-balloon# p)) (cons (make-posn (random 80) (random 180)) (pair-lob p)))]))
+;(define (render_riot p)
+;  (add-balloons (pair-lob p)))
     
 ;;where doll can be string color or (make-layer string doll)
 ;;color is analogous to first and doll is analogous to rest
@@ -197,45 +197,290 @@
 ;    [(string? an-rd) an-rd]
 ;    [else (inner (layer-doll an-rd))]))
 
-(define HEIGHT 80)
-(define WIDTH 100)
-(define XSHOTS (/ WIDTH 2))
-(define BACKGROUND (empty-scene WIDTH HEIGHT))
-(define SHOT (triangle 6 "solid" "red"))
-; A List-of-shots is one of: 
-; – '()
-; – (cons Shot List-of-shots)
-; interpretation the collection of shots fired
-; shot = a number representing the shot's y coordinate
+;(define HEIGHT 80)
+;(define WIDTH 100)
+;(define XSHOTS (/ WIDTH 2))
+;(define BACKGROUND (empty-scene WIDTH HEIGHT))
+;(define SHOT (triangle 6 "solid" "red"))
+;; A List-of-shots is one of: 
+;; – '()
+;; – (cons Shot List-of-shots)
+;; interpretation the collection of shots fired
+;; shot = a number representing the shot's y coordinate
+;
+;(define (to-image w)
+;  (cond
+;    [(empty? w) BACKGROUND]
+;    [else
+;     (place-image SHOT XSHOTS (first w) (to-image (rest w)))]))
+;(define (tock w)
+;  (cond
+;    [(empty? w) '()]
+;    [else
+;     (cons (sub1 (first w)) (tock (rest w)))]))
+;(define (keyh w ke)
+;  (if (key=? ke " ") (cons HEIGHT w) w))
+;(define (main w0)
+;  (big-bang w0
+;    [on-tick tock_2]
+;    [on-key keyh]
+;    [to-draw to-image]))
+;;156
+;(check-expect (to-image (cons 9 (cons 10 '())))
+;              (place-image SHOT XSHOTS 9 (place-image SHOT XSHOTS 10 BACKGROUND)))
+;(check-expect (tock (cons 9 (cons 10 '())))
+;              (cons 8 (cons 9 '())))
+;(check-expect (keyh (cons 9 (cons 10 '())) " ")
+;              (cons HEIGHT (cons 9 (cons 10 '()))))
+;;158
+;(define (tock_2 w)
+;  (cond
+;    [(empty? w) '()]
+;    [else
+;     (cond [(> (first w) 0) (cons (sub1 (first w)) (tock_2 (rest w)))]
+;           [else (tock_2 (rest w))])]))
+;;160
+;(define es '())
+;(define (in? x s)
+;  (member? x s))
+;; Number Son.L -> Son.L
+;; removes x from s 
+;(define s1.L
+;  (cons 1 (cons 1 '())))
+;         
+;(check-expect
+; (set-.L 1 s1.L) es)
+;         
+;(define (set-.L x s)
+;  (remove-all x s))
+;(define (set+.L x s)
+;  (cons x s))
+;
+;          
+;        	
+;; Number Son.R -> Son.R
+;; removes x from s
+;(define s1.R
+;  (cons 1 '()))
+;         
+;(check-expect
+; (set-.R 1 s1.R) es)
+;         
+;(define (set-.R x s)
+;  (remove x s))
+;(define (set+.R x s)
+;  (cond
+;    [(not (in? x s)) (cons x s)]
+;    [else s]))
 
-(define (to-image w)
+;;161, 162
+;(define SET_WAGE 14)
+;; List-of-numbers -> List-of-numbers
+;; computes the weekly wages for all given weekly hours
+;(define (wage* whrs)
+;  (cond
+;    [(empty? whrs) '()]
+;    [(<= 100 (first whrs)) (error "hours worked exceed 100")]
+;    [else (cons (wage (first whrs)) (wage* (rest whrs)))]))
+; 
+;; Number -> Number
+;; computes the wage for h hours of work
+;(define (wage h)
+;  (* SET_WAGE h))
+;(check-expect (wage* (cons 28 '())) (cons (* 28 SET_WAGE) '()))
+;
+;;163
+;(define (convertFC f)
+;  (/ (*(- f 32) 5) 9))
+;(define (convertFC* flist)
+;  (cond
+;  [(empty? flist) '()]
+;  [else (cons (convertFC (first flist)) (convertFC* (rest flist)))]))
+;;164
+;(define EXCHANGE_RATE 0.90) 
+;(define (convert-euro usd exr)
+;  (* exr usd))
+;(define (convert-euro* usdList exr)
+;  (cond
+;    [(empty? usdList) '()]
+;    [else (cons (convert-euro (first usdList) exr) (convert-euro* (rest usdList) exr))]))
+;;165
+;(define (substitute new old curr)
+;  (cond
+;    [(string=? curr old) new]
+;    [else curr]))
+;(define (substitute* new old currList)
+;  (cond
+;    [(empty? currList) '()]
+;    [else (cons (substitute new old (first currList)) (substitute* new old (rest currList)))]))
+;
+;(define-struct work [employee rate hours])
+;;A (piece of) Work is a structure:
+;;    (make-work string number number)
+;;LOW (list of workers) is one of:
+;; -'()
+;; -(cons Work Low)
+;(define (wage.v2 w)
+;  (* (work-hours w) (work-rate w)))
+;
+;(define (wage*.v2 low)
+;  (cond
+;    [(empty? low) '()]
+;    [(<= 100 (work-hours (first low))) (error "hours worked exceed 100")]
+;    [else (cons (wage.v2 (first low)) (wage*.v2 (rest low)))]))
+;
+;;166
+;(define-struct paycheck [employee money])
+;(define (wage.v3 w)
+;  (make-paycheck (work-employee w) (* (work-rate w) (work-hours w))))
+;(define (wage*.v3 low)
+;  (cond
+;    [(empty? low) '()]
+;    [(<= 100 (work-hours (first low))) (error "hours worked exceed 100")]
+;    [else (cons (wage.v3 (first low)) (wage*.v3 (rest low)))]))
+;
+;;167
+;(define (sum lop)
+;  (cond
+;    [(empty? lop) 0]
+;    [else (+ (posn-x (first lop)) (sum (rest lop)))]))
+;;168
+;(define (translate lop)
+;  (cond
+;    [(empty? lop) '()]
+;    [else (cons (make-posn (posn-x (first lop)) (+ (posn-y (first lop)) 1)) (translate (rest lop)))]))
+;;169
+;(define (legal lop)
+;  (cond
+;    [(empty? lop) '()]
+;    [(legal-helper (first lop)) (cons (first lop) (rest lop))]
+;    [else (legal (rest lop))]))
+;
+;(define (legal-helper p)
+;  (and (< (posn-x p) 100) (> (posn-x p) 0) (< (posn-y p) 200) (> (posn-y p) 0)))
+;
+;;170
+;(define-struct phone [area switch four])
+;(define (replace lo-phones)
+;  (cond
+;    [(empty? lo-phones) '()]
+;    [(= (phone-area (first lo-phones)) 713) (cons
+;                                             (make-phone 281 (phone-switch (first lo-phones)) (phone-four (first lo-phones)))
+;                                             (replace (rest lo-phones)))]
+;    [else (cons (first lo-phones) (replace (rest lo-phones)))]))
+;;171
+;;a list of strings is one of:
+;;'()
+;;(cons string ALOS)
+;(cons "TTT" (cons "Put up in a plce" (cons "where it's easy to see" (cons "the cryptic admonishment" (cons "T.T.T." (cons "When you feel how depressingly" (cons "slowly you climb," (cons "it's well to remember that" (cons "Things Take Time." (cons "Piet Hein" '()))))))))))
+;
+;;a list of list of strings is one of:
+;;'()
+;; (cons ALOS ALOLOS)
+;
+;(cons
+; (cons "Put" (cons "up" (cons "in" (cons "a" (cons "place" '())))))
+; (cons
+;  (cons "where" (cons "it's" (cons "easy" (cons "to" (cons "see" '())))))
+;  (cons
+;   (cons "the" (cons "cryptic" (cons "admonishment" '())))
+;   (cons
+;    (cons "T.T.T." '())
+;    (cons
+;     (cons "When" (cons "you" (cons "feel" (cons "how" (cons "depressingly" '())))))
+;     (cons
+;      (cons "slowly" (cons "you" (cons "climb" '())))
+;      (cons
+;       (cons "it's" (cons "well" (cons "to" (cons "remember" (cons "that" '())))))
+;       (cons
+;        (cons "things" (cons "take" (cons "time" '()))) '()))))))))
+(define (words-on-line lls)
   (cond
-    [(empty? w) BACKGROUND]
+    [(empty? lls) '()]
     [else
-     (place-image SHOT XSHOTS (first w) (to-image (rest w)))]))
-(define (tock w)
+     (cons (count-words (first lls))
+           (words-on-line (rest lls)))]))
+(define (count-words ls)
   (cond
-    [(empty? w) '()]
-    [else
-     (cons (sub1 (first w)) (tock (rest w)))]))
-(define (keyh w ke)
-  (if (key=? ke " ") (cons HEIGHT w) w))
-(define (main w0)
-  (big-bang w0
-    [on-tick tock_2]
-    [on-key keyh]
-    [to-draw to-image]))
-;156
-(check-expect (to-image (cons 9 (cons 10 '())))
-              (place-image SHOT XSHOTS 9 (place-image SHOT XSHOTS 10 BACKGROUND)))
-(check-expect (tock (cons 9 (cons 10 '())))
-              (cons 8 (cons 9 '())))
-(check-expect (keyh (cons 9 (cons 10 '())) " ")
-              (cons HEIGHT (cons 9 (cons 10 '()))))
-;158
-(define (tock_2 w)
+   [(empty? ls) 0]
+   [else (+ 1 (count-words (rest ls)))]))
+
+;172
+(define (collapse lls)
   (cond
-    [(empty? w) '()]
+    [(empty? lls) ""]
     [else
-     (cond [(> (first w) 0) (cons (sub1 (first w)) (tock_2 (rest w)))]
-           [else (tock_2 (rest w))])]))
+     (string-append (collapse-line (first lls))
+           (collapse (rest lls)))]))
+
+(define (collapse-line ls)
+  (cond
+    [(empty? ls) "\n"]
+    [else (string-append (first ls) " " (collapse-line (rest ls)))]))
+
+;173
+;n is file name
+(define (remove-articles-base n)
+  (write-file (string-append "no-articles-" n)
+              (remove-articles (read-words/line n))))
+
+(define (remove-articles lls)
+  (cond
+   [(empty? lls) ""]
+   [else (string-append (remove-articles-helper (first lls)) "\n" (remove-articles (rest lls)))]))
+
+(define (remove-articles-helper ls)
+  (cond
+    [(empty? ls) "\n"]
+    [(or (string=? "a" (first ls)) (string=? "an" (first ls)) (string=? "the" (first ls))) (remove-articles-helper (rest ls))]
+    [else (string-append (first ls) " " (remove-articles-helper (rest ls)))]))
+
+;174
+;n is file name
+(define (encode-text-base n)
+  (write-file (string-append "encoded-text-" n)
+              (encode-text (read-words/line n))))
+
+(define (encode-text lls)
+  (cond
+    [(empty? lls) ""]
+    [else (string-append (encode-text-line (first lls)) (encode-text (rest lls)))]))
+
+(define (encode-text-line ls)
+  (cond
+    [(empty? ls) "\n"]
+    [else (string-append (encode-text-word (explode (first ls))) (encode-text-line (rest ls)))]))
+(define (encode-text-word lw)
+  (cond
+    [(empty? lw) " "]
+    [else (string-append (encode-letter (first lw)) (encode-text-word (rest lw)))]))
+
+; 1String -> String
+; converts the given 1String to a 3-letter numeric String
+(define (encode-letter s)
+  (cond
+    [(>= (string->int s) 100) (code1 s)]
+    [(< (string->int s) 10)
+     (string-append "00" (code1 s))]
+    [(< (string->int s) 100)
+     (string-append "0" (code1 s))]))
+ 
+; 1String -> String
+; converts the given 1String into a String
+ 
+(check-expect (code1 "z") "122")
+ 
+(define (code1 c)
+  (number->string (string->int c)))
+
+;175
+;count of letters, words, lines in a file
+(define-struct strCount [letterCount wordCount lineCount])
+
+;consider making a function which sums everything into a single number, then work on separating those sums into a structure
+(define (wc-base n)
+  (wc (read-words/line n) (make-strCount 0 0 0)))
+(define (wc lls countStruct)
+  (cond
+    [(empty? lls) (make-strCount (strCount-letterCount countStruct) (strCount-wordCount countStruct)(strCount-lineCount countStruct))]
+    [else (make-strCount
