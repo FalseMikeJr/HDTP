@@ -1,6 +1,6 @@
 ;; The first three lines of this file were inserted by DrRacket. They record metadata
 ;; about the language level of this file in a form that our tools can easily process.
-#reader(lib "htdp-beginner-reader.ss" "lang")((modname HTDP_redo_part2) (read-case-sensitive #t) (teachpacks ()) (htdp-settings #(#t constructor repeating-decimal #f #t none #f () #f)))
+#reader(lib "htdp-beginner-abbr-reader.ss" "lang")((modname HTDP_redo_part2) (read-case-sensitive #t) (teachpacks ()) (htdp-settings #(#t constructor repeating-decimal #f #t none #f () #f)))
 (require 2htdp/batch-io)
 (require 2htdp/image)
 (require 2htdp/universe)
@@ -561,7 +561,6 @@
 (define FONT-COLOR "black")
 (define MT (empty-scene WIDTH HEIGHT))
 (define CURSOR (rectangle 1 HEIGHT "solid" "red"))
-(define (editor-render e) MT)
 (define (editor-kh ed ke)
   (cond
     [(key=? ke "left") (editor-lft ed)]
@@ -583,25 +582,43 @@
   (make-editor
    (remove-last (editor-pre ed))
    (cons (get-last (editor-pre ed)) (editor-post ed))))
+
 (define (editor-rgt ed)
   (make-editor
    (add-at-end (editor-pre ed) (first (editor-post ed)))
    (rest (editor-post ed))))
+
 (define (editor-del ed)
   (make-editor
    (remove-last (editor-pre ed))
    (editor-post ed)))
+
 (define (editor-ins ed ke)
   (make-editor
    (add-at-end (editor-pre ed) ke) (editor-post ed)))
+
 (define (get-last l)
   (cond
     [(empty? (rest l)) (first l)]
     [else (get-last (rest l))]))
+
 (define (remove-last l)
   [cond
     [(empty? (rest l)) '()]
     [else (cons (first l) (remove-last (rest l)))]])
+
+(define (editor-render e)
+  (beside (editor-text (editor-pre e)) CURSOR (editor-text (editor-post e))))
+
+(define (editor-text s)
+  (text (implode s) FONT-SIZE FONT-COLOR))
+;ex 180
+(define (editor-text2 s)
+  (text (text-concat s) FONT-SIZE FONT-COLOR))
+(define (text-concat s)
+  (cond
+    [(empty? s) ""]
+    [else (string-append (first s) (text-concat (rest s)))]))
 
 (define (main s)
   (big-bang (create-editor s "")
@@ -609,3 +626,4 @@
     [to-draw editor-render]))
 
 (define ed1 (make-editor (cons "a" (cons "b" (cons "c" '()))) (cons "d" '())))
+
