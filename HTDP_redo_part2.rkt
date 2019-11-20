@@ -108,15 +108,15 @@
 ;(define (avg-nel nel)
 ;  (/ (sum-nel nel) (how-many-nel nel)))
 ;
-;;145
-;(define (sorted>? nel)
-;  (sorted-helper (rest nel) (first nel)))
-;
-;(define (sorted-helper nel num)
-;  (cond
-;    [(empty? nel) #true]
-;    [(> num (first nel)) (sorted-helper (rest nel) (first nel))]
-;    [else #false]))
+;145
+(define (sorted>? nel)
+  (sorted-helper (rest nel) (first nel)))
+
+(define (sorted-helper nel num)
+  (cond
+    [(empty? nel) #true]
+    [(> num (first nel)) (sorted-helper (rest nel) (first nel))]
+    [else #false]))
 ;(define (all-true-nel nel)
 ;  (cond
 ;    [(empty? (rest nel)) (first nel)]
@@ -536,94 +536,125 @@
 ;(define (last-row-item row)
 ;  (rest row))
 
-(define-struct editor [pre post])
-;an editor is one of:
-;() or (make-editor 1String Lo1S)
+;(define-struct editor [pre post])
+;;an editor is one of:
+;;() or (make-editor 1String Lo1S)
+;
+;(define (rev l)
+;  (cond
+;    [(empty? l) '()]
+;    [else (add-at-end (rev (rest l)) (first l))]))
+;
+;(define (add-at-end l s)
+;  (cond
+;    [(empty? l) (cons s '())]
+;    [else (cons (first l)
+;               (add-at-end (rest l) s))]))
+;;(rev (cons "a" (cons "b" (cons "c" '()))))
+;;177
+;(define (create-editor s1 s2)
+;  (make-editor s1 s2))
+;
+;(define HEIGHT 20)
+;(define WIDTH 200)
+;(define FONT-SIZE 16)
+;(define FONT-COLOR "black")
+;(define MT (empty-scene WIDTH HEIGHT))
+;(define CURSOR (rectangle 1 HEIGHT "solid" "red"))
+;(define (editor-kh ed ke)
+;  (cond
+;    [(key=? ke "left") (editor-lft ed)]
+;    [(key=? ke "right") (editor-rgt ed)]
+;    [(key=? ke "\b") (editor-del ed)]
+;    [(key=? ke "\t") ed]
+;    [(key=? ke "\r") ed]
+;    [(= (string-length ke) 1) (editor-ins ed ke)]
+;    [else ed]))
+;;wish-list for this function:
+;;get-first -- inherent to data structure 
+;;get-last
+;;remove-first --inherent to the data structure
+;;remove-last
+;;add-to-front -- inherent to data structure
+;;add-to-back --add-at-end above
+;;179
+;(define (editor-lft ed)
+;  (make-editor
+;   (remove-last (editor-pre ed))
+;   (cons (get-last (editor-pre ed)) (editor-post ed))))
+;
+;(define (editor-rgt ed)
+;  (make-editor
+;   (add-at-end (editor-pre ed) (first (editor-post ed)))
+;   (rest (editor-post ed))))
+;
+;(define (editor-del ed)
+;  (make-editor
+;   (remove-last (editor-pre ed))
+;   (editor-post ed)))
+;
+;(define (editor-ins ed ke)
+;  (make-editor
+;   (add-at-end (editor-pre ed) ke) (editor-post ed)))
+;
+;(define (get-last l)
+;  (cond
+;    [(empty? (rest l)) (first l)]
+;    [else (get-last (rest l))]))
+;
+;(define (remove-last l)
+;  [cond
+;    [(empty? (rest l)) '()]
+;    [else (cons (first l) (remove-last (rest l)))]])
+;
+;(define (editor-render e)
+;  (beside (editor-text (editor-pre e)) CURSOR (editor-text (editor-post e))))
+;
+;(define (editor-text s)
+;  (text (implode s) FONT-SIZE FONT-COLOR))
+;;ex 180
+;(define (editor-text2 s)
+;  (text (text-concat s) FONT-SIZE FONT-COLOR))
+;(define (text-concat s)
+;  (cond
+;    [(empty? s) ""]
+;    [else (string-append (first s) (text-concat (rest s)))]))
+;
+;(define (main s)
+;  (big-bang (create-editor s "")
+;    [on-key editor-kh]
+;    [to-draw editor-render]))
+;
+;(define ed1 (make-editor (cons "a" (cons "b" (cons "c" '()))) (cons "d" '())))
 
-(define (rev l)
+(define (sort> alon)
   (cond
-    [(empty? l) '()]
-    [else (add-at-end (rev (rest l)) (first l))]))
+    [(empty? alon) '()]
+    [else (insert (first alon) (sort> (rest alon)))]))
 
-(define (add-at-end l s)
+(define (insert n alon)
   (cond
-    [(empty? l) (cons s '())]
-    [else (cons (first l)
-               (add-at-end (rest l) s))]))
-;(rev (cons "a" (cons "b" (cons "c" '()))))
-;177
-(define (create-editor s1 s2)
-  (make-editor s1 s2))
+    [(empty? alon) (cons n '())]
+    [(> n (first alon)) (cons n alon)]
+    [else (cons (first alon) (insert n (rest alon)))]))
 
-(define HEIGHT 20)
-(define WIDTH 200)
-(define FONT-SIZE 16)
-(define FONT-COLOR "black")
-(define MT (empty-scene WIDTH HEIGHT))
-(define CURSOR (rectangle 1 HEIGHT "solid" "red"))
-(define (editor-kh ed ke)
+
+
+;186
+(check-satisfied (sort> (list 12 20 -5)) sorted>?)
+
+;187
+(define (sort>/bad l)
+  (list 9 8 7 6 5 4 3 2 1 0))
+
+(define (sorted? sl ol)
   (cond
-    [(key=? ke "left") (editor-lft ed)]
-    [(key=? ke "right") (editor-rgt ed)]
-    [(key=? ke "\b") (editor-del ed)]
-    [(key=? ke "\t") ed]
-    [(key=? ke "\r") ed]
-    [(= (string-length ke) 1) (editor-ins ed ke)]
-    [else ed]))
-;wish-list for this function:
-;get-first -- inherent to data structure 
-;get-last
-;remove-first --inherent to the data structure
-;remove-last
-;add-to-front -- inherent to data structure
-;add-to-back --add-at-end above
-;179
-(define (editor-lft ed)
-  (make-editor
-   (remove-last (editor-pre ed))
-   (cons (get-last (editor-pre ed)) (editor-post ed))))
-
-(define (editor-rgt ed)
-  (make-editor
-   (add-at-end (editor-pre ed) (first (editor-post ed)))
-   (rest (editor-post ed))))
-
-(define (editor-del ed)
-  (make-editor
-   (remove-last (editor-pre ed))
-   (editor-post ed)))
-
-(define (editor-ins ed ke)
-  (make-editor
-   (add-at-end (editor-pre ed) ke) (editor-post ed)))
-
-(define (get-last l)
+    [(empty? sl) #t]
+    [else (and (>= (first sl) (second sl)) (original-contains (first sl) ol) (sorted? (rest sl) ol))]))
+(define (original-contains n l)
   (cond
-    [(empty? (rest l)) (first l)]
-    [else (get-last (rest l))]))
+    [(empty? l) #f]
+    [(= (first l) n) #t]
+    [else (original-contains n (rest l))]))
 
-(define (remove-last l)
-  [cond
-    [(empty? (rest l)) '()]
-    [else (cons (first l) (remove-last (rest l)))]])
-
-(define (editor-render e)
-  (beside (editor-text (editor-pre e)) CURSOR (editor-text (editor-post e))))
-
-(define (editor-text s)
-  (text (implode s) FONT-SIZE FONT-COLOR))
-;ex 180
-(define (editor-text2 s)
-  (text (text-concat s) FONT-SIZE FONT-COLOR))
-(define (text-concat s)
-  (cond
-    [(empty? s) ""]
-    [else (string-append (first s) (text-concat (rest s)))]))
-
-(define (main s)
-  (big-bang (create-editor s "")
-    [on-key editor-kh]
-    [to-draw editor-render]))
-
-(define ed1 (make-editor (cons "a" (cons "b" (cons "c" '()))) (cons "d" '())))
-
+(check-satisfied (sort>/bad (list 1 3 0 2)) sorted?)
