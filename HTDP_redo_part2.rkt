@@ -641,7 +641,7 @@
 
 
 ;186
-(check-satisfied (sort> (list 12 20 -5)) sorted>?)
+;(check-satisfied (sort> (list 12 20 -5)) sorted>?)
 
 ;187
 (define (sort>/bad l)
@@ -657,4 +657,46 @@
     [(= (first l) n) #t]
     [else (original-contains n (rest l))]))
 
-(check-satisfied (sort>/bad (list 1 3 0 2)) sorted?)
+;(check-satisfied (sort>/bad (list 1 3 0 2)) sorted?)
+
+(define-struct email [from date message])
+;(make-email String Number String)
+
+(define (sort-emails loemails)
+  (cond
+    [(empty? loemails) '()]
+    [else (insert-emails (first loemails) (sort-emails (rest loemails)))]))
+(define (insert-emails email loemails)
+  (cond
+    [(empty? loemails) (cons email '())]
+    [(> (email-date email) (email-date (first loemails))) (cons email loemails)]
+    [else (cons (first loemails) (insert-emails email (rest loemails)))]))
+
+;189
+;assuming sort is largest to smallest
+(define (search-sorted n alon)
+  (cond
+    [(empty? alon) #false]
+    [(> n (first alon)) #false]
+    [(= n (first alon)) #true]
+    [else (search-sorted n (rest alon))]))
+;190
+
+(define (prefixes lo1s)
+  (cond
+    [(empty? lo1s) '()]
+    [else (prefixes-helper (first lo1s) (rest lo1s))]))
+(define (prefixes-helper s lo1s)
+  (cond
+    [(empty? lo1s) (cons              ;note that these 2 lines are the same cons structure as the else statement
+                    (cons s '()) '())]
+    [else (cons ;to create a list of lists, you add a cons nesting, so this recursive nesting works... dont think this can be done with the list constructor
+           (cons s lo1s) (prefixes-helper s (remove-end lo1s)))]))
+(define (remove-end lo1s)
+  (cond
+    [(empty? (rest lo1s)) '()]
+    [else (cons (first lo1s) (remove-end (rest lo1s)))]))
+
+(define (suffixes lo1s)
+  (prefixes (reverse lo1s)))
+  

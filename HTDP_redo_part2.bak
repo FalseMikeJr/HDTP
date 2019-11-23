@@ -1,6 +1,6 @@
 ;; The first three lines of this file were inserted by DrRacket. They record metadata
 ;; about the language level of this file in a form that our tools can easily process.
-#reader(lib "htdp-beginner-reader.ss" "lang")((modname HTDP_redo_part2) (read-case-sensitive #t) (teachpacks ()) (htdp-settings #(#t constructor repeating-decimal #f #t none #f () #f)))
+#reader(lib "htdp-beginner-abbr-reader.ss" "lang")((modname HTDP_redo_part2) (read-case-sensitive #t) (teachpacks ()) (htdp-settings #(#t constructor repeating-decimal #f #t none #f () #f)))
 (require 2htdp/batch-io)
 (require 2htdp/image)
 (require 2htdp/universe)
@@ -108,15 +108,15 @@
 ;(define (avg-nel nel)
 ;  (/ (sum-nel nel) (how-many-nel nel)))
 ;
-;;145
-;(define (sorted>? nel)
-;  (sorted-helper (rest nel) (first nel)))
-;
-;(define (sorted-helper nel num)
-;  (cond
-;    [(empty? nel) #true]
-;    [(> num (first nel)) (sorted-helper (rest nel) (first nel))]
-;    [else #false]))
+;145
+(define (sorted>? nel)
+  (sorted-helper (rest nel) (first nel)))
+
+(define (sorted-helper nel num)
+  (cond
+    [(empty? nel) #true]
+    [(> num (first nel)) (sorted-helper (rest nel) (first nel))]
+    [else #false]))
 ;(define (all-true-nel nel)
 ;  (cond
 ;    [(empty? (rest nel)) (first nel)]
@@ -394,81 +394,267 @@
 ;       (cons "it's" (cons "well" (cons "to" (cons "remember" (cons "that" '())))))
 ;       (cons
 ;        (cons "things" (cons "take" (cons "time" '()))) '()))))))))
-(define (words-on-line lls)
-  (cond
-    [(empty? lls) '()]
-    [else
-     (cons (count-words (first lls))
-           (words-on-line (rest lls)))]))
-(define (count-words ls)
-  (cond
-   [(empty? ls) 0]
-   [else (+ 1 (count-words (rest ls)))]))
+;(define (words-on-line lls)
+;  (cond
+;    [(empty? lls) '()]
+;    [else
+;     (cons (count-words (first lls))
+;           (words-on-line (rest lls)))]))
+;(define (count-words ls)
+;  (cond
+;   [(empty? ls) 0]
+;   [else (+ 1 (count-words (rest ls)))]))
+;
+;;172
+;(define (collapse lls)
+;  (cond
+;    [(empty? lls) ""]
+;    [else
+;     (string-append (collapse-line (first lls))
+;           (collapse (rest lls)))]))
+;
+;(define (collapse-line ls)
+;  (cond
+;    [(empty? ls) "\n"]
+;    [else (string-append (first ls) " " (collapse-line (rest ls)))]))
+;
+;;173
+;;n is file name
+;(define (remove-articles-base n)
+;  (write-file (string-append "no-articles-" n)
+;              (remove-articles (read-words/line n))))
+;
+;(define (remove-articles lls)
+;  (cond
+;   [(empty? lls) ""]
+;   [else (string-append (remove-articles-helper (first lls)) "\n" (remove-articles (rest lls)))]))
+;
+;(define (remove-articles-helper ls)
+;  (cond
+;    [(empty? ls) "\n"]
+;    [(or (string=? "a" (first ls)) (string=? "an" (first ls)) (string=? "the" (first ls))) (remove-articles-helper (rest ls))]
+;    [else (string-append (first ls) " " (remove-articles-helper (rest ls)))]))
+;
+;;174
+;;n is file name
+;(define (encode-text-base n)
+;  (write-file (string-append "encoded-text-" n)
+;              (encode-text (read-words/line n))))
+;
+;(define (encode-text lls)
+;  (cond
+;    [(empty? lls) ""]
+;    [else (string-append (encode-text-line (first lls)) (encode-text (rest lls)))]))
+;
+;(define (encode-text-line ls)
+;  (cond
+;    [(empty? ls) "\n"]
+;    [else (string-append (encode-text-word (explode (first ls))) (encode-text-line (rest ls)))]))
+;(define (encode-text-word lw)
+;  (cond
+;    [(empty? lw) " "]
+;    [else (string-append (encode-letter (first lw)) (encode-text-word (rest lw)))]))
+;
+;; 1String -> String
+;; converts the given 1String to a 3-letter numeric String
+;(define (encode-letter s)
+;  (cond
+;    [(>= (string->int s) 100) (code1 s)]
+;    [(< (string->int s) 10)
+;     (string-append "00" (code1 s))]
+;    [(< (string->int s) 100)
+;     (string-append "0" (code1 s))]))
+; 
+;; 1String -> String
+;; converts the given 1String into a String
+; 
+;(check-expect (code1 "z") "122")
+; 
+;(define (code1 c)
+;  (number->string (string->int c)))
+;
+;;175
+;;count of letters, words, lines in a file
+;(define-struct strCount [letters words lines])
+;
+;;consider making a function which sums everything into a single number, then work on separating those sums into a structure
+;(define (wc-base n)
+;  (wc (read-words/line n)))
+;(define (wc lls)
+;  (cond
+;    [(empty? lls) 0]
+;    [else (+ 1 (wc-word (first lls)) (wc (rest lls)))]))
+;
+;(define (wc-word ls)
+;  (cond
+;    [(empty? ls) 0]
+;    [else (+ 1 (wc-letter (explode (first ls))) (wc-word (rest ls)))]))
+;(define (wc-letter s)
+;  (cond
+;    [(empty? s) 0]
+;    [else (+ 1 (wc-letter (rest s)))]))
+;;using actual structure
+;(define (wc-base2 n)
+;  (make-strCount
+;   (wc-word2 (read-words n))
+;   (length (read-words n))
+;   (length (read-lines n))))
+;(define (wc-word2 ls)
+;  (cond
+;    [(empty? ls) 0]
+;    [else (+ (string-length (first ls)) (wc-word2 (rest ls)))]))
+;
+;;176
+;; A Matrix is one of: 
+;;  – (cons Row '())
+;;  – (cons Row Matrix)
+;; constraint all rows in matrix are of the same length
+; 
+;; A Row is one of: 
+;;  – '() 
+;;  – (cons Number Row)
+;(define row1 (cons 11 (cons 12 '())))
+;(define row2 (cons 21 (cons 22 '())))
+;(define mat1 (cons row1 (cons row2 '())))
+;(define (transpose lln)
+;  (cond
+;    [(empty? (first lln)) '()]
+;    [else (cons (first* lln) (transpose (rest* lln)))]))
+;
+;(define (first* mat)
+;  (cond
+;    [(empty?  mat) '()]
+;    [else (cons (first-row-item (first mat)) (first* (rest mat)))]))
+;
+;(define (first-row-item row)
+;  (first row))
+;
+;(define (rest* mat)
+;  (cond
+;    [(empty? mat) '()]
+;    [else (cons (last-row-item (first mat)) (rest* (rest mat)))]))
+;(define (last-row-item row)
+;  (rest row))
 
-;172
-(define (collapse lls)
-  (cond
-    [(empty? lls) ""]
-    [else
-     (string-append (collapse-line (first lls))
-           (collapse (rest lls)))]))
+;(define-struct editor [pre post])
+;;an editor is one of:
+;;() or (make-editor 1String Lo1S)
+;
+;(define (rev l)
+;  (cond
+;    [(empty? l) '()]
+;    [else (add-at-end (rev (rest l)) (first l))]))
+;
+;(define (add-at-end l s)
+;  (cond
+;    [(empty? l) (cons s '())]
+;    [else (cons (first l)
+;               (add-at-end (rest l) s))]))
+;;(rev (cons "a" (cons "b" (cons "c" '()))))
+;;177
+;(define (create-editor s1 s2)
+;  (make-editor s1 s2))
+;
+;(define HEIGHT 20)
+;(define WIDTH 200)
+;(define FONT-SIZE 16)
+;(define FONT-COLOR "black")
+;(define MT (empty-scene WIDTH HEIGHT))
+;(define CURSOR (rectangle 1 HEIGHT "solid" "red"))
+;(define (editor-kh ed ke)
+;  (cond
+;    [(key=? ke "left") (editor-lft ed)]
+;    [(key=? ke "right") (editor-rgt ed)]
+;    [(key=? ke "\b") (editor-del ed)]
+;    [(key=? ke "\t") ed]
+;    [(key=? ke "\r") ed]
+;    [(= (string-length ke) 1) (editor-ins ed ke)]
+;    [else ed]))
+;;wish-list for this function:
+;;get-first -- inherent to data structure 
+;;get-last
+;;remove-first --inherent to the data structure
+;;remove-last
+;;add-to-front -- inherent to data structure
+;;add-to-back --add-at-end above
+;;179
+;(define (editor-lft ed)
+;  (make-editor
+;   (remove-last (editor-pre ed))
+;   (cons (get-last (editor-pre ed)) (editor-post ed))))
+;
+;(define (editor-rgt ed)
+;  (make-editor
+;   (add-at-end (editor-pre ed) (first (editor-post ed)))
+;   (rest (editor-post ed))))
+;
+;(define (editor-del ed)
+;  (make-editor
+;   (remove-last (editor-pre ed))
+;   (editor-post ed)))
+;
+;(define (editor-ins ed ke)
+;  (make-editor
+;   (add-at-end (editor-pre ed) ke) (editor-post ed)))
+;
+;(define (get-last l)
+;  (cond
+;    [(empty? (rest l)) (first l)]
+;    [else (get-last (rest l))]))
+;
+;(define (remove-last l)
+;  [cond
+;    [(empty? (rest l)) '()]
+;    [else (cons (first l) (remove-last (rest l)))]])
+;
+;(define (editor-render e)
+;  (beside (editor-text (editor-pre e)) CURSOR (editor-text (editor-post e))))
+;
+;(define (editor-text s)
+;  (text (implode s) FONT-SIZE FONT-COLOR))
+;;ex 180
+;(define (editor-text2 s)
+;  (text (text-concat s) FONT-SIZE FONT-COLOR))
+;(define (text-concat s)
+;  (cond
+;    [(empty? s) ""]
+;    [else (string-append (first s) (text-concat (rest s)))]))
+;
+;(define (main s)
+;  (big-bang (create-editor s "")
+;    [on-key editor-kh]
+;    [to-draw editor-render]))
+;
+;(define ed1 (make-editor (cons "a" (cons "b" (cons "c" '()))) (cons "d" '())))
 
-(define (collapse-line ls)
+(define (sort> alon)
   (cond
-    [(empty? ls) "\n"]
-    [else (string-append (first ls) " " (collapse-line (rest ls)))]))
+    [(empty? alon) '()]
+    [else (insert (first alon) (sort> (rest alon)))]))
 
-;173
-;n is file name
-(define (remove-articles-base n)
-  (write-file (string-append "no-articles-" n)
-              (remove-articles (read-words/line n))))
-
-(define (remove-articles lls)
+(define (insert n alon)
   (cond
-   [(empty? lls) ""]
-   [else (string-append (remove-articles-helper (first lls)) "\n" (remove-articles (rest lls)))]))
+    [(empty? alon) (cons n '())]
+    [(> n (first alon)) (cons n alon)]
+    [else (cons (first alon) (insert n (rest alon)))]))
 
-(define (remove-articles-helper ls)
-  (cond
-    [(empty? ls) "\n"]
-    [(or (string=? "a" (first ls)) (string=? "an" (first ls)) (string=? "the" (first ls))) (remove-articles-helper (rest ls))]
-    [else (string-append (first ls) " " (remove-articles-helper (rest ls)))]))
 
-;174
-;n is file name
-(define (encode-text-base n)
-  (write-file (string-append "encoded-text-" n)
-              (encode-text (read-words/line n))))
 
-(define (encode-text lls)
-  (cond
-    [(empty? lls) ""]
-    [else (string-append (encode-text-line (first lls)) (encode-text (rest lls)))]))
+;186
+(check-satisfied (sort> (list 12 20 -5)) sorted>?)
 
-(define (encode-text-line ls)
-  (cond
-    [(empty? ls) "\n"]
-    [else (string-append (encode-text-word (explode (first ls))) (encode-text-line (rest ls)))]))
-(define (encode-text-word lw)
-  (cond
-    [(empty? lw) " "]
-    [else (string-append (encode-letter (first lw)) (encode-text-word (rest lw)))]))
+;187
+(define (sort>/bad l)
+  (list 9 8 7 6 5 4 3 2 1 0))
 
-; 1String -> String
-; converts the given 1String to a 3-letter numeric String
-(define (encode-letter s)
+(define (sorted? sl ol)
   (cond
-    [(>= (string->int s) 100) (code1 s)]
-    [(< (string->int s) 10)
-     (string-append "00" (code1 s))]
-    [(< (string->int s) 100)
-     (string-append "0" (code1 s))]))
- 
-; 1String -> String
-; converts the given 1String into a String
- 
-(check-expect (code1 "z") "122")
- 
-(define (code1 c)
-  (number->string (string->int c)))
+    [(empty? sl) #t]
+    [else (and (>= (first sl) (second sl)) (original-contains (first sl) ol) (sorted? (rest sl) ol))]))
+(define (original-contains n l)
+  (cond
+    [(empty? l) #f]
+    [(= (first l) n) #t]
+    [else (original-contains n (rest l))]))
+
+(check-satisfied (sort>/bad (list 1 3 0 2)) sorted?)
