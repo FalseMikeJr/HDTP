@@ -699,4 +699,19 @@
 
 (define (suffixes lo1s)
   (prefixes (reverse lo1s)))
-  
+
+(define MT (empty-scene 50 50))
+
+(define (render-line im p q)
+  (scene+line im (posn-x p) (posn-y p) (posn-x q) (posn-y q) "red"))
+
+(define (render-poly img p)
+  (cond
+    [(empty? (rest (rest (rest p))))
+     (render-line
+      (render-line
+       (render-line MT (first p) (second p))
+       (second p) (third p))
+      (third p) (first p))]
+    [else (render-line (render-poly img (rest p)) (first p) (second p))]))
+       
