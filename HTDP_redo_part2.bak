@@ -109,14 +109,14 @@
 ;  (/ (sum-nel nel) (how-many-nel nel)))
 ;
 ;145
-(define (sorted>? nel)
-  (sorted-helper (rest nel) (first nel)))
-
-(define (sorted-helper nel num)
-  (cond
-    [(empty? nel) #true]
-    [(> num (first nel)) (sorted-helper (rest nel) (first nel))]
-    [else #false]))
+;(define (sorted>? nel)
+;  (sorted-helper (rest nel) (first nel)))
+;
+;(define (sorted-helper nel num)
+;  (cond
+;    [(empty? nel) #true]
+;    [(> num (first nel)) (sorted-helper (rest nel) (first nel))]
+;    [else #false]))
 ;(define (all-true-nel nel)
 ;  (cond
 ;    [(empty? (rest nel)) (first nel)]
@@ -627,34 +627,174 @@
 ;
 ;(define ed1 (make-editor (cons "a" (cons "b" (cons "c" '()))) (cons "d" '())))
 
-(define (sort> alon)
+;(define (sort> alon)
+;  (cond
+;    [(empty? alon) '()]
+;    [else (insert (first alon) (sort> (rest alon)))]))
+;
+;(define (insert n alon)
+;  (cond
+;    [(empty? alon) (cons n '())]
+;    [(> n (first alon)) (cons n alon)]
+;    [else (cons (first alon) (insert n (rest alon)))]))
+;
+;
+;
+;;186
+;;(check-satisfied (sort> (list 12 20 -5)) sorted>?)
+;
+;;187
+;(define (sort>/bad l)
+;  (list 9 8 7 6 5 4 3 2 1 0))
+;
+;(define (sorted? sl ol)
+;  (cond
+;    [(empty? sl) #t]
+;    [else (and (>= (first sl) (second sl)) (original-contains (first sl) ol) (sorted? (rest sl) ol))]))
+;(define (original-contains n l)
+;  (cond
+;    [(empty? l) #f]
+;    [(= (first l) n) #t]
+;    [else (original-contains n (rest l))]))
+;
+;;(check-satisfied (sort>/bad (list 1 3 0 2)) sorted?)
+;
+;(define-struct email [from date message])
+;;(make-email String Number String)
+;
+;(define (sort-emails loemails)
+;  (cond
+;    [(empty? loemails) '()]
+;    [else (insert-emails (first loemails) (sort-emails (rest loemails)))]))
+;(define (insert-emails email loemails)
+;  (cond
+;    [(empty? loemails) (cons email '())]
+;    [(> (email-date email) (email-date (first loemails))) (cons email loemails)]
+;    [else (cons (first loemails) (insert-emails email (rest loemails)))]))
+;
+;;189
+;;assuming sort is largest to smallest
+;(define (search-sorted n alon)
+;  (cond
+;    [(empty? alon) #false]
+;    [(> n (first alon)) #false]
+;    [(= n (first alon)) #true]
+;    [else (search-sorted n (rest alon))]))
+;;190
+;
+;(define (prefixes lo1s)
+;  (cond
+;    [(empty? lo1s) '()]
+;    [else (prefixes-helper (first lo1s) (rest lo1s))]))
+;(define (prefixes-helper s lo1s)
+;  (cond
+;    [(empty? lo1s) (cons              ;note that these 2 lines are the same cons structure as the else statement
+;                    (cons s '()) '())]
+;    [else (cons ;to create a list of lists, you add a cons nesting, so this recursive nesting works... dont think this can be done with the list constructor
+;           (cons s lo1s) (prefixes-helper s (remove-end lo1s)))]))
+;(define (remove-end lo1s)
+;  (cond
+;    [(empty? (rest lo1s)) '()]
+;    [else (cons (first lo1s) (remove-end (rest lo1s)))]))
+;
+;(define (suffixes lo1s)
+;  (prefixes (reverse lo1s)))
+;
+;(define MT (empty-scene 50 50))
+;
+;(define (render-line im p q)
+;  (scene+line im (posn-x p) (posn-y p) (posn-x q) (posn-y q) "red"))
+;
+;(define (render-poly img p)
+;  (cond
+;    [(empty? (rest (rest (rest p))))
+;     (render-line
+;      (render-line
+;       (render-line MT (first p) (second p))
+;       (second p) (third p))
+;      (third p) (first p))]
+;    [else (render-line (render-poly img (rest p)) (first p) (second p))]))
+;;194 (inadvertent)
+;(define (render-poly-better img p)
+;  (connect-dots-helper img p (first p)))
+;
+;(define (connect-dots-helper img p 1-item)
+;  (cond
+;    [(empty? (rest p)) (render-line img (first p) 1-item)]
+;    [else (connect-dots-helper (render-line img (first p) (second p)) (rest p) 1-item)]))
+;
+;
+;(define (connect-dots2 img p)
+;  (cond
+;    [(empty? (rest p)) img]
+;    [else
+;     (render-line
+;       (connect-dots2 img (rest p))
+;       (first p)
+;       (second p))]))
+;
+;       
+;(define (render-poly-better2 img p)
+;  (render-line
+;   (connect-dots2 img p) (first p) (last p)))
+;
+;(define (last l)
+;  (cond
+;    [(empty? (rest l)) (first l)]
+;    [else (last (rest l))]))
+;;193
+;(define (render-poly-better3 img p)
+;  (connect-dots2 img (add-at-end p (first p) )))
+;
+;(define (add-at-end l s)
+;  (cond
+;    [(empty? l) (cons s '())]
+;    [else (cons (first l)
+;               (add-at-end (rest l) s))]))
+
+(define LOCATION "C:\\Users\\Ian.Davis\\english-words-master\\words.txt")
+(define LOCATION_SMALL "C:\\Users\\Ian.Davis\\english-words-master\\words_small.txt")
+; A Dictionary is a List-of-strings.
+(define AS-LIST (read-lines LOCATION))
+(define AS-LIST-SMALL (read-lines LOCATION_SMALL))
+; A Letter is one of the following 1Strings: 
+; – "a"
+; – ... 
+; – "z"
+; or, equivalently, a member? of this list: 
+(define LETTERS
+  (explode "abcdefghijklmnopqrstuvwxyz"))
+;195
+;1-string
+(define (starts-with# dict letter)
   (cond
-    [(empty? alon) '()]
-    [else (insert (first alon) (sort> (rest alon)))]))
-
-(define (insert n alon)
+    [(empty? dict) 0]
+    [(string=? letter (string-ith (first dict) 0)) (+ 1 (starts-with# (rest dict) letter))]
+    [else (starts-with# (rest dict) letter)]
+    ))
+;whole word
+(define (starts-with#2 dict letter)
   (cond
-    [(empty? alon) (cons n '())]
-    [(> n (first alon)) (cons n alon)]
-    [else (cons (first alon) (insert n (rest alon)))]))
-
-
-
-;186
-(check-satisfied (sort> (list 12 20 -5)) sorted>?)
-
-;187
-(define (sort>/bad l)
-  (list 9 8 7 6 5 4 3 2 1 0))
-
-(define (sorted? sl ol)
+    [(empty? dict) 0]
+    [(< (string-length (first dict)) (string-length letter)) (starts-with#2 (rest dict) letter)]
+    [(string=? letter (substring (first dict) 0 (string-length letter))) (+ 1 (starts-with#2 (rest dict) letter))]
+    [else (starts-with#2 (rest dict) letter)]
+    ))
+;196
+(define-struct letter-count [letter count])
+(define (count-by-letter dict)
+  (count-by-letter-helper dict '()))
+(define (count-by-letter-helper dict countList)
   (cond
-    [(empty? sl) #t]
-    [else (and (>= (first sl) (second sl)) (original-contains (first sl) ol) (sorted? (rest sl) ol))]))
-(define (original-contains n l)
+    [(empty? dict) '()]
+    [else (cons (add-count (string-ith (first dict) 0) countList #false) (count-by-letter-helper (rest dict) countList))]))
+;may not need the countAdded flag. should be able to just stop recursing when the letter is found
+(define (add-count letter countList countAdded)
   (cond
-    [(empty? l) #f]
-    [(= (first l) n) #t]
-    [else (original-contains n (rest l))]))
+    [(empty? countList) (cons (make-letter-count letter 1) '())]
+    [(string=? letter (letter-count-letter (first countList))) (cons (make-letter-count letter (+ (letter-count-count (first countList)) 1)) (rest countList))]
+    [else (cons (first countList) (add-count letter (rest countList) #false))]))
+  
+(count-by-letter AS-LIST-SMALL)
 
-(check-satisfied (sort>/bad (list 1 3 0 2)) sorted?)
+  
