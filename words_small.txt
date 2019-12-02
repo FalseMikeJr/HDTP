@@ -1,0 +1,6 @@
+apple
+banana
+char
+dog
+elephant
+energized
