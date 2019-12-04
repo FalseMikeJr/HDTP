@@ -4,3 +4,6 @@ char
 dog
 elephant
 energized
+'e
+Irate
+irate
