@@ -1,800 +1,3706 @@
-;; The first three lines of this file were inserted by DrRacket. They record metadata
-;; about the language level of this file in a form that our tools can easily process.
-#reader(lib "htdp-beginner-abbr-reader.ss" "lang")((modname HTDP_redo_part2) (read-case-sensitive #t) (teachpacks ()) (htdp-settings #(#t constructor repeating-decimal #f #t none #f () #f)))
-(require 2htdp/batch-io)
-(require 2htdp/image)
-(require 2htdp/universe)
-;
-;;ex 129
-;
-;(cons "white"
-;      (cons "red"
-;            (cons "blue" '())))
-;(define-struct pair [left right])
-;
-;(define (our-cons a-value a-list)
-;  (cond
-;    [(empty? a-list) (make-pair a-value a-list)]
-;    [(pair? a-list) (make-pair a-value a-list)]
-;    [else (error "cons: second argument...")]))
-;
-;(define (our-first a-list)
-;  (if (empty? a-list)
-;      (error 'our-first "...")
-;      (pair-left a-list)))
-;
-;(define (our-last a-list)
-;  (if (empty? a-list)
-;      (error 'our-last "...")
-;      (pair-right a-list)))
-;
-;(define (contains-flatt? alon)
-;  (cond
-;    [(empty? alon) #false]
-;    [(cons? alon)
-;     (or (string=? (first alon) "Flatt") (contains-flatt? (rest alon)))]))
-;;134
-;(define (contains? alon str)
-;  (cond
-;    [(empty? alon) #false]
-;    [(string=? (first alon) str) #true]
-;    [else (contains? (rest alon) str)]))
-;
-;
-;(define (how-many alos)
-;  (cond
-;    [(empty? alos) 0]
-;    [else
-;     (+ 1 (how-many (rest alos)))]))
-;
-;(define (sum aloAmounts)
-;  (cond
-;    [(empty? aloAmounts) 0]
-;    [else (+ (first aloAmounts) (sum (rest aloAmounts)))]))
-;
-;(define (pos? alon)
-;  (cond
-;    [(empty? alon) #true]
-;    [else (and (<= 0 (first alon)) (pos? (rest alon)))]))
-;;only adds positive numbers in a list of numbers
-;(define (checked-sum alon)
-;  (cond
-;    [(empty? alon) 0] 
-;    [(pos? (cons (first alon) '())) (+ (first alon) (checked-sum (rest alon)))]
-;    [else (+ 0 (checked-sum (rest alon)))]))
-;;(checked-sum (cons -1 (cons 2 (cons -3 (cons 4 '())))))
-;
-;;140
-;(define (all-true aloBools)
-;  (cond
-;    [(empty? aloBools) #true]
-;    [(equal? #false (first aloBools)) #false]
-;    [else (all-true (rest aloBools))]))
-;
-;(define (one-true aloBools)
-;  (cond
-;    [(empty? aloBools) #false]
-;    [(equal? #true (first aloBools)) #true]
-;    [else (one-true (rest aloBools))]))
-;;141
-;(define (cat l)
-;  (cond
-;    [(empty? l) ""]
-;    [else (string-append (first l) (cat (rest l)))]))
-;
-;;142
-;(define (ill-sized? loi n)
-;  (cond
-;    [(empty? loi) #false]
-;    [(and (= (image-height (first loi)) n) (= (image-width (first loi)) n)) (ill-sized? (rest loi) n)]
-;    [else (first loi)]))
-;;143
-;(define (average alot)
-;  (/ (sum alot) (how-many alot)))
-;(define (checked-average alot)
-;  (cond
-;    [(empty? alot) (error "list is empty")]
-;    [else (/ (sum alot) (how-many alot))]))
-;
-;(define (sum-nel nel)
-;  (cond
-;    [(empty? (rest nel)) (first nel)]
-;    [else (+ (first nel) (sum (rest nel)))]))
-;;146
-;(define (how-many-nel nel)
-;  (cond
-;    [(empty? (rest nel)) 1]
-;    [else (+ 1 (how-many-nel (rest nel)))]))
-;(define (avg-nel nel)
-;  (/ (sum-nel nel) (how-many-nel nel)))
-;
-;145
-;(define (sorted>? nel)
-;  (sorted-helper (rest nel) (first nel)))
-;
-;(define (sorted-helper nel num)
-;  (cond
-;    [(empty? nel) #true]
-;    [(> num (first nel)) (sorted-helper (rest nel) (first nel))]
-;    [else #false]))
-;(define (all-true-nel nel)
-;  (cond
-;    [(empty? (rest nel)) (first nel)]
-;    [(equal? #false (first nel)) #false]
-;    [else (all-true-nel (rest nel))]))
-;(define (one-true-nel nel)
-;  (cond
-;    [(empty? (rest nel)) (first nel)]
-;    [(equal? #true (first nel)) #true]
-;    [else (one-true-nel (rest nel))]))
-;
-;(define (copier n s)
-;  (cond
-;    [(zero? n) '()]
-;    [(positive? n) (cons s (copier (sub1 n) s))]))
-;(define (copier.v2 n s)
-;  (cond
-;    [(zero? n) '()]
-;    [else (cons s (copier.v2 (sub1 n) s))]))
-;;149
-;;;errors out
-;;(copier 0.1 "x")
-;;;infinite loop
-;;(copier.v2 0.1 "x")
-;;150
-;(define (add-to-pi n)
-;  (cond
-;    [(= 0 n) pi]
-;    [else (add1 (add-to-pi (sub1 n)))]))
-;;151
-;(define (multiply n x)
-;  (cond
-;    [(= 0 n) 0]
-;    [else (+ x (multiply (sub1 n) x))]))
-;;152
-;(define (col n img)
-;  (cond
-;    [(= 1 n) img]
-;    [else (above img (col (sub1 n) img))]))
-;(define (row n img)
-;  (cond
-;    [(= 1 n) img]
-;    [else (beside img (row (sub1 n) img))]))
-;;153
-;
-;(define LECTURE_HALL
-;  (place-image (col 18 (row 8 (rectangle 10 10 "outline" "black"))) 40 90 (empty-scene 80 180)))
-;(define (add-balloons lop)
-;  (cond
-;    [(empty? lop) LECTURE_HALL]
-;    [else (place-image (circle 2 "solid" "red") (posn-x (first lop)) (posn-y (first lop)) (add-balloons (rest lop)))]))
-;(define-struct pair [balloon# lob])
-;(define (riot w0)
-;  
-;  (big-bang (make-pair w0 '())
-;    [to-draw render_riot]
-;    [on-tick tock_riot]
-;    ))
-;(define (tock_riot p)
-;  (cond
-;    [(<= (pair-balloon# p) 0) p]
-;    [else (make-pair (sub1 (pair-balloon# p)) (cons (make-posn (random 80) (random 180)) (pair-lob p)))]))
-;(define (render_riot p)
-;  (add-balloons (pair-lob p)))
-    
-;;where doll can be string color or (make-layer string doll)
-;;color is analogous to first and doll is analogous to rest
-;(define-struct layer [color doll])
-;;154
-;(define (colors an-rd)
-;  (cond
-;    [(string? an-rd) an-rd]
-;    [else (string-append (layer-color an-rd) ", " (colors (layer-doll an-rd)))]))
-;
-;;155
-;(define (inner an-rd)
-;  (cond
-;    [(string? an-rd) an-rd]
-;    [else (inner (layer-doll an-rd))]))
+#reader(lib"read.ss""wxme")WXME0108 ## 
+#|
+   This file uses the GRacket editor format.
+   Open this file in DrRacket version 7.2 or later to read it.
 
-;(define HEIGHT 80)
-;(define WIDTH 100)
-;(define XSHOTS (/ WIDTH 2))
-;(define BACKGROUND (empty-scene WIDTH HEIGHT))
-;(define SHOT (triangle 6 "solid" "red"))
-;; A List-of-shots is one of: 
-;; – '()
-;; – (cons Shot List-of-shots)
-;; interpretation the collection of shots fired
-;; shot = a number representing the shot's y coordinate
-;
-;(define (to-image w)
-;  (cond
-;    [(empty? w) BACKGROUND]
-;    [else
-;     (place-image SHOT XSHOTS (first w) (to-image (rest w)))]))
-;(define (tock w)
-;  (cond
-;    [(empty? w) '()]
-;    [else
-;     (cons (sub1 (first w)) (tock (rest w)))]))
-;(define (keyh w ke)
-;  (if (key=? ke " ") (cons HEIGHT w) w))
-;(define (main w0)
-;  (big-bang w0
-;    [on-tick tock_2]
-;    [on-key keyh]
-;    [to-draw to-image]))
-;;156
-;(check-expect (to-image (cons 9 (cons 10 '())))
-;              (place-image SHOT XSHOTS 9 (place-image SHOT XSHOTS 10 BACKGROUND)))
-;(check-expect (tock (cons 9 (cons 10 '())))
-;              (cons 8 (cons 9 '())))
-;(check-expect (keyh (cons 9 (cons 10 '())) " ")
-;              (cons HEIGHT (cons 9 (cons 10 '()))))
-;;158
-;(define (tock_2 w)
-;  (cond
-;    [(empty? w) '()]
-;    [else
-;     (cond [(> (first w) 0) (cons (sub1 (first w)) (tock_2 (rest w)))]
-;           [else (tock_2 (rest w))])]))
-;;160
-;(define es '())
-;(define (in? x s)
-;  (member? x s))
-;; Number Son.L -> Son.L
-;; removes x from s 
-;(define s1.L
-;  (cons 1 (cons 1 '())))
-;         
-;(check-expect
-; (set-.L 1 s1.L) es)
-;         
-;(define (set-.L x s)
-;  (remove-all x s))
-;(define (set+.L x s)
-;  (cons x s))
-;
-;          
-;        	
-;; Number Son.R -> Son.R
-;; removes x from s
-;(define s1.R
-;  (cons 1 '()))
-;         
-;(check-expect
-; (set-.R 1 s1.R) es)
-;         
-;(define (set-.R x s)
-;  (remove x s))
-;(define (set+.R x s)
-;  (cond
-;    [(not (in? x s)) (cons x s)]
-;    [else s]))
+   Most likely, it was created by saving a program in DrRacket,
+   and it probably contains a program with non-text elements
+   (such as images or comment boxes).
 
-;;161, 162
-;(define SET_WAGE 14)
-;; List-of-numbers -> List-of-numbers
-;; computes the weekly wages for all given weekly hours
-;(define (wage* whrs)
-;  (cond
-;    [(empty? whrs) '()]
-;    [(<= 100 (first whrs)) (error "hours worked exceed 100")]
-;    [else (cons (wage (first whrs)) (wage* (rest whrs)))]))
-; 
-;; Number -> Number
-;; computes the wage for h hours of work
-;(define (wage h)
-;  (* SET_WAGE h))
-;(check-expect (wage* (cons 28 '())) (cons (* 28 SET_WAGE) '()))
-;
-;;163
-;(define (convertFC f)
-;  (/ (*(- f 32) 5) 9))
-;(define (convertFC* flist)
-;  (cond
-;  [(empty? flist) '()]
-;  [else (cons (convertFC (first flist)) (convertFC* (rest flist)))]))
-;;164
-;(define EXCHANGE_RATE 0.90) 
-;(define (convert-euro usd exr)
-;  (* exr usd))
-;(define (convert-euro* usdList exr)
-;  (cond
-;    [(empty? usdList) '()]
-;    [else (cons (convert-euro (first usdList) exr) (convert-euro* (rest usdList) exr))]))
-;;165
-;(define (substitute new old curr)
-;  (cond
-;    [(string=? curr old) new]
-;    [else curr]))
-;(define (substitute* new old currList)
-;  (cond
-;    [(empty? currList) '()]
-;    [else (cons (substitute new old (first currList)) (substitute* new old (rest currList)))]))
-;
-;(define-struct work [employee rate hours])
-;;A (piece of) Work is a structure:
-;;    (make-work string number number)
-;;LOW (list of workers) is one of:
-;; -'()
-;; -(cons Work Low)
-;(define (wage.v2 w)
-;  (* (work-hours w) (work-rate w)))
-;
-;(define (wage*.v2 low)
-;  (cond
-;    [(empty? low) '()]
-;    [(<= 100 (work-hours (first low))) (error "hours worked exceed 100")]
-;    [else (cons (wage.v2 (first low)) (wage*.v2 (rest low)))]))
-;
-;;166
-;(define-struct paycheck [employee money])
-;(define (wage.v3 w)
-;  (make-paycheck (work-employee w) (* (work-rate w) (work-hours w))))
-;(define (wage*.v3 low)
-;  (cond
-;    [(empty? low) '()]
-;    [(<= 100 (work-hours (first low))) (error "hours worked exceed 100")]
-;    [else (cons (wage.v3 (first low)) (wage*.v3 (rest low)))]))
-;
-;;167
-;(define (sum lop)
-;  (cond
-;    [(empty? lop) 0]
-;    [else (+ (posn-x (first lop)) (sum (rest lop)))]))
-;;168
-;(define (translate lop)
-;  (cond
-;    [(empty? lop) '()]
-;    [else (cons (make-posn (posn-x (first lop)) (+ (posn-y (first lop)) 1)) (translate (rest lop)))]))
-;;169
-;(define (legal lop)
-;  (cond
-;    [(empty? lop) '()]
-;    [(legal-helper (first lop)) (cons (first lop) (rest lop))]
-;    [else (legal (rest lop))]))
-;
-;(define (legal-helper p)
-;  (and (< (posn-x p) 100) (> (posn-x p) 0) (< (posn-y p) 200) (> (posn-y p) 0)))
-;
-;;170
-;(define-struct phone [area switch four])
-;(define (replace lo-phones)
-;  (cond
-;    [(empty? lo-phones) '()]
-;    [(= (phone-area (first lo-phones)) 713) (cons
-;                                             (make-phone 281 (phone-switch (first lo-phones)) (phone-four (first lo-phones)))
-;                                             (replace (rest lo-phones)))]
-;    [else (cons (first lo-phones) (replace (rest lo-phones)))]))
-;;171
-;;a list of strings is one of:
-;;'()
-;;(cons string ALOS)
-;(cons "TTT" (cons "Put up in a plce" (cons "where it's easy to see" (cons "the cryptic admonishment" (cons "T.T.T." (cons "When you feel how depressingly" (cons "slowly you climb," (cons "it's well to remember that" (cons "Things Take Time." (cons "Piet Hein" '()))))))))))
-;
-;;a list of list of strings is one of:
-;;'()
-;; (cons ALOS ALOLOS)
-;
-;(cons
-; (cons "Put" (cons "up" (cons "in" (cons "a" (cons "place" '())))))
-; (cons
-;  (cons "where" (cons "it's" (cons "easy" (cons "to" (cons "see" '())))))
-;  (cons
-;   (cons "the" (cons "cryptic" (cons "admonishment" '())))
-;   (cons
-;    (cons "T.T.T." '())
-;    (cons
-;     (cons "When" (cons "you" (cons "feel" (cons "how" (cons "depressingly" '())))))
-;     (cons
-;      (cons "slowly" (cons "you" (cons "climb" '())))
-;      (cons
-;       (cons "it's" (cons "well" (cons "to" (cons "remember" (cons "that" '())))))
-;       (cons
-;        (cons "things" (cons "take" (cons "time" '()))) '()))))))))
-;(define (words-on-line lls)
-;  (cond
-;    [(empty? lls) '()]
-;    [else
-;     (cons (count-words (first lls))
-;           (words-on-line (rest lls)))]))
-;(define (count-words ls)
-;  (cond
-;   [(empty? ls) 0]
-;   [else (+ 1 (count-words (rest ls)))]))
-;
-;;172
-;(define (collapse lls)
-;  (cond
-;    [(empty? lls) ""]
-;    [else
-;     (string-append (collapse-line (first lls))
-;           (collapse (rest lls)))]))
-;
-;(define (collapse-line ls)
-;  (cond
-;    [(empty? ls) "\n"]
-;    [else (string-append (first ls) " " (collapse-line (rest ls)))]))
-;
-;;173
-;;n is file name
-;(define (remove-articles-base n)
-;  (write-file (string-append "no-articles-" n)
-;              (remove-articles (read-words/line n))))
-;
-;(define (remove-articles lls)
-;  (cond
-;   [(empty? lls) ""]
-;   [else (string-append (remove-articles-helper (first lls)) "\n" (remove-articles (rest lls)))]))
-;
-;(define (remove-articles-helper ls)
-;  (cond
-;    [(empty? ls) "\n"]
-;    [(or (string=? "a" (first ls)) (string=? "an" (first ls)) (string=? "the" (first ls))) (remove-articles-helper (rest ls))]
-;    [else (string-append (first ls) " " (remove-articles-helper (rest ls)))]))
-;
-;;174
-;;n is file name
-;(define (encode-text-base n)
-;  (write-file (string-append "encoded-text-" n)
-;              (encode-text (read-words/line n))))
-;
-;(define (encode-text lls)
-;  (cond
-;    [(empty? lls) ""]
-;    [else (string-append (encode-text-line (first lls)) (encode-text (rest lls)))]))
-;
-;(define (encode-text-line ls)
-;  (cond
-;    [(empty? ls) "\n"]
-;    [else (string-append (encode-text-word (explode (first ls))) (encode-text-line (rest ls)))]))
-;(define (encode-text-word lw)
-;  (cond
-;    [(empty? lw) " "]
-;    [else (string-append (encode-letter (first lw)) (encode-text-word (rest lw)))]))
-;
-;; 1String -> String
-;; converts the given 1String to a 3-letter numeric String
-;(define (encode-letter s)
-;  (cond
-;    [(>= (string->int s) 100) (code1 s)]
-;    [(< (string->int s) 10)
-;     (string-append "00" (code1 s))]
-;    [(< (string->int s) 100)
-;     (string-append "0" (code1 s))]))
-; 
-;; 1String -> String
-;; converts the given 1String into a String
-; 
-;(check-expect (code1 "z") "122")
-; 
-;(define (code1 c)
-;  (number->string (string->int c)))
-;
-;;175
-;;count of letters, words, lines in a file
-;(define-struct strCount [letters words lines])
-;
-;;consider making a function which sums everything into a single number, then work on separating those sums into a structure
-;(define (wc-base n)
-;  (wc (read-words/line n)))
-;(define (wc lls)
-;  (cond
-;    [(empty? lls) 0]
-;    [else (+ 1 (wc-word (first lls)) (wc (rest lls)))]))
-;
-;(define (wc-word ls)
-;  (cond
-;    [(empty? ls) 0]
-;    [else (+ 1 (wc-letter (explode (first ls))) (wc-word (rest ls)))]))
-;(define (wc-letter s)
-;  (cond
-;    [(empty? s) 0]
-;    [else (+ 1 (wc-letter (rest s)))]))
-;;using actual structure
-;(define (wc-base2 n)
-;  (make-strCount
-;   (wc-word2 (read-words n))
-;   (length (read-words n))
-;   (length (read-lines n))))
-;(define (wc-word2 ls)
-;  (cond
-;    [(empty? ls) 0]
-;    [else (+ (string-length (first ls)) (wc-word2 (rest ls)))]))
-;
-;;176
-;; A Matrix is one of: 
-;;  – (cons Row '())
-;;  – (cons Row Matrix)
-;; constraint all rows in matrix are of the same length
-; 
-;; A Row is one of: 
-;;  – '() 
-;;  – (cons Number Row)
-;(define row1 (cons 11 (cons 12 '())))
-;(define row2 (cons 21 (cons 22 '())))
-;(define mat1 (cons row1 (cons row2 '())))
-;(define (transpose lln)
-;  (cond
-;    [(empty? (first lln)) '()]
-;    [else (cons (first* lln) (transpose (rest* lln)))]))
-;
-;(define (first* mat)
-;  (cond
-;    [(empty?  mat) '()]
-;    [else (cons (first-row-item (first mat)) (first* (rest mat)))]))
-;
-;(define (first-row-item row)
-;  (first row))
-;
-;(define (rest* mat)
-;  (cond
-;    [(empty? mat) '()]
-;    [else (cons (last-row-item (first mat)) (rest* (rest mat)))]))
-;(define (last-row-item row)
-;  (rest row))
-
-;(define-struct editor [pre post])
-;;an editor is one of:
-;;() or (make-editor 1String Lo1S)
-;
-;(define (rev l)
-;  (cond
-;    [(empty? l) '()]
-;    [else (add-at-end (rev (rest l)) (first l))]))
-;
-;(define (add-at-end l s)
-;  (cond
-;    [(empty? l) (cons s '())]
-;    [else (cons (first l)
-;               (add-at-end (rest l) s))]))
-;;(rev (cons "a" (cons "b" (cons "c" '()))))
-;;177
-;(define (create-editor s1 s2)
-;  (make-editor s1 s2))
-;
-;(define HEIGHT 20)
-;(define WIDTH 200)
-;(define FONT-SIZE 16)
-;(define FONT-COLOR "black")
-;(define MT (empty-scene WIDTH HEIGHT))
-;(define CURSOR (rectangle 1 HEIGHT "solid" "red"))
-;(define (editor-kh ed ke)
-;  (cond
-;    [(key=? ke "left") (editor-lft ed)]
-;    [(key=? ke "right") (editor-rgt ed)]
-;    [(key=? ke "\b") (editor-del ed)]
-;    [(key=? ke "\t") ed]
-;    [(key=? ke "\r") ed]
-;    [(= (string-length ke) 1) (editor-ins ed ke)]
-;    [else ed]))
-;;wish-list for this function:
-;;get-first -- inherent to data structure 
-;;get-last
-;;remove-first --inherent to the data structure
-;;remove-last
-;;add-to-front -- inherent to data structure
-;;add-to-back --add-at-end above
-;;179
-;(define (editor-lft ed)
-;  (make-editor
-;   (remove-last (editor-pre ed))
-;   (cons (get-last (editor-pre ed)) (editor-post ed))))
-;
-;(define (editor-rgt ed)
-;  (make-editor
-;   (add-at-end (editor-pre ed) (first (editor-post ed)))
-;   (rest (editor-post ed))))
-;
-;(define (editor-del ed)
-;  (make-editor
-;   (remove-last (editor-pre ed))
-;   (editor-post ed)))
-;
-;(define (editor-ins ed ke)
-;  (make-editor
-;   (add-at-end (editor-pre ed) ke) (editor-post ed)))
-;
-;(define (get-last l)
-;  (cond
-;    [(empty? (rest l)) (first l)]
-;    [else (get-last (rest l))]))
-;
-;(define (remove-last l)
-;  [cond
-;    [(empty? (rest l)) '()]
-;    [else (cons (first l) (remove-last (rest l)))]])
-;
-;(define (editor-render e)
-;  (beside (editor-text (editor-pre e)) CURSOR (editor-text (editor-post e))))
-;
-;(define (editor-text s)
-;  (text (implode s) FONT-SIZE FONT-COLOR))
-;;ex 180
-;(define (editor-text2 s)
-;  (text (text-concat s) FONT-SIZE FONT-COLOR))
-;(define (text-concat s)
-;  (cond
-;    [(empty? s) ""]
-;    [else (string-append (first s) (text-concat (rest s)))]))
-;
-;(define (main s)
-;  (big-bang (create-editor s "")
-;    [on-key editor-kh]
-;    [to-draw editor-render]))
-;
-;(define ed1 (make-editor (cons "a" (cons "b" (cons "c" '()))) (cons "d" '())))
-
-;(define (sort> alon)
-;  (cond
-;    [(empty? alon) '()]
-;    [else (insert (first alon) (sort> (rest alon)))]))
-;
-;(define (insert n alon)
-;  (cond
-;    [(empty? alon) (cons n '())]
-;    [(> n (first alon)) (cons n alon)]
-;    [else (cons (first alon) (insert n (rest alon)))]))
-;
-;
-;
-;;186
-;;(check-satisfied (sort> (list 12 20 -5)) sorted>?)
-;
-;;187
-;(define (sort>/bad l)
-;  (list 9 8 7 6 5 4 3 2 1 0))
-;
-;(define (sorted? sl ol)
-;  (cond
-;    [(empty? sl) #t]
-;    [else (and (>= (first sl) (second sl)) (original-contains (first sl) ol) (sorted? (rest sl) ol))]))
-;(define (original-contains n l)
-;  (cond
-;    [(empty? l) #f]
-;    [(= (first l) n) #t]
-;    [else (original-contains n (rest l))]))
-;
-;;(check-satisfied (sort>/bad (list 1 3 0 2)) sorted?)
-;
-;(define-struct email [from date message])
-;;(make-email String Number String)
-;
-;(define (sort-emails loemails)
-;  (cond
-;    [(empty? loemails) '()]
-;    [else (insert-emails (first loemails) (sort-emails (rest loemails)))]))
-;(define (insert-emails email loemails)
-;  (cond
-;    [(empty? loemails) (cons email '())]
-;    [(> (email-date email) (email-date (first loemails))) (cons email loemails)]
-;    [else (cons (first loemails) (insert-emails email (rest loemails)))]))
-;
-;;189
-;;assuming sort is largest to smallest
-;(define (search-sorted n alon)
-;  (cond
-;    [(empty? alon) #false]
-;    [(> n (first alon)) #false]
-;    [(= n (first alon)) #true]
-;    [else (search-sorted n (rest alon))]))
-;;190
-;
-;(define (prefixes lo1s)
-;  (cond
-;    [(empty? lo1s) '()]
-;    [else (prefixes-helper (first lo1s) (rest lo1s))]))
-;(define (prefixes-helper s lo1s)
-;  (cond
-;    [(empty? lo1s) (cons              ;note that these 2 lines are the same cons structure as the else statement
-;                    (cons s '()) '())]
-;    [else (cons ;to create a list of lists, you add a cons nesting, so this recursive nesting works... dont think this can be done with the list constructor
-;           (cons s lo1s) (prefixes-helper s (remove-end lo1s)))]))
-;(define (remove-end lo1s)
-;  (cond
-;    [(empty? (rest lo1s)) '()]
-;    [else (cons (first lo1s) (remove-end (rest lo1s)))]))
-;
-;(define (suffixes lo1s)
-;  (prefixes (reverse lo1s)))
-;
-;(define MT (empty-scene 50 50))
-;
-;(define (render-line im p q)
-;  (scene+line im (posn-x p) (posn-y p) (posn-x q) (posn-y q) "red"))
-;
-;(define (render-poly img p)
-;  (cond
-;    [(empty? (rest (rest (rest p))))
-;     (render-line
-;      (render-line
-;       (render-line MT (first p) (second p))
-;       (second p) (third p))
-;      (third p) (first p))]
-;    [else (render-line (render-poly img (rest p)) (first p) (second p))]))
-;;194 (inadvertent)
-;(define (render-poly-better img p)
-;  (connect-dots-helper img p (first p)))
-;
-;(define (connect-dots-helper img p 1-item)
-;  (cond
-;    [(empty? (rest p)) (render-line img (first p) 1-item)]
-;    [else (connect-dots-helper (render-line img (first p) (second p)) (rest p) 1-item)]))
-;
-;
-;(define (connect-dots2 img p)
-;  (cond
-;    [(empty? (rest p)) img]
-;    [else
-;     (render-line
-;       (connect-dots2 img (rest p))
-;       (first p)
-;       (second p))]))
-;
-;       
-;(define (render-poly-better2 img p)
-;  (render-line
-;   (connect-dots2 img p) (first p) (last p)))
-;
-;(define (last l)
-;  (cond
-;    [(empty? (rest l)) (first l)]
-;    [else (last (rest l))]))
-;;193
-;(define (render-poly-better3 img p)
-;  (connect-dots2 img (add-at-end p (first p) )))
-;
-;(define (add-at-end l s)
-;  (cond
-;    [(empty? l) (cons s '())]
-;    [else (cons (first l)
-;               (add-at-end (rest l) s))]))
-
-(define LOCATION "C:\\Users\\Ian.Davis\\english-words-master\\words.txt")
-(define LOCATION_SMALL "C:\\Users\\Ian.Davis\\english-words-master\\words_small.txt")
-; A Dictionary is a List-of-strings.
-(define AS-LIST (read-lines LOCATION))
-(define AS-LIST-SMALL (read-lines LOCATION_SMALL))
-; A Letter is one of the following 1Strings: 
-; – "a"
-; – ... 
-; – "z"
-; or, equivalently, a member? of this list: 
-(define LETTERS
-  (explode "abcdefghijklmnopqrstuvwxyz"))
-;195
-;1-string
-(define (starts-with# dict letter)
-  (cond
-    [(empty? dict) 0]
-    [(string=? letter (string-ith (first dict) 0)) (+ 1 (starts-with# (rest dict) letter))]
-    [else (starts-with# (rest dict) letter)]
-    ))
-;whole word
-(define (starts-with#2 dict letter)
-  (cond
-    [(empty? dict) 0]
-    [(< (string-length (first dict)) (string-length letter)) (starts-with#2 (rest dict) letter)]
-    [(string=? letter (substring (first dict) 0 (string-length letter))) (+ 1 (starts-with#2 (rest dict) letter))]
-    [else (starts-with#2 (rest dict) letter)]
-    ))
-;196
-(define-struct letter-count [letter count])
-(define (count-by-letter dict)
-  (count-by-letter-helper dict '()))
-(define (count-by-letter-helper dict countList)
-  (cond
-    [(empty? dict) '()]
-    [else (cons (add-count (string-ith (first dict) 0) countList #false) (count-by-letter-helper (rest dict) countList))]))
-;may not need the countAdded flag. should be able to just stop recursing when the letter is found
-(define (add-count letter countList countAdded)
-  (cond
-    [(empty? countList) (cons (make-letter-count letter 1) '())]
-    [(string=? letter (letter-count-letter (first countList))) (cons (make-letter-count letter (+ (letter-count-count (first countList)) 1)) (rest countList))]
-    [else (cons (first countList) (add-count letter (rest countList) #false))]))
-  
-(count-by-letter AS-LIST-SMALL)
-
-  
+            http://racket-lang.org/
+|#
+ 33 7 #"wxtext\0"
+3 1 6 #"wxtab\0"
+1 1 8 #"wximage\0"
+2 0 8 #"wxmedia\0"
+4 1 34 #"(lib \"syntax-browser.ss\" \"mrlib\")\0"
+1 0 36 #"(lib \"cache-image-snip.ss\" \"mrlib\")\0"
+1 0 68
+(
+ #"((lib \"image-core.ss\" \"mrlib\") (lib \"image-core-wxme.rkt\" \"mr"
+ #"lib\"))\0"
+) 1 0 16 #"drscheme:number\0"
+3 0 44 #"(lib \"number-snip.ss\" \"drscheme\" \"private\")\0"
+1 0 36 #"(lib \"comment-snip.ss\" \"framework\")\0"
+1 0 93
+(
+ #"((lib \"collapsed-snipclass.ss\" \"framework\") (lib \"collapsed-sni"
+ #"pclass-wxme.ss\" \"framework\"))\0"
+) 0 0 43 #"(lib \"collapsed-snipclass.ss\" \"framework\")\0"
+0 0 19 #"drscheme:sexp-snip\0"
+0 0 29 #"drscheme:bindings-snipclass%\0"
+1 0 101
+(
+ #"((lib \"ellipsis-snip.rkt\" \"drracket\" \"private\") (lib \"ellipsi"
+ #"s-snip-wxme.rkt\" \"drracket\" \"private\"))\0"
+) 2 0 88
+(
+ #"((lib \"pict-snip.rkt\" \"drracket\" \"private\") (lib \"pict-snip.r"
+ #"kt\" \"drracket\" \"private\"))\0"
+) 0 0 55
+#"((lib \"snip.rkt\" \"pict\") (lib \"snip-wxme.rkt\" \"pict\"))\0"
+1 0 34 #"(lib \"bullet-snip.rkt\" \"browser\")\0"
+0 0 25 #"(lib \"matrix.ss\" \"htdp\")\0"
+1 0 22 #"drscheme:lambda-snip%\0"
+1 0 29 #"drclickable-string-snipclass\0"
+0 0 26 #"drracket:spacer-snipclass\0"
+0 0 57
+#"(lib \"hrule-snip.rkt\" \"macro-debugger\" \"syntax-browser\")\0"
+1 0 26 #"drscheme:pict-value-snip%\0"
+0 0 45 #"(lib \"image-snipr.ss\" \"slideshow\" \"private\")\0"
+1 0 38 #"(lib \"pict-snipclass.ss\" \"slideshow\")\0"
+2 0 55 #"(lib \"vertical-separator-snip.ss\" \"stepper\" \"private\")\0"
+1 0 18 #"drscheme:xml-snip\0"
+1 0 31 #"(lib \"xml-snipclass.ss\" \"xml\")\0"
+1 0 21 #"drscheme:scheme-snip\0"
+2 0 34 #"(lib \"scheme-snipclass.ss\" \"xml\")\0"
+1 0 10 #"text-box%\0"
+1 0 32 #"(lib \"text-snipclass.ss\" \"xml\")\0"
+1 0 1 6 #"wxloc\0"
+          0 0 69 0 1 #"\0"
+0 75 1 #"\0"
+0 10 90 -1 90 -1 3 -1 0 1 0 1 0 0 0 0 0 0 0 0 0 0 0 255 255 255 1 -1 0 9
+#"Standard\0"
+0 75 12 #"Courier New\0"
+0 10 90 -1 90 -1 3 -1 0 1 0 1 0 0 0 0 0 0 0 0 0 0 0 255 255 255 1 -1 2 1
+#"\0"
+0 -1 1 #"\0"
+1 0 -1 -1 -1 -1 -1 -1 0 0 0 0 0 0 1 1 1 1 1 1 0 0 0 0 0 0 -1 -1 2 24
+#"framework:default-color\0"
+0 -1 1 #"\0"
+1 0 -1 -1 -1 -1 -1 -1 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 0 0 -1 -1 2 1
+#"\0"
+0 -1 1 #"\0"
+1 0 -1 -1 -1 -1 -1 -1 0 0 0 0 0 0 0 0 0 1 1 1 150 0 150 0 0 0 -1 -1 2 15
+#"text:ports out\0"
+0 -1 1 #"\0"
+1 0 -1 -1 -1 93 -1 -1 0 1 0 0 0 0 0 0 0 1 1 1 150 0 150 0 0 0 -1 -1 2 1
+#"\0"
+0 -1 1 #"\0"
+1.0 0 -1 -1 93 -1 -1 -1 0 0 0 0 0 0 0 0 0 1.0 1.0 1.0 255 0 0 0 0 0 -1
+-1 2 15 #"text:ports err\0"
+0 -1 1 #"\0"
+1 0 -1 -1 93 -1 -1 -1 0 1 0 0 0 0 0 0 0 1 1 1 255 0 0 0 0 0 -1 -1 2 1
+#"\0"
+0 -1 1 #"\0"
+1 0 -1 -1 -1 -1 -1 -1 0 0 0 0 0 0 0 0 0 1 1 1 0 0 175 0 0 0 -1 -1 2 17
+#"text:ports value\0"
+0 -1 1 #"\0"
+1 0 -1 -1 -1 93 -1 -1 0 1 0 0 0 0 0 0 0 1 1 1 0 0 175 0 0 0 -1 -1 2 1
+#"\0"
+0 -1 1 #"\0"
+1.0 0 92 -1 -1 -1 -1 -1 0 0 0 0 0 0 0 0 0 1.0 1.0 1.0 34 139 34 0 0 0 -1
+-1 2 27 #"Matching Parenthesis Style\0"
+0 -1 1 #"\0"
+1.0 0 92 -1 -1 -1 -1 -1 0 0 0 0 0 0 0 0 0 1.0 1.0 1.0 34 139 34 0 0 0 -1
+-1 2 1 #"\0"
+0 -1 1 #"\0"
+1 0 -1 -1 -1 93 -1 -1 0 1 0 0 0 0 0 0 0 1 1 1 38 38 128 0 0 0 -1 -1 2 37
+#"framework:syntax-color:scheme:symbol\0"
+0 -1 1 #"\0"
+1 0 -1 -1 -1 93 -1 -1 0 1 0 0 0 0 0 0 0 1 1 1 38 38 128 0 0 0 -1 -1 2 38
+#"framework:syntax-color:scheme:keyword\0"
+0 -1 1 #"\0"
+1 0 -1 -1 -1 93 -1 -1 0 1 0 0 0 0 0 0 0 1 1 1 38 38 128 0 0 0 -1 -1 2 1
+#"\0"
+0 -1 1 #"\0"
+1 0 -1 -1 -1 93 -1 -1 0 1 0 0 0 0 0 0 0 1 1 1 194 116 31 0 0 0 -1 -1 2
+38 #"framework:syntax-color:scheme:comment\0"
+0 -1 1 #"\0"
+1 0 -1 -1 -1 93 -1 -1 0 1 0 0 0 0 0 0 0 1 1 1 194 116 31 0 0 0 -1 -1 2 1
+#"\0"
+0 -1 1 #"\0"
+1 0 -1 -1 -1 93 -1 -1 0 1 0 0 0 0 0 0 0 1 1 1 41 128 38 0 0 0 -1 -1 2 37
+#"framework:syntax-color:scheme:string\0"
+0 -1 1 #"\0"
+1 0 -1 -1 -1 93 -1 -1 0 1 0 0 0 0 0 0 0 1 1 1 41 128 38 0 0 0 -1 -1 2 35
+#"framework:syntax-color:scheme:text\0"
+0 -1 1 #"\0"
+1 0 -1 -1 -1 93 -1 -1 0 1 0 0 0 0 0 0 0 1 1 1 41 128 38 0 0 0 -1 -1 2 39
+#"framework:syntax-color:scheme:constant\0"
+0 -1 1 #"\0"
+1 0 -1 -1 -1 93 -1 -1 0 1 0 0 0 0 0 0 0 1 1 1 41 128 38 0 0 0 -1 -1 2 1
+#"\0"
+0 -1 1 #"\0"
+1 0 -1 -1 -1 93 -1 -1 0 1 0 0 0 0 0 0 0 1 1 1 132 60 36 0 0 0 -1 -1 2 49
+#"framework:syntax-color:scheme:hash-colon-keyword\0"
+0 -1 1 #"\0"
+1 0 -1 -1 -1 93 -1 -1 0 1 0 0 0 0 0 0 0 1 1 1 132 60 36 0 0 0 -1 -1 2 42
+#"framework:syntax-color:scheme:parenthesis\0"
+0 -1 1 #"\0"
+1 0 -1 -1 -1 93 -1 -1 0 1 0 0 0 0 0 0 0 1 1 1 132 60 36 0 0 0 -1 -1 2 1
+#"\0"
+0 -1 1 #"\0"
+1 0 -1 -1 -1 93 -1 -1 0 1 0 0 0 0 0 0 0 1 1 1 255 0 0 0 0 0 -1 -1 2 36
+#"framework:syntax-color:scheme:error\0"
+0 -1 1 #"\0"
+1 0 -1 -1 -1 93 -1 -1 0 1 0 0 0 0 0 0 0 1 1 1 255 0 0 0 0 0 -1 -1 2 1
+#"\0"
+0 -1 1 #"\0"
+1 0 -1 -1 -1 93 -1 -1 0 1 0 0 0 0 0 0 0 1 1 1 0 0 0 0 0 0 -1 -1 2 36
+#"framework:syntax-color:scheme:other\0"
+0 -1 1 #"\0"
+1 0 -1 -1 -1 93 -1 -1 0 1 0 0 0 0 0 0 0 1 1 1 0 0 0 0 0 0 -1 -1 2 16
+#"Misspelled Text\0"
+0 -1 1 #"\0"
+1 0 -1 -1 -1 -1 -1 -1 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 0 0 -1 -1 2 1
+#"\0"
+0 -1 1 #"\0"
+1 0 -1 -1 -1 93 -1 -1 0 1 0 0 0 0 0 0 0 1 1 1 81 112 203 0 0 0 -1 -1 2
+38 #"drracket:check-syntax:lexically-bound\0"
+0 -1 1 #"\0"
+1 0 -1 -1 -1 93 -1 -1 0 1 0 0 0 0 0 0 0 1 1 1 81 112 203 0 0 0 -1 -1 2 1
+#"\0"
+0 -1 1 #"\0"
+1 0 -1 -1 -1 93 -1 -1 0 1 0 0 0 0 0 0 0 1 1 1 178 34 34 0 0 0 -1 -1 2 28
+#"drracket:check-syntax:set!d\0"
+0 -1 1 #"\0"
+1 0 -1 -1 -1 93 -1 -1 0 1 0 0 0 0 0 0 0 1 1 1 178 34 34 0 0 0 -1 -1 2 37
+#"drracket:check-syntax:unused-require\0"
+0 -1 1 #"\0"
+1 0 -1 -1 -1 93 -1 -1 0 1 0 0 0 0 0 0 0 1 1 1 255 0 0 0 0 0 -1 -1 2 36
+#"drracket:check-syntax:free-variable\0"
+0 -1 1 #"\0"
+1 0 -1 -1 -1 93 -1 -1 0 1 0 0 0 0 0 0 0 1 1 1 255 0 0 0 0 0 -1 -1 2 1
+#"\0"
+0 -1 1 #"\0"
+1 0 -1 -1 -1 93 -1 -1 0 1 0 0 0 0 0 0 0 1 1 1 68 0 203 0 0 0 -1 -1 2 31
+#"drracket:check-syntax:imported\0"
+0 -1 1 #"\0"
+1 0 -1 -1 -1 93 -1 -1 0 1 0 0 0 0 0 0 0 1 1 1 68 0 203 0 0 0 -1 -1 2 47
+#"drracket:check-syntax:my-obligation-style-pref\0"
+0 -1 1 #"\0"
+1 0 -1 -1 -1 93 -1 -1 0 1 0 0 0 0 0 0 0 1 1 1 178 34 34 0 0 0 -1 -1 2 1
+#"\0"
+0 -1 1 #"\0"
+1 0 -1 -1 -1 93 -1 -1 0 1 0 0 0 0 0 0 0 1 1 1 0 116 0 0 0 0 -1 -1 2 50
+#"drracket:check-syntax:their-obligation-style-pref\0"
+0 -1 1 #"\0"
+1 0 -1 -1 -1 93 -1 -1 0 1 0 0 0 0 0 0 0 1 1 1 0 116 0 0 0 0 -1 -1 2 48
+#"drracket:check-syntax:unk-obligation-style-pref\0"
+0 -1 1 #"\0"
+1 0 -1 -1 -1 93 -1 -1 0 1 0 0 0 0 0 0 0 1 1 1 0 0 0 0 0 0 -1 -1 2 1
+#"\0"
+0 -1 1 #"\0"
+1 0 -1 -1 -1 93 -1 -1 0 1 0 0 0 0 0 0 0 1 1 1 139 142 28 0 0 0 -1 -1 2
+49 #"drracket:check-syntax:both-obligation-style-pref\0"
+0 -1 1 #"\0"
+1 0 -1 -1 -1 93 -1 -1 0 1 0 0 0 0 0 0 0 1 1 1 139 142 28 0 0 0 -1 -1 2
+26 #"plt:htdp:test-coverage-on\0"
+0 -1 1 #"\0"
+1 0 -1 -1 -1 93 -1 -1 0 1 0 0 0 0 0 0 0 1 1 1 0 0 0 0 0 0 -1 -1 2 1
+#"\0"
+0 -1 1 #"\0"
+1 0 -1 -1 -1 93 -1 -1 0 1 0 0 0 1 0 0 0 0 0 0 255 165 0 0 0 0 -1 -1 2 27
+#"plt:htdp:test-coverage-off\0"
+0 -1 1 #"\0"
+1 0 -1 -1 -1 93 -1 -1 0 1 0 0 0 1 0 0 0 0 0 0 255 165 0 0 0 0 -1 -1 4 1
+#"\0"
+0 70 1 #"\0"
+1.0 0 -1 -1 -1 -1 -1 -1 0 0 0 0 0 0 1.0 1.0 1.0 1.0 1.0 1.0 0 0 0 0 0 0
+-1 -1 4 4 #"XML\0"
+0 70 1 #"\0"
+1.0 0 -1 -1 -1 -1 -1 -1 0 0 0 0 0 0 1.0 1.0 1.0 1.0 1.0 1.0 0 0 0 0 0 0
+-1 -1 2 37 #"plt:module-language:test-coverage-on\0"
+0 -1 1 #"\0"
+1 0 -1 -1 -1 93 -1 -1 0 1 0 0 0 0 0 0 0 1 1 1 0 0 0 0 0 0 -1 -1 2 38
+#"plt:module-language:test-coverage-off\0"
+0 -1 1 #"\0"
+1 0 -1 -1 -1 93 -1 -1 0 1 0 0 0 1 0 0 0 0 0 0 255 165 0 0 0 0 -1 -1 4 1
+#"\0"
+0 71 1 #"\0"
+1.0 0 -1 -1 -1 -1 -1 -1 0 0 0 0 0 0 1.0 1.0 1.0 1.0 1.0 1.0 0 0 0 0 0 0
+-1 -1 4 1 #"\0"
+0 -1 1 #"\0"
+1.0 0 -1 -1 -1 -1 -1 -1 1 0 0 0 0 0 0 0 0 1.0 1.0 1.0 0 0 255 0 0 0 -1
+-1 4 1 #"\0"
+0 71 1 #"\0"
+1.0 0 -1 -1 -1 -1 -1 -1 1 0 0 0 0 0 0 0 0 1.0 1.0 1.0 0 0 255 0 0 0 -1
+-1 4 1 #"\0"
+0 71 1 #"\0"
+1.0 0 -1 -1 -1 -1 -1 -1 0 0 0 0 0 0 0 0 0 1.0 1.0 1.0 0 100 0 0 0 0 -1
+-1 0 1 #"\0"
+0 75 12 #"Courier New\0"
+0.0 10 90 -1 90 -1 3 -1 0 1 0 1 0 0 0.0 0.0 0.0 0.0 0.0 0.0 0 0 0 255
+255 255 1 -1 2 1 #"\0"
+0 -1 1 #"\0"
+1.0 0 -1 -1 -1 -1 -1 -1 0 0 0 0 0 0 0.0 0.0 0.0 1.0 1.0 1.0 0 0 0 0 0 0
+-1 -1 2 1 #"\0"
+0 -1 1 #"\0"
+1.0 0 -1 -1 -1 93 -1 -1 0 1 0 0 0 0 0.0 0.0 0.0 1.0 1.0 1.0 150 0 150 0
+0 0 -1 -1 2 1 #"\0"
+0 -1 1 #"\0"
+1.0 0 -1 -1 93 -1 -1 -1 0 1 0 0 0 0 0.0 0.0 0.0 1.0 1.0 1.0 255 0 0 0 0
+0 -1 -1 2 1 #"\0"
+0 -1 1 #"\0"
+1.0 0 -1 -1 -1 93 -1 -1 0 1 0 0 0 0 0.0 0.0 0.0 1.0 1.0 1.0 0 0 175 0 0
+0 -1 -1 24 1 #"\0"
+0 -1 1 #"\0"
+1.0 0 -1 -1 -1 -1 -1 -1 0 0 0 0 1 0 0.0 0.0 0.0 0.0 0.0 0.0 0 0 0 255
+255 255 -1 -1 15 1 #"\0"
+0 -1 1 #"\0"
+1.0 0 -1 -1 -1 -1 -1 -1 0 0 0 0 1 0 0.0 0.0 0.0 0.0 0.0 0.0 0 0 0 255
+255 255 -1 -1 14 1 #"\0"
+0 -1 1 #"\0"
+1.0 0 -1 -1 -1 -1 -1 -1 0 0 0 0 1 0 0.0 0.0 0.0 0.0 0.0 0.0 0 0 0 255
+255 255 -1 -1 17 1 #"\0"
+0 -1 1 #"\0"
+1.0 0 -1 -1 -1 -1 -1 -1 0 0 0 0 1 0 0.0 0.0 0.0 0.0 0.0 0.0 0 0 0 255
+255 255 -1 -1 44 1 #"\0"
+0 -1 1 #"\0"
+1.0 0 -1 -1 -1 -1 -1 -1 0 0 0 0 1 0 0.0 0.0 0.0 0.0 0.0 0.0 0 0 0 255
+255 255 -1 -1 46 1 #"\0"
+0 -1 1 #"\0"
+1.0 0 -1 -1 -1 -1 -1 -1 0 0 0 0 1 0 0.0 0.0 0.0 0.0 0.0 0.0 0 0 0 255
+255 255 -1 -1 21 1 #"\0"
+0 -1 1 #"\0"
+1.0 0 -1 -1 -1 -1 -1 -1 0 0 0 0 1 0 0.0 0.0 0.0 0.0 0.0 0.0 0 0 0 255
+255 255 -1 -1 4 1 #"\0"
+0 -1 1 #"\0"
+1.0 0 -1 -1 -1 -1 -1 -1 0 0 0 0 1 0 0.0 0.0 0.0 0.0 0.0 0.0 0 0 0 255
+255 255 -1 -1 4 1 #"\0"
+0 -1 1 #"\0"
+1.0 0 92 -1 -1 -1 -1 -1 0 0 0 0 0 1 0.0 0.0 0.0 0.0 0.0 0.0 0 0 0 255
+255 0 -1 -1           0 2177 0 4 3 85
+(
+ #";; The first three lines of this file were inserted by DrRacket. The"
+ #"y record metadata"
+) 0 0 4 29 1 #"\n"
+0 0 4 3 85
+(
+ #";; about the language level of this file in a form that our tools ca"
+ #"n easily process."
+) 0 0 4 29 1 #"\n"
+0 0 4 3 190
+(
+ #"#reader(lib \"htdp-beginner-abbr-reader.ss\" \"lang\")((modname HTDP"
+ #"_redo_part2) (read-case-sensitive #t) (teachpacks ()) (htdp-settings"
+ #" #(#t constructor repeating-decimal #f #t none #f () #f)))"
+) 0 0 4 29 1 #"\n"
+0 0 24 3 1 #"("
+0 0 15 3 7 #"require"
+0 0 24 3 1 #" "
+0 0 14 3 14 #"2htdp/batch-io"
+0 0 24 3 1 #")"
+0 0 24 29 1 #"\n"
+0 0 24 3 1 #"("
+0 0 15 3 7 #"require"
+0 0 24 3 1 #" "
+0 0 14 3 11 #"2htdp/image"
+0 0 24 3 1 #")"
+0 0 24 29 1 #"\n"
+0 0 24 3 1 #"("
+0 0 15 3 7 #"require"
+0 0 24 3 1 #" "
+0 0 14 3 14 #"2htdp/universe"
+0 0 24 3 1 #")"
+0 0 24 29 1 #"\n"
+0 0 17 3 1 #";"
+0 0 24 29 1 #"\n"
+0 0 17 3 8 #";;ex 129"
+0 0 24 29 1 #"\n"
+0 0 17 3 1 #";"
+0 0 24 29 1 #"\n"
+0 0 17 3 14 #";(cons \"white\""
+0 0 24 29 1 #"\n"
+0 0 17 3 18 #";      (cons \"red\""
+0 0 24 29 1 #"\n"
+0 0 17 3 32 #";            (cons \"blue\" '())))"
+0 0 24 29 1 #"\n"
+0 0 17 3 34 #";(define-struct pair [left right])"
+0 0 24 29 1 #"\n"
+0 0 17 3 1 #";"
+0 0 24 29 1 #"\n"
+0 0 17 3 34 #";(define (our-cons a-value a-list)"
+0 0 24 29 1 #"\n"
+0 0 17 3 8 #";  (cond"
+0 0 24 29 1 #"\n"
+0 0 17 3 49 #";    [(empty? a-list) (make-pair a-value a-list)]"
+0 0 24 29 1 #"\n"
+0 0 17 3 48 #";    [(pair? a-list) (make-pair a-value a-list)]"
+0 0 24 29 1 #"\n"
+0 0 17 3 48 #";    [else (error \"cons: second argument...\")]))"
+0 0 24 29 1 #"\n"
+0 0 17 3 1 #";"
+0 0 24 29 1 #"\n"
+0 0 17 3 27 #";(define (our-first a-list)"
+0 0 24 29 1 #"\n"
+0 0 17 3 22 #";  (if (empty? a-list)"
+0 0 24 29 1 #"\n"
+0 0 17 3 31 #";      (error 'our-first \"...\")"
+0 0 24 29 1 #"\n"
+0 0 17 3 27 #";      (pair-left a-list)))"
+0 0 24 29 1 #"\n"
+0 0 17 3 1 #";"
+0 0 24 29 1 #"\n"
+0 0 17 3 26 #";(define (our-last a-list)"
+0 0 24 29 1 #"\n"
+0 0 17 3 22 #";  (if (empty? a-list)"
+0 0 24 29 1 #"\n"
+0 0 17 3 30 #";      (error 'our-last \"...\")"
+0 0 24 29 1 #"\n"
+0 0 17 3 28 #";      (pair-right a-list)))"
+0 0 24 29 1 #"\n"
+0 0 17 3 1 #";"
+0 0 24 29 1 #"\n"
+0 0 17 3 31 #";(define (contains-flatt? alon)"
+0 0 24 29 1 #"\n"
+0 0 17 3 8 #";  (cond"
+0 0 24 29 1 #"\n"
+0 0 17 3 27 #";    [(empty? alon) #false]"
+0 0 24 29 1 #"\n"
+0 0 17 3 18 #";    [(cons? alon)"
+0 0 24 29 1 #"\n"
+0 0 17 3 75
+(
+ #";     (or (string=? (first alon) \"Flatt\") (contains-flatt? (rest a"
+ #"lon)))]))"
+) 0 0 24 29 1 #"\n"
+0 0 17 3 5 #";;134"
+0 0 24 29 1 #"\n"
+0 0 17 3 29 #";(define (contains? alon str)"
+0 0 24 29 1 #"\n"
+0 0 17 3 8 #";  (cond"
+0 0 24 29 1 #"\n"
+0 0 17 3 27 #";    [(empty? alon) #false]"
+0 0 24 29 1 #"\n"
+0 0 17 3 40 #";    [(string=? (first alon) str) #true]"
+0 0 24 29 1 #"\n"
+0 0 17 3 41 #";    [else (contains? (rest alon) str)]))"
+0 0 24 29 1 #"\n"
+0 0 17 3 1 #";"
+0 0 24 29 1 #"\n"
+0 0 17 3 1 #";"
+0 0 24 29 1 #"\n"
+0 0 17 3 24 #";(define (how-many alos)"
+0 0 24 29 1 #"\n"
+0 0 17 3 8 #";  (cond"
+0 0 24 29 1 #"\n"
+0 0 17 3 22 #";    [(empty? alos) 0]"
+0 0 24 29 1 #"\n"
+0 0 17 3 10 #";    [else"
+0 0 24 29 1 #"\n"
+0 0 17 3 37 #";     (+ 1 (how-many (rest alos)))]))"
+0 0 24 29 1 #"\n"
+0 0 17 3 1 #";"
+0 0 24 29 1 #"\n"
+0 0 17 3 25 #";(define (sum aloAmounts)"
+0 0 24 29 1 #"\n"
+0 0 17 3 8 #";  (cond"
+0 0 24 29 1 #"\n"
+0 0 17 3 28 #";    [(empty? aloAmounts) 0]"
+0 0 24 29 1 #"\n"
+0 0 17 3 60
+#";    [else (+ (first aloAmounts) (sum (rest aloAmounts)))]))"
+0 0 24 29 1 #"\n"
+0 0 17 3 1 #";"
+0 0 24 29 1 #"\n"
+0 0 17 3 20 #";(define (pos? alon)"
+0 0 24 29 1 #"\n"
+0 0 17 3 8 #";  (cond"
+0 0 24 29 1 #"\n"
+0 0 17 3 26 #";    [(empty? alon) #true]"
+0 0 24 29 1 #"\n"
+0 0 17 3 58
+#";    [else (and (<= 0 (first alon)) (pos? (rest alon)))]))"
+0 0 24 29 1 #"\n"
+0 0 17 3 49 #";;only adds positive numbers in a list of numbers"
+0 0 24 29 1 #"\n"
+0 0 17 3 27 #";(define (checked-sum alon)"
+0 0 24 29 1 #"\n"
+0 0 17 3 8 #";  (cond"
+0 0 24 29 1 #"\n"
+0 0 17 3 23 #";    [(empty? alon) 0] "
+0 0 24 29 1 #"\n"
+0 0 17 3 80
+(
+ #";    [(pos? (cons (first alon) '())) (+ (first alon) (checked-sum (r"
+ #"est alon)))]"
+) 0 0 24 29 1 #"\n"
+0 0 17 3 45 #";    [else (+ 0 (checked-sum (rest alon)))]))"
+0 0 24 29 1 #"\n"
+0 0 17 3 57 #";;(checked-sum (cons -1 (cons 2 (cons -3 (cons 4 '())))))"
+0 0 24 29 1 #"\n"
+0 0 17 3 1 #";"
+0 0 24 29 1 #"\n"
+0 0 17 3 5 #";;140"
+0 0 24 29 1 #"\n"
+0 0 17 3 28 #";(define (all-true aloBools)"
+0 0 24 29 1 #"\n"
+0 0 17 3 8 #";  (cond"
+0 0 24 29 1 #"\n"
+0 0 17 3 30 #";    [(empty? aloBools) #true]"
+0 0 24 29 1 #"\n"
+0 0 17 3 46 #";    [(equal? #false (first aloBools)) #false]"
+0 0 24 29 1 #"\n"
+0 0 17 3 40 #";    [else (all-true (rest aloBools))]))"
+0 0 24 29 1 #"\n"
+0 0 17 3 1 #";"
+0 0 24 29 1 #"\n"
+0 0 17 3 28 #";(define (one-true aloBools)"
+0 0 24 29 1 #"\n"
+0 0 17 3 8 #";  (cond"
+0 0 24 29 1 #"\n"
+0 0 17 3 31 #";    [(empty? aloBools) #false]"
+0 0 24 29 1 #"\n"
+0 0 17 3 44 #";    [(equal? #true (first aloBools)) #true]"
+0 0 24 29 1 #"\n"
+0 0 17 3 40 #";    [else (one-true (rest aloBools))]))"
+0 0 24 29 1 #"\n"
+0 0 17 3 5 #";;141"
+0 0 24 29 1 #"\n"
+0 0 17 3 16 #";(define (cat l)"
+0 0 24 29 1 #"\n"
+0 0 17 3 8 #";  (cond"
+0 0 24 29 1 #"\n"
+0 0 17 3 20 #";    [(empty? l) \"\"]"
+0 0 24 29 1 #"\n"
+0 0 17 3 54 #";    [else (string-append (first l) (cat (rest l)))]))"
+0 0 24 29 1 #"\n"
+0 0 17 3 1 #";"
+0 0 24 29 1 #"\n"
+0 0 17 3 5 #";;142"
+0 0 24 29 1 #"\n"
+0 0 17 3 27 #";(define (ill-sized? loi n)"
+0 0 24 29 1 #"\n"
+0 0 17 3 8 #";  (cond"
+0 0 24 29 1 #"\n"
+0 0 17 3 26 #";    [(empty? loi) #false]"
+0 0 24 29 1 #"\n"
+0 0 17 3 103
+(
+ #";    [(and (= (image-height (first loi)) n) (= (image-width (first l"
+ #"oi)) n)) (ill-sized? (rest loi) n)]"
+) 0 0 24 29 1 #"\n"
+0 0 17 3 25 #";    [else (first loi)]))"
+0 0 24 29 1 #"\n"
+0 0 17 3 5 #";;143"
+0 0 24 29 1 #"\n"
+0 0 17 3 23 #";(define (average alot)"
+0 0 24 29 1 #"\n"
+0 0 17 3 34 #";  (/ (sum alot) (how-many alot)))"
+0 0 24 29 1 #"\n"
+0 0 17 3 31 #";(define (checked-average alot)"
+0 0 24 29 1 #"\n"
+0 0 17 3 8 #";  (cond"
+0 0 24 29 1 #"\n"
+0 0 17 3 44 #";    [(empty? alot) (error \"list is empty\")]"
+0 0 24 29 1 #"\n"
+0 0 17 3 44 #";    [else (/ (sum alot) (how-many alot))]))"
+0 0 24 29 1 #"\n"
+0 0 17 3 1 #";"
+0 0 24 29 1 #"\n"
+0 0 17 3 22 #";(define (sum-nel nel)"
+0 0 24 29 1 #"\n"
+0 0 17 3 8 #";  (cond"
+0 0 24 29 1 #"\n"
+0 0 17 3 38 #";    [(empty? (rest nel)) (first nel)]"
+0 0 24 29 1 #"\n"
+0 0 17 3 46 #";    [else (+ (first nel) (sum (rest nel)))]))"
+0 0 24 29 1 #"\n"
+0 0 17 3 5 #";;146"
+0 0 24 29 1 #"\n"
+0 0 17 3 27 #";(define (how-many-nel nel)"
+0 0 24 29 1 #"\n"
+0 0 17 3 8 #";  (cond"
+0 0 24 29 1 #"\n"
+0 0 17 3 28 #";    [(empty? (rest nel)) 1]"
+0 0 24 29 1 #"\n"
+0 0 17 3 45 #";    [else (+ 1 (how-many-nel (rest nel)))]))"
+0 0 24 29 1 #"\n"
+0 0 17 3 22 #";(define (avg-nel nel)"
+0 0 24 29 1 #"\n"
+0 0 17 3 40 #";  (/ (sum-nel nel) (how-many-nel nel)))"
+0 0 24 29 1 #"\n"
+0 0 17 3 1 #";"
+0 0 24 29 1 #"\n"
+0 0 17 3 4 #";145"
+0 0 24 29 1 #"\n"
+0 0 17 3 23 #";(define (sorted>? nel)"
+0 0 24 29 1 #"\n"
+0 0 17 3 42 #";  (sorted-helper (rest nel) (first nel)))"
+0 0 24 29 1 #"\n"
+0 0 17 3 1 #";"
+0 0 24 29 1 #"\n"
+0 0 17 3 32 #";(define (sorted-helper nel num)"
+0 0 24 29 1 #"\n"
+0 0 17 3 8 #";  (cond"
+0 0 24 29 1 #"\n"
+0 0 17 3 25 #";    [(empty? nel) #true]"
+0 0 24 29 1 #"\n"
+0 0 17 3 65
+#";    [(> num (first nel)) (sorted-helper (rest nel) (first nel))]"
+0 0 24 29 1 #"\n"
+0 0 17 3 20 #";    [else #false]))"
+0 0 24 29 1 #"\n"
+0 0 17 3 27 #";(define (all-true-nel nel)"
+0 0 24 29 1 #"\n"
+0 0 17 3 8 #";  (cond"
+0 0 24 29 1 #"\n"
+0 0 17 3 38 #";    [(empty? (rest nel)) (first nel)]"
+0 0 24 29 1 #"\n"
+0 0 17 3 41 #";    [(equal? #false (first nel)) #false]"
+0 0 24 29 1 #"\n"
+0 0 17 3 39 #";    [else (all-true-nel (rest nel))]))"
+0 0 24 29 1 #"\n"
+0 0 17 3 27 #";(define (one-true-nel nel)"
+0 0 24 29 1 #"\n"
+0 0 17 3 8 #";  (cond"
+0 0 24 29 1 #"\n"
+0 0 17 3 38 #";    [(empty? (rest nel)) (first nel)]"
+0 0 24 29 1 #"\n"
+0 0 17 3 39 #";    [(equal? #true (first nel)) #true]"
+0 0 24 29 1 #"\n"
+0 0 17 3 39 #";    [else (one-true-nel (rest nel))]))"
+0 0 24 29 1 #"\n"
+0 0 17 3 1 #";"
+0 0 24 29 1 #"\n"
+0 0 17 3 21 #";(define (copier n s)"
+0 0 24 29 1 #"\n"
+0 0 17 3 8 #";  (cond"
+0 0 24 29 1 #"\n"
+0 0 17 3 20 #";    [(zero? n) '()]"
+0 0 24 29 1 #"\n"
+0 0 17 3 51 #";    [(positive? n) (cons s (copier (sub1 n) s))]))"
+0 0 24 29 1 #"\n"
+0 0 17 3 24 #";(define (copier.v2 n s)"
+0 0 24 29 1 #"\n"
+0 0 17 3 8 #";  (cond"
+0 0 24 29 1 #"\n"
+0 0 17 3 20 #";    [(zero? n) '()]"
+0 0 24 29 1 #"\n"
+0 0 17 3 45 #";    [else (cons s (copier.v2 (sub1 n) s))]))"
+0 0 24 29 1 #"\n"
+0 0 17 3 5 #";;149"
+0 0 24 29 1 #"\n"
+0 0 17 3 13 #";;;errors out"
+0 0 24 29 1 #"\n"
+0 0 17 3 18 #";;(copier 0.1 \"x\")"
+0 0 24 29 1 #"\n"
+0 0 17 3 16 #";;;infinite loop"
+0 0 24 29 1 #"\n"
+0 0 17 3 21 #";;(copier.v2 0.1 \"x\")"
+0 0 24 29 1 #"\n"
+0 0 17 3 5 #";;150"
+0 0 24 29 1 #"\n"
+0 0 17 3 22 #";(define (add-to-pi n)"
+0 0 24 29 1 #"\n"
+0 0 17 3 8 #";  (cond"
+0 0 24 29 1 #"\n"
+0 0 17 3 17 #";    [(= 0 n) pi]"
+0 0 24 29 1 #"\n"
+0 0 17 3 41 #";    [else (add1 (add-to-pi (sub1 n)))]))"
+0 0 24 29 1 #"\n"
+0 0 17 3 5 #";;151"
+0 0 24 29 1 #"\n"
+0 0 17 3 23 #";(define (multiply n x)"
+0 0 24 29 1 #"\n"
+0 0 17 3 8 #";  (cond"
+0 0 24 29 1 #"\n"
+0 0 17 3 16 #";    [(= 0 n) 0]"
+0 0 24 29 1 #"\n"
+0 0 17 3 41 #";    [else (+ x (multiply (sub1 n) x))]))"
+0 0 24 29 1 #"\n"
+0 0 17 3 5 #";;152"
+0 0 24 29 1 #"\n"
+0 0 17 3 20 #";(define (col n img)"
+0 0 24 29 1 #"\n"
+0 0 17 3 8 #";  (cond"
+0 0 24 29 1 #"\n"
+0 0 17 3 18 #";    [(= 1 n) img]"
+0 0 24 29 1 #"\n"
+0 0 17 3 44 #";    [else (above img (col (sub1 n) img))]))"
+0 0 24 29 1 #"\n"
+0 0 17 3 20 #";(define (row n img)"
+0 0 24 29 1 #"\n"
+0 0 17 3 8 #";  (cond"
+0 0 24 29 1 #"\n"
+0 0 17 3 18 #";    [(= 1 n) img]"
+0 0 24 29 1 #"\n"
+0 0 17 3 45 #";    [else (beside img (row (sub1 n) img))]))"
+0 0 24 29 1 #"\n"
+0 0 17 3 5 #";;153"
+0 0 24 29 1 #"\n"
+0 0 17 3 1 #";"
+0 0 24 29 1 #"\n"
+0 0 17 3 21 #";(define LECTURE_HALL"
+0 0 24 29 1 #"\n"
+0 0 17 3 97
+(
+ #";  (place-image (col 18 (row 8 ("
+ #"rectangle 10 10 \"outline\" \"black\"))) 40 90 (empty-scene 80 180))"
+ #")"
+) 0 0 24 29 1 #"\n"
+0 0 17 3 27 #";(define (add-balloons lop)"
+0 0 24 29 1 #"\n"
+0 0 17 3 8 #";  (cond"
+0 0 24 29 1 #"\n"
+0 0 17 3 32 #";    [(empty? lop) LECTURE_HALL]"
+0 0 24 29 1 #"\n"
+0 0 17 3 120
+(
+ #";    [else (place-image (circle 2 \"solid\" \"red\") (posn-x (first "
+ #"lop)) (posn-y (first lop)) (add-balloons (rest lop)))]))"
+) 0 0 24 29 1 #"\n"
+0 0 17 3 36 #";(define-struct pair [balloon# lob])"
+0 0 24 29 1 #"\n"
+0 0 17 3 18 #";(define (riot w0)"
+0 0 24 29 1 #"\n"
+0 0 17 3 3 #";  "
+0 0 24 29 1 #"\n"
+0 0 17 3 31 #";  (big-bang (make-pair w0 '())"
+0 0 24 29 1 #"\n"
+0 0 17 3 26 #";    [to-draw render_riot]"
+0 0 24 29 1 #"\n"
+0 0 17 3 24 #";    [on-tick tock_riot]"
+0 0 24 29 1 #"\n"
+0 0 17 3 7 #";    ))"
+0 0 24 29 1 #"\n"
+0 0 17 3 22 #";(define (tock_riot p)"
+0 0 24 29 1 #"\n"
+0 0 17 3 8 #";  (cond"
+0 0 24 29 1 #"\n"
+0 0 17 3 33 #";    [(<= (pair-balloon# p) 0) p]"
+0 0 24 29 1 #"\n"
+0 0 17 3 107
+(
+ #";    [else (make-pair (sub1 (pair-balloon# p)) (cons (make-posn (ran"
+ #"dom 80) (random 180)) (pair-lob p)))]))"
+) 0 0 24 29 1 #"\n"
+0 0 17 3 24 #";(define (render_riot p)"
+0 0 24 29 1 #"\n"
+0 0 17 3 31 #";  (add-balloons (pair-lob p)))"
+0 0 24 29 1 #"\n"
+0 0 24 3 4 #"    "
+0 0 24 29 1 #"\n"
+0 0 17 3 60
+#";;where doll can be string color or (make-layer string doll)"
+0 0 24 29 1 #"\n"
+0 0 17 3 59
+#";;color is analogous to first and doll is analogous to rest"
+0 0 24 29 1 #"\n"
+0 0 17 3 35 #";(define-struct layer [color doll])"
+0 0 24 29 1 #"\n"
+0 0 17 3 5 #";;154"
+0 0 24 29 1 #"\n"
+0 0 17 3 23 #";(define (colors an-rd)"
+0 0 24 29 1 #"\n"
+0 0 17 3 8 #";  (cond"
+0 0 24 29 1 #"\n"
+0 0 17 3 28 #";    [(string? an-rd) an-rd]"
+0 0 24 29 1 #"\n"
+0 0 17 3 82
+(
+ #";    [else (string-append (layer-color an-rd) \", \" (colors (layer-"
+ #"doll an-rd)))]))"
+) 0 0 24 29 1 #"\n"
+0 0 17 3 1 #";"
+0 0 24 29 1 #"\n"
+0 0 17 3 5 #";;155"
+0 0 24 29 1 #"\n"
+0 0 17 3 22 #";(define (inner an-rd)"
+0 0 24 29 1 #"\n"
+0 0 17 3 8 #";  (cond"
+0 0 24 29 1 #"\n"
+0 0 17 3 28 #";    [(string? an-rd) an-rd]"
+0 0 24 29 1 #"\n"
+0 0 17 3 40 #";    [else (inner (layer-doll an-rd))]))"
+0 0 24 29 1 #"\n"
+0 0 24 29 1 #"\n"
+0 0 17 3 19 #";(define HEIGHT 80)"
+0 0 24 29 1 #"\n"
+0 0 17 3 19 #";(define WIDTH 100)"
+0 0 24 29 1 #"\n"
+0 0 17 3 28 #";(define XSHOTS (/ WIDTH 2))"
+0 0 24 29 1 #"\n"
+0 0 17 3 47 #";(define BACKGROUND (empty-scene WIDTH HEIGHT))"
+0 0 24 29 1 #"\n"
+0 0 17 3 41 #";(define SHOT (triangle 6 \"solid\" \"red\"))"
+0 0 24 29 1 #"\n"
+0 0 17 3 30 #";; A List-of-shots is one of: "
+0 0 24 29 1 #"\n"
+0 0 17 3 10 #";; \342\200\223 '()"
+0 0 24 29 1 #"\n"
+0 0 17 3 32 #";; \342\200\223 (cons Shot List-of-shots)"
+0 0 24 29 1 #"\n"
+0 0 17 3 47 #";; interpretation the collection of shots fired"
+0 0 24 29 1 #"\n"
+0 0 17 3 55 #";; shot = a number representing the shot's y coordinate"
+0 0 24 29 1 #"\n"
+0 0 17 3 1 #";"
+0 0 24 29 1 #"\n"
+0 0 17 3 21 #";(define (to-image w)"
+0 0 24 29 1 #"\n"
+0 0 17 3 8 #";  (cond"
+0 0 24 29 1 #"\n"
+0 0 17 3 28 #";    [(empty? w) BACKGROUND]"
+0 0 24 29 1 #"\n"
+0 0 17 3 10 #";    [else"
+0 0 24 29 1 #"\n"
+0 0 17 3 64
+#";     (place-image SHOT XSHOTS (first w) (to-image (rest w)))]))"
+0 0 24 29 1 #"\n"
+0 0 17 3 17 #";(define (tock w)"
+0 0 24 29 1 #"\n"
+0 0 17 3 8 #";  (cond"
+0 0 24 29 1 #"\n"
+0 0 17 3 21 #";    [(empty? w) '()]"
+0 0 24 29 1 #"\n"
+0 0 17 3 10 #";    [else"
+0 0 24 29 1 #"\n"
+0 0 17 3 48 #";     (cons (sub1 (first w)) (tock (rest w)))]))"
+0 0 24 29 1 #"\n"
+0 0 17 3 20 #";(define (keyh w ke)"
+0 0 24 29 1 #"\n"
+0 0 17 3 41 #";  (if (key=? ke \" \") (cons HEIGHT w) w))"
+0 0 24 29 1 #"\n"
+0 0 17 3 18 #";(define (main w0)"
+0 0 24 29 1 #"\n"
+0 0 17 3 15 #";  (big-bang w0"
+0 0 24 29 1 #"\n"
+0 0 17 3 21 #";    [on-tick tock_2]"
+0 0 24 29 1 #"\n"
+0 0 17 3 18 #";    [on-key keyh]"
+0 0 24 29 1 #"\n"
+0 0 17 3 25 #";    [to-draw to-image]))"
+0 0 24 29 1 #"\n"
+0 0 17 3 5 #";;156"
+0 0 24 29 1 #"\n"
+0 0 17 3 48 #";(check-expect (to-image (cons 9 (cons 10 '())))"
+0 0 24 29 1 #"\n"
+0 0 17 3 83
+(
+ #";              (place-image SHOT XSHOTS 9 (place-image SHOT XSHOTS 1"
+ #"0 BACKGROUND)))"
+) 0 0 24 29 1 #"\n"
+0 0 17 3 44 #";(check-expect (tock (cons 9 (cons 10 '())))"
+0 0 24 29 1 #"\n"
+0 0 17 3 37 #";              (cons 8 (cons 9 '())))"
+0 0 24 29 1 #"\n"
+0 0 17 3 48 #";(check-expect (keyh (cons 9 (cons 10 '())) \" \")"
+0 0 24 29 1 #"\n"
+0 0 17 3 52 #";              (cons HEIGHT (cons 9 (cons 10 '()))))"
+0 0 24 29 1 #"\n"
+0 0 17 3 5 #";;158"
+0 0 24 29 1 #"\n"
+0 0 17 3 19 #";(define (tock_2 w)"
+0 0 24 29 1 #"\n"
+0 0 17 3 8 #";  (cond"
+0 0 24 29 1 #"\n"
+0 0 17 3 21 #";    [(empty? w) '()]"
+0 0 24 29 1 #"\n"
+0 0 17 3 10 #";    [else"
+0 0 24 29 1 #"\n"
+0 0 17 3 71
+(
+ #";     (cond [(> (first w) 0) (cons (sub1 (first w)) (tock_2 (rest w)"
+ #"))]"
+) 0 0 24 29 1 #"\n"
+0 0 17 3 40 #";           [else (tock_2 (rest w))])]))"
+0 0 24 29 1 #"\n"
+0 0 17 3 5 #";;160"
+0 0 24 29 1 #"\n"
+0 0 17 3 16 #";(define es '())"
+0 0 24 29 1 #"\n"
+0 0 17 3 18 #";(define (in? x s)"
+0 0 24 29 1 #"\n"
+0 0 17 3 17 #";  (member? x s))"
+0 0 24 29 1 #"\n"
+0 0 17 3 24 #";; Number Son.L -> Son.L"
+0 0 24 29 1 #"\n"
+0 0 17 3 20 #";; removes x from s "
+0 0 24 29 1 #"\n"
+0 0 17 3 13 #";(define s1.L"
+0 0 24 29 1 #"\n"
+0 0 17 3 25 #";  (cons 1 (cons 1 '())))"
+0 0 24 29 1 #"\n"
+0 0 17 3 10 #";         "
+0 0 24 29 1 #"\n"
+0 0 17 3 14 #";(check-expect"
+0 0 24 29 1 #"\n"
+0 0 17 3 21 #"; (set-.L 1 s1.L) es)"
+0 0 24 29 1 #"\n"
+0 0 17 3 10 #";         "
+0 0 24 29 1 #"\n"
+0 0 17 3 21 #";(define (set-.L x s)"
+0 0 24 29 1 #"\n"
+0 0 17 3 20 #";  (remove-all x s))"
+0 0 24 29 1 #"\n"
+0 0 17 3 21 #";(define (set+.L x s)"
+0 0 24 29 1 #"\n"
+0 0 17 3 14 #";  (cons x s))"
+0 0 24 29 1 #"\n"
+0 0 17 3 1 #";"
+0 0 24 29 1 #"\n"
+0 0 17 3 11 #";          "
+0 0 24 29 1 #"\n"
+0 0 17 3 9 #";        "
+0 1 17 65 1 #"\t"
+0 0 24 29 1 #"\n"
+0 0 17 3 24 #";; Number Son.R -> Son.R"
+0 0 24 29 1 #"\n"
+0 0 17 3 19 #";; removes x from s"
+0 0 24 29 1 #"\n"
+0 0 17 3 13 #";(define s1.R"
+0 0 24 29 1 #"\n"
+0 0 17 3 16 #";  (cons 1 '()))"
+0 0 24 29 1 #"\n"
+0 0 17 3 10 #";         "
+0 0 24 29 1 #"\n"
+0 0 17 3 14 #";(check-expect"
+0 0 24 29 1 #"\n"
+0 0 17 3 21 #"; (set-.R 1 s1.R) es)"
+0 0 24 29 1 #"\n"
+0 0 17 3 10 #";         "
+0 0 24 29 1 #"\n"
+0 0 17 3 21 #";(define (set-.R x s)"
+0 0 24 29 1 #"\n"
+0 0 17 3 16 #";  (remove x s))"
+0 0 24 29 1 #"\n"
+0 0 17 3 21 #";(define (set+.R x s)"
+0 0 24 29 1 #"\n"
+0 0 17 3 8 #";  (cond"
+0 0 24 29 1 #"\n"
+0 0 17 3 33 #";    [(not (in? x s)) (cons x s)]"
+0 0 24 29 1 #"\n"
+0 0 17 3 15 #";    [else s]))"
+0 0 24 29 1 #"\n"
+0 0 24 29 1 #"\n"
+0 0 17 3 10 #";;161, 162"
+0 0 24 29 1 #"\n"
+0 0 17 3 21 #";(define SET_WAGE 14)"
+0 0 24 29 1 #"\n"
+0 0 17 3 37 #";; List-of-numbers -> List-of-numbers"
+0 0 24 29 1 #"\n"
+0 0 17 3 55 #";; computes the weekly wages for all given weekly hours"
+0 0 24 29 1 #"\n"
+0 0 17 3 21 #";(define (wage* whrs)"
+0 0 24 29 1 #"\n"
+0 0 17 3 8 #";  (cond"
+0 0 24 29 1 #"\n"
+0 0 17 3 24 #";    [(empty? whrs) '()]"
+0 0 24 29 1 #"\n"
+0 0 17 3 62
+#";    [(<= 100 (first whrs)) (error \"hours worked exceed 100\")]"
+0 0 24 29 1 #"\n"
+0 0 17 3 60
+#";    [else (cons (wage (first whrs)) (wage* (rest whrs)))]))"
+0 0 24 29 1 #"\n"
+0 0 17 3 2 #"; "
+0 0 24 29 1 #"\n"
+0 0 17 3 19 #";; Number -> Number"
+0 0 24 29 1 #"\n"
+0 0 17 3 40 #";; computes the wage for h hours of work"
+0 0 24 29 1 #"\n"
+0 0 17 3 17 #";(define (wage h)"
+0 0 24 29 1 #"\n"
+0 0 17 3 18 #";  (* SET_WAGE h))"
+0 0 24 29 1 #"\n"
+0 0 17 3 64
+#";(check-expect (wage* (cons 28 '())) (cons (* 28 SET_WAGE) '()))"
+0 0 24 29 1 #"\n"
+0 0 17 3 1 #";"
+0 0 24 29 1 #"\n"
+0 0 17 3 5 #";;163"
+0 0 24 29 1 #"\n"
+0 0 17 3 22 #";(define (convertFC f)"
+0 0 24 29 1 #"\n"
+0 0 17 3 23 #";  (/ (*(- f 32) 5) 9))"
+0 0 24 29 1 #"\n"
+0 0 17 3 27 #";(define (convertFC* flist)"
+0 0 24 29 1 #"\n"
+0 0 17 3 8 #";  (cond"
+0 0 24 29 1 #"\n"
+0 0 17 3 23 #";  [(empty? flist) '()]"
+0 0 24 29 1 #"\n"
+0 0 17 3 70
+(
+ #";  [else (cons (convertFC (first flist)) (convertFC* (rest flist)))]"
+ #"))"
+) 0 0 24 29 1 #"\n"
+0 0 17 3 5 #";;164"
+0 0 24 29 1 #"\n"
+0 0 17 3 29 #";(define EXCHANGE_RATE 0.90) "
+0 0 24 29 1 #"\n"
+0 0 17 3 31 #";(define (convert-euro usd exr)"
+0 0 24 29 1 #"\n"
+0 0 17 3 15 #";  (* exr usd))"
+0 0 24 29 1 #"\n"
+0 0 17 3 36 #";(define (convert-euro* usdList exr)"
+0 0 24 29 1 #"\n"
+0 0 17 3 8 #";  (cond"
+0 0 24 29 1 #"\n"
+0 0 17 3 27 #";    [(empty? usdList) '()]"
+0 0 24 29 1 #"\n"
+0 0 17 3 90
+(
+ #";    [else (cons (convert-euro (first usdList) exr) (convert-euro* ("
+ #"rest usdList) exr))]))"
+) 0 0 24 29 1 #"\n"
+0 0 17 3 5 #";;165"
+0 0 24 29 1 #"\n"
+0 0 17 3 34 #";(define (substitute new old curr)"
+0 0 24 29 1 #"\n"
+0 0 17 3 8 #";  (cond"
+0 0 24 29 1 #"\n"
+0 0 17 3 30 #";    [(string=? curr old) new]"
+0 0 24 29 1 #"\n"
+0 0 17 3 18 #";    [else curr]))"
+0 0 24 29 1 #"\n"
+0 0 17 3 39 #";(define (substitute* new old currList)"
+0 0 24 29 1 #"\n"
+0 0 17 3 8 #";  (cond"
+0 0 24 29 1 #"\n"
+0 0 17 3 28 #";    [(empty? currList) '()]"
+0 0 24 29 1 #"\n"
+0 0 17 3 96
+(
+ #";    [else (cons (substitute new old (first currList)) (substitute* "
+ #"new old (rest currList)))]))"
+) 0 0 24 29 1 #"\n"
+0 0 17 3 1 #";"
+0 0 24 29 1 #"\n"
+0 0 17 3 43 #";(define-struct work [employee rate hours])"
+0 0 24 29 1 #"\n"
+0 0 17 3 35 #";;A (piece of) Work is a structure:"
+0 0 24 29 1 #"\n"
+0 0 17 3 38 #";;    (make-work string number number)"
+0 0 24 29 1 #"\n"
+0 0 17 3 34 #";;LOW (list of workers) is one of:"
+0 0 24 29 1 #"\n"
+0 0 17 3 7 #";; -'()"
+0 0 24 29 1 #"\n"
+0 0 17 3 19 #";; -(cons Work Low)"
+0 0 24 29 1 #"\n"
+0 0 17 3 20 #";(define (wage.v2 w)"
+0 0 24 29 1 #"\n"
+0 0 17 3 36 #";  (* (work-hours w) (work-rate w)))"
+0 0 24 29 1 #"\n"
+0 0 17 3 1 #";"
+0 0 24 29 1 #"\n"
+0 0 17 3 23 #";(define (wage*.v2 low)"
+0 0 24 29 1 #"\n"
+0 0 17 3 8 #";  (cond"
+0 0 24 29 1 #"\n"
+0 0 17 3 23 #";    [(empty? low) '()]"
+0 0 24 29 1 #"\n"
+0 0 17 3 74
+(
+ #";    [(<= 100 (work-hours (first low))) (error \"hours worked exceed"
+ #" 100\")]"
+) 0 0 24 29 1 #"\n"
+0 0 17 3 64
+#";    [else (cons (wage.v2 (first low)) (wage*.v2 (rest low)))]))"
+0 0 24 29 1 #"\n"
+0 0 17 3 1 #";"
+0 0 24 29 1 #"\n"
+0 0 17 3 5 #";;166"
+0 0 24 29 1 #"\n"
+0 0 17 3 42 #";(define-struct paycheck [employee money])"
+0 0 24 29 1 #"\n"
+0 0 17 3 20 #";(define (wage.v3 w)"
+0 0 24 29 1 #"\n"
+0 0 17 3 70
+(
+ #";  (make-paycheck (work-employee w) (* (work-rate w) (work-hours w))"
+ #"))"
+) 0 0 24 29 1 #"\n"
+0 0 17 3 23 #";(define (wage*.v3 low)"
+0 0 24 29 1 #"\n"
+0 0 17 3 8 #";  (cond"
+0 0 24 29 1 #"\n"
+0 0 17 3 23 #";    [(empty? low) '()]"
+0 0 24 29 1 #"\n"
+0 0 17 3 74
+(
+ #";    [(<= 100 (work-hours (first low))) (error \"hours worked exceed"
+ #" 100\")]"
+) 0 0 24 29 1 #"\n"
+0 0 17 3 64
+#";    [else (cons (wage.v3 (first low)) (wage*.v3 (rest low)))]))"
+0 0 24 29 1 #"\n"
+0 0 17 3 1 #";"
+0 0 24 29 1 #"\n"
+0 0 17 3 5 #";;167"
+0 0 24 29 1 #"\n"
+0 0 17 3 18 #";(define (sum lop)"
+0 0 24 29 1 #"\n"
+0 0 17 3 8 #";  (cond"
+0 0 24 29 1 #"\n"
+0 0 17 3 21 #";    [(empty? lop) 0]"
+0 0 24 29 1 #"\n"
+0 0 17 3 55 #";    [else (+ (posn-x (first lop)) (sum (rest lop)))]))"
+0 0 24 29 1 #"\n"
+0 0 17 3 5 #";;168"
+0 0 24 29 1 #"\n"
+0 0 17 3 24 #";(define (translate lop)"
+0 0 24 29 1 #"\n"
+0 0 17 3 8 #";  (cond"
+0 0 24 29 1 #"\n"
+0 0 17 3 23 #";    [(empty? lop) '()]"
+0 0 24 29 1 #"\n"
+0 0 17 3 103
+(
+ #";    [else (cons (make-posn (posn-x (first lop)) (+ (posn-y (first l"
+ #"op)) 1)) (translate (rest lop)))]))"
+) 0 0 24 29 1 #"\n"
+0 0 17 3 5 #";;169"
+0 0 24 29 1 #"\n"
+0 0 17 3 20 #";(define (legal lop)"
+0 0 24 29 1 #"\n"
+0 0 17 3 8 #";  (cond"
+0 0 24 29 1 #"\n"
+0 0 17 3 23 #";    [(empty? lop) '()]"
+0 0 24 29 1 #"\n"
+0 0 17 3 63
+#";    [(legal-helper (first lop)) (cons (first lop) (rest lop))]"
+0 0 24 29 1 #"\n"
+0 0 17 3 32 #";    [else (legal (rest lop))]))"
+0 0 24 29 1 #"\n"
+0 0 17 3 1 #";"
+0 0 24 29 1 #"\n"
+0 0 17 3 25 #";(define (legal-helper p)"
+0 0 24 29 1 #"\n"
+0 0 17 3 81
+(
+ #";  (and (< (posn-x p) 100) (> (posn-x p) 0) (< (posn-y p) 200) (> (p"
+ #"osn-y p) 0)))"
+) 0 0 24 29 1 #"\n"
+0 0 17 3 1 #";"
+0 0 24 29 1 #"\n"
+0 0 17 3 5 #";;170"
+0 0 24 29 1 #"\n"
+0 0 17 3 41 #";(define-struct phone [area switch four])"
+0 0 24 29 1 #"\n"
+0 0 17 3 28 #";(define (replace lo-phones)"
+0 0 24 29 1 #"\n"
+0 0 17 3 8 #";  (cond"
+0 0 24 29 1 #"\n"
+0 0 17 3 29 #";    [(empty? lo-phones) '()]"
+0 0 24 29 1 #"\n"
+0 0 17 3 50 #";    [(= (phone-area (first lo-phones)) 713) (cons"
+0 0 24 29 1 #"\n"
+0 0 17 3 126
+(
+ #";                                             (make-phone 281 (phone"
+ #"-switch (first lo-phones)) (phone-four (first lo-phones)))"
+) 0 0 24 29 1 #"\n"
+0 0 17 3 74
+(
+ #";                                             (replace (rest lo-phon"
+ #"es)))]"
+) 0 0 24 29 1 #"\n"
+0 0 17 3 65
+#";    [else (cons (first lo-phones) (replace (rest lo-phones)))]))"
+0 0 24 29 1 #"\n"
+0 0 17 3 5 #";;171"
+0 0 24 29 1 #"\n"
+0 0 17 3 30 #";;a list of strings is one of:"
+0 0 24 29 1 #"\n"
+0 0 17 3 5 #";;'()"
+0 0 24 29 1 #"\n"
+0 0 17 3 20 #";;(cons string ALOS)"
+0 0 24 29 1 #"\n"
+0 0 17 3 274
+(
+ #";(cons \"TTT\" (cons \"Put up in a plce\" (cons \"where it's easy to"
+ #" see\" (cons \"the cryptic admonishment\" (cons \"T.T.T.\" (cons \"W"
+ #"hen you feel how depressingly\" (cons \"slowly you climb,\" (cons \""
+ #"it's well to remember that\" (cons \"Things Take Time.\" (cons \"Pie"
+ #"t Hein\" '()))))))))))"
+) 0 0 24 29 1 #"\n"
+0 0 17 3 1 #";"
+0 0 24 29 1 #"\n"
+0 0 17 3 38 #";;a list of list of strings is one of:"
+0 0 24 29 1 #"\n"
+0 0 17 3 5 #";;'()"
+0 0 24 29 1 #"\n"
+0 0 17 3 21 #";; (cons ALOS ALOLOS)"
+0 0 24 29 1 #"\n"
+0 0 17 3 1 #";"
+0 0 24 29 1 #"\n"
+0 0 17 3 6 #";(cons"
+0 0 24 29 1 #"\n"
+0 0 17 3 68
+(
+ #"; (cons \"Put\" (cons \"up\" (con"
+ #"s \"in\" (cons \"a\" (cons \"place\" '())))))"
+) 0 0 24 29 1 #"\n"
+0 0 17 3 7 #"; (cons"
+0 0 24 29 1 #"\n"
+0 0 17 3 74
+(
+ #";  (cons \"where\" (cons \"it's\" (cons \"easy\" (cons \"to\" (cons "
+ #"\"see\" '())))))"
+) 0 0 24 29 1 #"\n"
+0 0 17 3 8 #";  (cons"
+0 0 24 29 1 #"\n"
+0 0 17 3 59
+#";   (cons \"the\" (cons \"cryptic\" (cons \"admonishment\" '())))"
+0 0 24 29 1 #"\n"
+0 0 17 3 9 #";   (cons"
+0 0 24 29 1 #"\n"
+0 0 17 3 24 #";    (cons \"T.T.T.\" '())"
+0 0 24 29 1 #"\n"
+0 0 17 3 10 #";    (cons"
+0 0 24 29 1 #"\n"
+0 0 17 3 85
+(
+ #";     (cons \"When\" (cons \"you\" (cons \"feel\" (cons \"how\" (con"
+ #"s \"depressingly\" '())))))"
+) 0 0 24 29 1 #"\n"
+0 0 17 3 11 #";     (cons"
+0 0 24 29 1 #"\n"
+0 0 17 3 54
+#";      (cons \"slowly\" (cons \"you\" (cons \"climb\" '())))"
+0 0 24 29 1 #"\n"
+0 0 17 3 12 #";      (cons"
+0 0 24 29 1 #"\n"
+0 0 17 3 83
+(
+ #";       (cons \"it's\" (cons \"we"
+ #"ll\" (cons \"to\" (cons \"remember\" (cons \"that\" '())))))"
+) 0 0 24 29 1 #"\n"
+0 0 17 3 13 #";       (cons"
+0 0 24 29 1 #"\n"
+0 0 17 3 68
+(
+ #";        (cons \"things\" (cons \"take\" (cons \"time\" '()))) '()))"
+ #"))))))"
+) 0 0 24 29 1 #"\n"
+0 0 17 3 28 #";(define (words-on-line lls)"
+0 0 24 29 1 #"\n"
+0 0 17 3 8 #";  (cond"
+0 0 24 29 1 #"\n"
+0 0 17 3 23 #";    [(empty? lls) '()]"
+0 0 24 29 1 #"\n"
+0 0 17 3 10 #";    [else"
+0 0 24 29 1 #"\n"
+0 0 17 3 37 #";     (cons (count-words (first lls))"
+0 0 24 29 1 #"\n"
+0 0 17 3 42 #";           (words-on-line (rest lls)))]))"
+0 0 24 29 1 #"\n"
+0 0 17 3 25 #";(define (count-words ls)"
+0 0 24 29 1 #"\n"
+0 0 17 3 8 #";  (cond"
+0 0 24 29 1 #"\n"
+0 0 17 3 19 #";   [(empty? ls) 0]"
+0 0 24 29 1 #"\n"
+0 0 17 3 42 #";   [else (+ 1 (count-words (rest ls)))]))"
+0 0 24 29 1 #"\n"
+0 0 17 3 1 #";"
+0 0 24 29 1 #"\n"
+0 0 17 3 5 #";;172"
+0 0 24 29 1 #"\n"
+0 0 17 3 23 #";(define (collapse lls)"
+0 0 24 29 1 #"\n"
+0 0 17 3 8 #";  (cond"
+0 0 24 29 1 #"\n"
+0 0 17 3 22 #";    [(empty? lls) \"\"]"
+0 0 24 29 1 #"\n"
+0 0 17 3 10 #";    [else"
+0 0 24 29 1 #"\n"
+0 0 17 3 48 #";     (string-append (collapse-line (first lls))"
+0 0 24 29 1 #"\n"
+0 0 17 3 37 #";           (collapse (rest lls)))]))"
+0 0 24 29 1 #"\n"
+0 0 17 3 1 #";"
+0 0 24 29 1 #"\n"
+0 0 17 3 27 #";(define (collapse-line ls)"
+0 0 24 29 1 #"\n"
+0 0 17 3 8 #";  (cond"
+0 0 24 29 1 #"\n"
+0 0 17 3 23 #";    [(empty? ls) \"\\n\"]"
+0 0 24 29 1 #"\n"
+0 0 17 3 70
+(
+ #";    [else (string-append (first ls) \" \" (collapse-line (rest ls))"
+ #")]))"
+) 0 0 24 29 1 #"\n"
+0 0 17 3 1 #";"
+0 0 24 29 1 #"\n"
+0 0 17 3 5 #";;173"
+0 0 24 29 1 #"\n"
+0 0 17 3 16 #";;n is file name"
+0 0 24 29 1 #"\n"
+0 0 17 3 33 #";(define (remove-articles-base n)"
+0 0 24 29 1 #"\n"
+0 0 17 3 47 #";  (write-file (string-append \"no-articles-\" n)"
+0 0 24 29 1 #"\n"
+0 0 17 3 54 #";              (remove-articles (read-words/line n))))"
+0 0 24 29 1 #"\n"
+0 0 17 3 1 #";"
+0 0 24 29 1 #"\n"
+0 0 17 3 30 #";(define (remove-articles lls)"
+0 0 24 29 1 #"\n"
+0 0 17 3 8 #";  (cond"
+0 0 24 29 1 #"\n"
+0 0 17 3 21 #";   [(empty? lls) \"\"]"
+0 0 24 29 1 #"\n"
+0 0 17 3 99
+(
+ #";   [else (string-append (remove-"
+ #"articles-helper (first lls)) \"\\n\" (remove-articles (rest lls)))])"
+ #")"
+) 0 0 24 29 1 #"\n"
+0 0 17 3 1 #";"
+0 0 24 29 1 #"\n"
+0 0 17 3 36 #";(define (remove-articles-helper ls)"
+0 0 24 29 1 #"\n"
+0 0 17 3 8 #";  (cond"
+0 0 24 29 1 #"\n"
+0 0 17 3 23 #";    [(empty? ls) \"\\n\"]"
+0 0 24 29 1 #"\n"
+0 0 17 3 127
+(
+ #";    [(or (string=? \"a\" (first ls)) (string=? \"an\" (first ls)) ("
+ #"string=? \"the\" (first ls))) (remove-articles-helper (rest ls))]"
+) 0 0 24 29 1 #"\n"
+0 0 17 3 79
+(
+ #";    [else (string-append (first ls) \" \" (remove-articles-helper ("
+ #"rest ls)))]))"
+) 0 0 24 29 1 #"\n"
+0 0 17 3 1 #";"
+0 0 24 29 1 #"\n"
+0 0 17 3 5 #";;174"
+0 0 24 29 1 #"\n"
+0 0 17 3 16 #";;n is file name"
+0 0 24 29 1 #"\n"
+0 0 17 3 29 #";(define (encode-text-base n)"
+0 0 24 29 1 #"\n"
+0 0 17 3 48 #";  (write-file (string-append \"encoded-text-\" n)"
+0 0 24 29 1 #"\n"
+0 0 17 3 50 #";              (encode-text (read-words/line n))))"
+0 0 24 29 1 #"\n"
+0 0 17 3 1 #";"
+0 0 24 29 1 #"\n"
+0 0 17 3 26 #";(define (encode-text lls)"
+0 0 24 29 1 #"\n"
+0 0 17 3 8 #";  (cond"
+0 0 24 29 1 #"\n"
+0 0 17 3 22 #";    [(empty? lls) \"\"]"
+0 0 24 29 1 #"\n"
+0 0 17 3 85
+(
+ #";    [else (string-append (encode-text-line (first lls)) (encode-tex"
+ #"t (rest lls)))]))"
+) 0 0 24 29 1 #"\n"
+0 0 17 3 1 #";"
+0 0 24 29 1 #"\n"
+0 0 17 3 30 #";(define (encode-text-line ls)"
+0 0 24 29 1 #"\n"
+0 0 17 3 8 #";  (cond"
+0 0 24 29 1 #"\n"
+0 0 17 3 23 #";    [(empty? ls) \"\\n\"]"
+0 0 24 29 1 #"\n"
+0 0 17 3 98
+(
+ #";    [else (string-append (encode-text-word (explode (first ls))) (e"
+ #"ncode-text-line (rest ls)))]))"
+) 0 0 24 29 1 #"\n"
+0 0 17 3 30 #";(define (encode-text-word lw)"
+0 0 24 29 1 #"\n"
+0 0 17 3 8 #";  (cond"
+0 0 24 29 1 #"\n"
+0 0 17 3 22 #";    [(empty? lw) \" \"]"
+0 0 24 29 1 #"\n"
+0 0 17 3 85
+(
+ #";    [else (string-append (encode-letter (first lw)) (encode-text-wo"
+ #"rd (rest lw)))]))"
+) 0 0 24 29 1 #"\n"
+0 0 17 3 1 #";"
+0 0 24 29 1 #"\n"
+0 0 17 3 20 #";; 1String -> String"
+0 0 24 29 1 #"\n"
+0 0 17 3 58
+#";; converts the given 1String to a 3-letter numeric String"
+0 0 24 29 1 #"\n"
+0 0 17 3 26 #";(define (encode-letter s)"
+0 0 24 29 1 #"\n"
+0 0 17 3 8 #";  (cond"
+0 0 24 29 1 #"\n"
+0 0 17 3 41 #";    [(>= (string->int s) 100) (code1 s)]"
+0 0 24 29 1 #"\n"
+0 0 17 3 28 #";    [(< (string->int s) 10)"
+0 0 24 29 1 #"\n"
+0 0 17 3 37 #";     (string-append \"00\" (code1 s))]"
+0 0 24 29 1 #"\n"
+0 0 17 3 29 #";    [(< (string->int s) 100)"
+0 0 24 29 1 #"\n"
+0 0 17 3 38 #";     (string-append \"0\" (code1 s))]))"
+0 0 24 29 1 #"\n"
+0 0 17 3 2 #"; "
+0 0 24 29 1 #"\n"
+0 0 17 3 20 #";; 1String -> String"
+0 0 24 29 1 #"\n"
+0 0 17 3 43 #";; converts the given 1String into a String"
+0 0 24 29 1 #"\n"
+0 0 17 3 2 #"; "
+0 0 24 29 1 #"\n"
+0 0 17 3 33 #";(check-expect (code1 \"z\") \"122\")"
+0 0 24 29 1 #"\n"
+0 0 17 3 2 #"; "
+0 0 24 29 1 #"\n"
+0 0 17 3 18 #";(define (code1 c)"
+0 0 24 29 1 #"\n"
+0 0 17 3 36 #";  (number->string (string->int c)))"
+0 0 24 29 1 #"\n"
+0 0 17 3 1 #";"
+0 0 24 29 1 #"\n"
+0 0 17 3 5 #";;175"
+0 0 24 29 1 #"\n"
+0 0 17 3 42 #";;count of letters, words, lines in a file"
+0 0 24 29 1 #"\n"
+0 0 17 3 47 #";(define-struct strCount [letters words lines])"
+0 0 24 29 1 #"\n"
+0 0 17 3 1 #";"
+0 0 24 29 1 #"\n"
+0 0 17 3 124
+(
+ #";;consider making a function which sums everything into a single num"
+ #"ber, then work on separating those sums into a structure"
+) 0 0 24 29 1 #"\n"
+0 0 17 3 20 #";(define (wc-base n)"
+0 0 24 29 1 #"\n"
+0 0 17 3 28 #";  (wc (read-words/line n)))"
+0 0 24 29 1 #"\n"
+0 0 17 3 17 #";(define (wc lls)"
+0 0 24 29 1 #"\n"
+0 0 17 3 8 #";  (cond"
+0 0 24 29 1 #"\n"
+0 0 17 3 21 #";    [(empty? lls) 0]"
+0 0 24 29 1 #"\n"
+0 0 17 3 57 #";    [else (+ 1 (wc-word (first lls)) (wc (rest lls)))]))"
+0 0 24 29 1 #"\n"
+0 0 17 3 1 #";"
+0 0 24 29 1 #"\n"
+0 0 17 3 21 #";(define (wc-word ls)"
+0 0 24 29 1 #"\n"
+0 0 17 3 8 #";  (cond"
+0 0 24 29 1 #"\n"
+0 0 17 3 20 #";    [(empty? ls) 0]"
+0 0 24 29 1 #"\n"
+0 0 17 3 72
+(
+ #";    [else (+ 1 (wc-letter (explode (first ls))) (wc-word (rest ls))"
+ #")]))"
+) 0 0 24 29 1 #"\n"
+0 0 17 3 22 #";(define (wc-letter s)"
+0 0 24 29 1 #"\n"
+0 0 17 3 8 #";  (cond"
+0 0 24 29 1 #"\n"
+0 0 17 3 19 #";    [(empty? s) 0]"
+0 0 24 29 1 #"\n"
+0 0 17 3 40 #";    [else (+ 1 (wc-letter (rest s)))]))"
+0 0 24 29 1 #"\n"
+0 0 17 3 24 #";;using actual structure"
+0 0 24 29 1 #"\n"
+0 0 17 3 21 #";(define (wc-base2 n)"
+0 0 24 29 1 #"\n"
+0 0 17 3 17 #";  (make-strCount"
+0 0 24 29 1 #"\n"
+0 0 17 3 29 #";   (wc-word2 (read-words n))"
+0 0 24 29 1 #"\n"
+0 0 17 3 27 #";   (length (read-words n))"
+0 0 24 29 1 #"\n"
+0 0 17 3 29 #";   (length (read-lines n))))"
+0 0 24 29 1 #"\n"
+0 0 17 3 22 #";(define (wc-word2 ls)"
+0 0 24 29 1 #"\n"
+0 0 17 3 8 #";  (cond"
+0 0 24 29 1 #"\n"
+0 0 17 3 20 #";    [(empty? ls) 0]"
+0 0 24 29 1 #"\n"
+0 0 17 3 65
+#";    [else (+ (string-length (first ls)) (wc-word2 (rest ls)))]))"
+0 0 24 29 1 #"\n"
+0 0 17 3 1 #";"
+0 0 24 29 1 #"\n"
+0 0 17 3 5 #";;176"
+0 0 24 29 1 #"\n"
+0 0 17 3 23 #";; A Matrix is one of: "
+0 0 24 29 1 #"\n"
+0 0 17 3 22 #";;  \342\200\223 (cons Row '())"
+0 0 24 29 1 #"\n"
+0 0 17 3 25 #";;  \342\200\223 (cons Row Matrix)"
+0 0 24 29 1 #"\n"
+0 0 17 3 55 #";; constraint all rows in matrix are of the same length"
+0 0 24 29 1 #"\n"
+0 0 17 3 2 #"; "
+0 0 24 29 1 #"\n"
+0 0 17 3 20 #";; A Row is one of: "
+0 0 24 29 1 #"\n"
+0 0 17 3 12 #";;  \342\200\223 '() "
+0 0 24 29 1 #"\n"
+0 0 17 3 25 #";;  \342\200\223 (cons Number Row)"
+0 0 24 29 1 #"\n"
+0 0 17 3 38 #";(define row1 (cons 11 (cons 12 '())))"
+0 0 24 29 1 #"\n"
+0 0 17 3 38 #";(define row2 (cons 21 (cons 22 '())))"
+0 0 24 29 1 #"\n"
+0 0 17 3 42 #";(define mat1 (cons row1 (cons row2 '())))"
+0 0 24 29 1 #"\n"
+0 0 17 3 24 #";(define (transpose lln)"
+0 0 24 29 1 #"\n"
+0 0 17 3 8 #";  (cond"
+0 0 24 29 1 #"\n"
+0 0 17 3 31 #";    [(empty? (first lln)) '()]"
+0 0 24 29 1 #"\n"
+0 0 17 3 57 #";    [else (cons (first* lln) (transpose (rest* lln)))]))"
+0 0 24 29 1 #"\n"
+0 0 17 3 1 #";"
+0 0 24 29 1 #"\n"
+0 0 17 3 21 #";(define (first* mat)"
+0 0 24 29 1 #"\n"
+0 0 17 3 8 #";  (cond"
+0 0 24 29 1 #"\n"
+0 0 17 3 24 #";    [(empty?  mat) '()]"
+0 0 24 29 1 #"\n"
+0 0 17 3 69
+(
+ #";    [else (cons (first-row-item (first mat)) (first* (rest mat)))])"
+ #")"
+) 0 0 24 29 1 #"\n"
+0 0 17 3 1 #";"
+0 0 24 29 1 #"\n"
+0 0 17 3 29 #";(define (first-row-item row)"
+0 0 24 29 1 #"\n"
+0 0 17 3 15 #";  (first row))"
+0 0 24 29 1 #"\n"
+0 0 17 3 1 #";"
+0 0 24 29 1 #"\n"
+0 0 17 3 20 #";(define (rest* mat)"
+0 0 24 29 1 #"\n"
+0 0 17 3 8 #";  (cond"
+0 0 24 29 1 #"\n"
+0 0 17 3 23 #";    [(empty? mat) '()]"
+0 0 24 29 1 #"\n"
+0 0 17 3 67
+#";    [else (cons (last-row-item (first mat)) (rest* (rest mat)))]))"
+0 0 24 29 1 #"\n"
+0 0 17 3 28 #";(define (last-row-item row)"
+0 0 24 29 1 #"\n"
+0 0 17 3 14 #";  (rest row))"
+0 0 24 29 1 #"\n"
+0 0 24 29 1 #"\n"
+0 0 17 3 34 #";(define-struct editor [pre post])"
+0 0 24 29 1 #"\n"
+0 0 17 3 22 #";;an editor is one of:"
+0 0 24 29 1 #"\n"
+0 0 17 3 34 #";;() or (make-editor 1String Lo1S)"
+0 0 24 29 1 #"\n"
+0 0 17 3 1 #";"
+0 0 24 29 1 #"\n"
+0 0 17 3 16 #";(define (rev l)"
+0 0 24 29 1 #"\n"
+0 0 17 3 8 #";  (cond"
+0 0 24 29 1 #"\n"
+0 0 17 3 21 #";    [(empty? l) '()]"
+0 0 24 29 1 #"\n"
+0 0 17 3 51 #";    [else (add-at-end (rev (rest l)) (first l))]))"
+0 0 24 29 1 #"\n"
+0 0 17 3 1 #";"
+0 0 24 29 1 #"\n"
+0 0 17 3 25 #";(define (add-at-end l s)"
+0 0 24 29 1 #"\n"
+0 0 17 3 8 #";  (cond"
+0 0 24 29 1 #"\n"
+0 0 17 3 30 #";    [(empty? l) (cons s '())]"
+0 0 24 29 1 #"\n"
+0 0 17 3 26 #";    [else (cons (first l)"
+0 0 24 29 1 #"\n"
+0 0 17 3 43 #";               (add-at-end (rest l) s))]))"
+0 0 24 29 1 #"\n"
+0 0 17 3 44 #";;(rev (cons \"a\" (cons \"b\" (cons \"c\" '()))))"
+0 0 24 29 1 #"\n"
+0 0 17 3 5 #";;177"
+0 0 24 29 1 #"\n"
+0 0 17 3 30 #";(define (create-editor s1 s2)"
+0 0 24 29 1 #"\n"
+0 0 17 3 23 #";  (make-editor s1 s2))"
+0 0 24 29 1 #"\n"
+0 0 17 3 1 #";"
+0 0 24 29 1 #"\n"
+0 0 17 3 19 #";(define HEIGHT 20)"
+0 0 24 29 1 #"\n"
+0 0 17 3 19 #";(define WIDTH 200)"
+0 0 24 29 1 #"\n"
+0 0 17 3 22 #";(define FONT-SIZE 16)"
+0 0 24 29 1 #"\n"
+0 0 17 3 28 #";(define FONT-COLOR \"black\")"
+0 0 24 29 1 #"\n"
+0 0 17 3 39 #";(define MT (empty-scene WIDTH HEIGHT))"
+0 0 24 29 1 #"\n"
+0 0 17 3 51 #";(define CURSOR (rectangle 1 HEIGHT \"solid\" \"red\"))"
+0 0 24 29 1 #"\n"
+0 0 17 3 26 #";(define (editor-kh ed ke)"
+0 0 24 29 1 #"\n"
+0 0 17 3 8 #";  (cond"
+0 0 24 29 1 #"\n"
+0 0 17 3 40 #";    [(key=? ke \"left\") (editor-lft ed)]"
+0 0 24 29 1 #"\n"
+0 0 17 3 41 #";    [(key=? ke \"right\") (editor-rgt ed)]"
+0 0 24 29 1 #"\n"
+0 0 17 3 38 #";    [(key=? ke \"\\b\") (editor-del ed)]"
+0 0 24 29 1 #"\n"
+0 0 17 3 25 #";    [(key=? ke \"\\t\") ed]"
+0 0 24 29 1 #"\n"
+0 0 17 3 25 #";    [(key=? ke \"\\r\") ed]"
+0 0 24 29 1 #"\n"
+0 0 17 3 50 #";    [(= (string-length ke) 1) (editor-ins ed ke)]"
+0 0 24 29 1 #"\n"
+0 0 17 3 16 #";    [else ed]))"
+0 0 24 29 1 #"\n"
+0 0 17 3 30 #";;wish-list for this function:"
+0 0 24 29 1 #"\n"
+0 0 17 3 42 #";;get-first -- inherent to data structure "
+0 0 24 29 1 #"\n"
+0 0 17 3 10 #";;get-last"
+0 0 24 29 1 #"\n"
+0 0 17 3 47 #";;remove-first --inherent to the data structure"
+0 0 24 29 1 #"\n"
+0 0 17 3 13 #";;remove-last"
+0 0 24 29 1 #"\n"
+0 0 17 3 44 #";;add-to-front -- inherent to data structure"
+0 0 24 29 1 #"\n"
+0 0 17 3 32 #";;add-to-back --add-at-end above"
+0 0 24 29 1 #"\n"
+0 0 17 3 5 #";;179"
+0 0 24 29 1 #"\n"
+0 0 17 3 24 #";(define (editor-lft ed)"
+0 0 24 29 1 #"\n"
+0 0 17 3 15 #";  (make-editor"
+0 0 24 29 1 #"\n"
+0 0 17 3 33 #";   (remove-last (editor-pre ed))"
+0 0 24 29 1 #"\n"
+0 0 17 3 56 #";   (cons (get-last (editor-pre ed)) (editor-post ed))))"
+0 0 24 29 1 #"\n"
+0 0 17 3 1 #";"
+0 0 24 29 1 #"\n"
+0 0 17 3 24 #";(define (editor-rgt ed)"
+0 0 24 29 1 #"\n"
+0 0 17 3 15 #";  (make-editor"
+0 0 24 29 1 #"\n"
+0 0 17 3 57 #";   (add-at-end (editor-pre ed) (first (editor-post ed)))"
+0 0 24 29 1 #"\n"
+0 0 17 3 29 #";   (rest (editor-post ed))))"
+0 0 24 29 1 #"\n"
+0 0 17 3 1 #";"
+0 0 24 29 1 #"\n"
+0 0 17 3 24 #";(define (editor-del ed)"
+0 0 24 29 1 #"\n"
+0 0 17 3 15 #";  (make-editor"
+0 0 24 29 1 #"\n"
+0 0 17 3 33 #";   (remove-last (editor-pre ed))"
+0 0 24 29 1 #"\n"
+0 0 17 3 22 #";   (editor-post ed)))"
+0 0 24 29 1 #"\n"
+0 0 17 3 1 #";"
+0 0 24 29 1 #"\n"
+0 0 17 3 27 #";(define (editor-ins ed ke)"
+0 0 24 29 1 #"\n"
+0 0 17 3 15 #";  (make-editor"
+0 0 24 29 1 #"\n"
+0 0 17 3 54 #";   (add-at-end (editor-pre ed) ke) (editor-post ed)))"
+0 0 24 29 1 #"\n"
+0 0 17 3 1 #";"
+0 0 24 29 1 #"\n"
+0 0 17 3 21 #";(define (get-last l)"
+0 0 24 29 1 #"\n"
+0 0 17 3 8 #";  (cond"
+0 0 24 29 1 #"\n"
+0 0 17 3 34 #";    [(empty? (rest l)) (first l)]"
+0 0 24 29 1 #"\n"
+0 0 17 3 33 #";    [else (get-last (rest l))]))"
+0 0 24 29 1 #"\n"
+0 0 17 3 1 #";"
+0 0 24 29 1 #"\n"
+0 0 17 3 24 #";(define (remove-last l)"
+0 0 24 29 1 #"\n"
+0 0 17 3 8 #";  [cond"
+0 0 24 29 1 #"\n"
+0 0 17 3 28 #";    [(empty? (rest l)) '()]"
+0 0 24 29 1 #"\n"
+0 0 17 3 53 #";    [else (cons (first l) (remove-last (rest l)))]])"
+0 0 24 29 1 #"\n"
+0 0 17 3 1 #";"
+0 0 24 29 1 #"\n"
+0 0 17 3 26 #";(define (editor-render e)"
+0 0 24 29 1 #"\n"
+0 0 17 3 78
+(
+ #";  (beside (editor-text (editor-pre e)) CURSOR (editor-text (editor-"
+ #"post e))))"
+) 0 0 24 29 1 #"\n"
+0 0 17 3 1 #";"
+0 0 24 29 1 #"\n"
+0 0 17 3 24 #";(define (editor-text s)"
+0 0 24 29 1 #"\n"
+0 0 17 3 43 #";  (text (implode s) FONT-SIZE FONT-COLOR))"
+0 0 24 29 1 #"\n"
+0 0 17 3 8 #";;ex 180"
+0 0 24 29 1 #"\n"
+0 0 17 3 25 #";(define (editor-text2 s)"
+0 0 24 29 1 #"\n"
+0 0 17 3 47 #";  (text (text-concat s) FONT-SIZE FONT-COLOR))"
+0 0 24 29 1 #"\n"
+0 0 17 3 24 #";(define (text-concat s)"
+0 0 24 29 1 #"\n"
+0 0 17 3 8 #";  (cond"
+0 0 24 29 1 #"\n"
+0 0 17 3 20 #";    [(empty? s) \"\"]"
+0 0 24 29 1 #"\n"
+0 0 17 3 62
+#";    [else (string-append (first s) (text-concat (rest s)))]))"
+0 0 24 29 1 #"\n"
+0 0 17 3 1 #";"
+0 0 24 29 1 #"\n"
+0 0 17 3 17 #";(define (main s)"
+0 0 24 29 1 #"\n"
+0 0 17 3 33 #";  (big-bang (create-editor s \"\")"
+0 0 24 29 1 #"\n"
+0 0 17 3 23 #";    [on-key editor-kh]"
+0 0 24 29 1 #"\n"
+0 0 17 3 30 #";    [to-draw editor-render]))"
+0 0 24 29 1 #"\n"
+0 0 17 3 1 #";"
+0 0 24 29 1 #"\n"
+0 0 17 3 79
+(
+ #";(define ed1 (make-editor (cons \"a\" (cons \"b\" (cons \"c\" '())))"
+ #" (cons \"d\" '())))"
+) 0 0 24 29 1 #"\n"
+0 0 24 29 1 #"\n"
+0 0 17 3 21 #";(define (sort> alon)"
+0 0 24 29 1 #"\n"
+0 0 17 3 8 #";  (cond"
+0 0 24 29 1 #"\n"
+0 0 17 3 24 #";    [(empty? alon) '()]"
+0 0 24 29 1 #"\n"
+0 0 17 3 55 #";    [else (insert (first alon) (sort> (rest alon)))]))"
+0 0 24 29 1 #"\n"
+0 0 17 3 1 #";"
+0 0 24 29 1 #"\n"
+0 0 17 3 24 #";(define (insert n alon)"
+0 0 24 29 1 #"\n"
+0 0 17 3 8 #";  (cond"
+0 0 24 29 1 #"\n"
+0 0 17 3 33 #";    [(empty? alon) (cons n '())]"
+0 0 24 29 1 #"\n"
+0 0 17 3 39 #";    [(> n (first alon)) (cons n alon)]"
+0 0 24 29 1 #"\n"
+0 0 17 3 56 #";    [else (cons (first alon) (insert n (rest alon)))]))"
+0 0 24 29 1 #"\n"
+0 0 17 3 1 #";"
+0 0 24 29 1 #"\n"
+0 0 17 3 1 #";"
+0 0 24 29 1 #"\n"
+0 0 17 3 1 #";"
+0 0 24 29 1 #"\n"
+0 0 17 3 5 #";;186"
+0 0 24 29 1 #"\n"
+0 0 17 3 52 #";;(check-satisfied (sort> (list 12 20 -5)) sorted>?)"
+0 0 24 29 1 #"\n"
+0 0 17 3 1 #";"
+0 0 24 29 1 #"\n"
+0 0 17 3 5 #";;187"
+0 0 24 29 1 #"\n"
+0 0 17 3 22 #";(define (sort>/bad l)"
+0 0 24 29 1 #"\n"
+0 0 17 3 30 #";  (list 9 8 7 6 5 4 3 2 1 0))"
+0 0 24 29 1 #"\n"
+0 0 17 3 1 #";"
+0 0 24 29 1 #"\n"
+0 0 17 3 24 #";(define (sorted? sl ol)"
+0 0 24 29 1 #"\n"
+0 0 17 3 8 #";  (cond"
+0 0 24 29 1 #"\n"
+0 0 17 3 21 #";    [(empty? sl) #t]"
+0 0 24 29 1 #"\n"
+0 0 17 3 104
+(
+ #";    [else (and (>= (first sl) (second sl)) (original-contains (firs"
+ #"t sl) ol) (sorted? (rest sl) ol))]))"
+) 0 0 24 29 1 #"\n"
+0 0 17 3 32 #";(define (original-contains n l)"
+0 0 24 29 1 #"\n"
+0 0 17 3 8 #";  (cond"
+0 0 24 29 1 #"\n"
+0 0 17 3 20 #";    [(empty? l) #f]"
+0 0 24 29 1 #"\n"
+0 0 17 3 25 #";    [(= (first l) n) #t]"
+0 0 24 29 1 #"\n"
+0 0 17 3 44 #";    [else (original-contains n (rest l))]))"
+0 0 24 29 1 #"\n"
+0 0 17 3 1 #";"
+0 0 24 29 1 #"\n"
+0 0 17 3 54 #";;(check-satisfied (sort>/bad (list 1 3 0 2)) sorted?)"
+0 0 24 29 1 #"\n"
+0 0 17 3 1 #";"
+0 0 24 29 1 #"\n"
+0 0 17 3 42 #";(define-struct email [from date message])"
+0 0 24 29 1 #"\n"
+0 0 17 3 35 #";;(make-email String Number String)"
+0 0 24 29 1 #"\n"
+0 0 17 3 1 #";"
+0 0 24 29 1 #"\n"
+0 0 17 3 31 #";(define (sort-emails loemails)"
+0 0 24 29 1 #"\n"
+0 0 17 3 8 #";  (cond"
+0 0 24 29 1 #"\n"
+0 0 17 3 28 #";    [(empty? loemails) '()]"
+0 0 24 29 1 #"\n"
+0 0 17 3 76
+(
+ #";    [else (insert-emails (first loemails) (sort-emails (rest loemai"
+ #"ls)))]))"
+) 0 0 24 29 1 #"\n"
+0 0 17 3 39 #";(define (insert-emails email loemails)"
+0 0 24 29 1 #"\n"
+0 0 17 3 8 #";  (cond"
+0 0 24 29 1 #"\n"
+0 0 17 3 41 #";    [(empty? loemails) (cons email '())]"
+0 0 24 29 1 #"\n"
+0 0 17 3 81
+(
+ #";    [(> (email-date email) (email-date (first loemails))) (cons ema"
+ #"il loemails)]"
+) 0 0 24 29 1 #"\n"
+0 0 17 3 75
+(
+ #";    [else (cons (first loemails) (insert-emails email (rest loemail"
+ #"s)))]))"
+) 0 0 24 29 1 #"\n"
+0 0 17 3 1 #";"
+0 0 24 29 1 #"\n"
+0 0 17 3 5 #";;189"
+0 0 24 29 1 #"\n"
+0 0 17 3 38 #";;assuming sort is largest to smallest"
+0 0 24 29 1 #"\n"
+0 0 17 3 31 #";(define (search-sorted n alon)"
+0 0 24 29 1 #"\n"
+0 0 17 3 8 #";  (cond"
+0 0 24 29 1 #"\n"
+0 0 17 3 27 #";    [(empty? alon) #false]"
+0 0 24 29 1 #"\n"
+0 0 17 3 32 #";    [(> n (first alon)) #false]"
+0 0 24 29 1 #"\n"
+0 0 17 3 31 #";    [(= n (first alon)) #true]"
+0 0 24 29 1 #"\n"
+0 0 17 3 43 #";    [else (search-sorted n (rest alon))]))"
+0 0 24 29 1 #"\n"
+0 0 17 3 5 #";;190"
+0 0 24 29 1 #"\n"
+0 0 17 3 1 #";"
+0 0 24 29 1 #"\n"
+0 0 17 3 24 #";(define (prefixes lo1s)"
+0 0 24 29 1 #"\n"
+0 0 17 3 8 #";  (cond"
+0 0 24 29 1 #"\n"
+0 0 17 3 24 #";    [(empty? lo1s) '()]"
+0 0 24 29 1 #"\n"
+0 0 17 3 56 #";    [else (prefixes-helper (first lo1s) (rest lo1s))]))"
+0 0 24 29 1 #"\n"
+0 0 17 3 33 #";(define (prefixes-helper s lo1s)"
+0 0 24 29 1 #"\n"
+0 0 17 3 8 #";  (cond"
+0 0 24 29 1 #"\n"
+0 0 17 3 113
+(
+ #";    [(empty? lo1s) (cons              ;note that these 2 lines are "
+ #"the same cons structure as the else statement"
+) 0 0 24 29 1 #"\n"
+0 0 17 3 39 #";                    (cons s '()) '())]"
+0 0 24 29 1 #"\n"
+0 0 17 3 157
+(
+ #";    [else (cons ;to create a list of lists, you add a cons nesting,"
+ #" so this recursive nesting works... dont think this can be done with"
+ #" the list constructor"
+) 0 0 24 29 1 #"\n"
+0 0 17 3 67
+#";           (cons s lo1s) (prefixes-helper s (remove-end lo1s)))]))"
+0 0 24 29 1 #"\n"
+0 0 17 3 26 #";(define (remove-end lo1s)"
+0 0 24 29 1 #"\n"
+0 0 17 3 8 #";  (cond"
+0 0 24 29 1 #"\n"
+0 0 17 3 31 #";    [(empty? (rest lo1s)) '()]"
+0 0 24 29 1 #"\n"
+0 0 17 3 58
+#";    [else (cons (first lo1s) (remove-end (rest lo1s)))]))"
+0 0 24 29 1 #"\n"
+0 0 17 3 1 #";"
+0 0 24 29 1 #"\n"
+0 0 17 3 24 #";(define (suffixes lo1s)"
+0 0 24 29 1 #"\n"
+0 0 17 3 29 #";  (prefixes (reverse lo1s)))"
+0 0 24 29 1 #"\n"
+0 0 17 3 1 #";"
+0 0 24 29 1 #"\n"
+0 0 17 3 32 #";(define MT (empty-scene 50 50))"
+0 0 24 29 1 #"\n"
+0 0 17 3 1 #";"
+0 0 24 29 1 #"\n"
+0 0 17 3 29 #";(define (render-line im p q)"
+0 0 24 29 1 #"\n"
+0 0 17 3 69
+(
+ #";  (scene+line im (posn-x p) (pos"
+ #"n-y p) (posn-x q) (posn-y q) \"red\"))"
+) 0 0 24 29 1 #"\n"
+0 0 17 3 1 #";"
+0 0 24 29 1 #"\n"
+0 0 17 3 28 #";(define (render-poly img p)"
+0 0 24 29 1 #"\n"
+0 0 17 3 8 #";  (cond"
+0 0 24 29 1 #"\n"
+0 0 17 3 37 #";    [(empty? (rest (rest (rest p))))"
+0 0 24 29 1 #"\n"
+0 0 17 3 18 #";     (render-line"
+0 0 24 29 1 #"\n"
+0 0 17 3 19 #";      (render-line"
+0 0 24 29 1 #"\n"
+0 0 17 3 45 #";       (render-line MT (first p) (second p))"
+0 0 24 29 1 #"\n"
+0 0 17 3 29 #";       (second p) (third p))"
+0 0 24 29 1 #"\n"
+0 0 17 3 28 #";      (third p) (first p))]"
+0 0 24 29 1 #"\n"
+0 0 17 3 75
+(
+ #";    [else (render-line (render-poly img (rest p)) (first p) (second"
+ #" p))]))"
+) 0 0 24 29 1 #"\n"
+0 0 17 3 19 #";;194 (inadvertent)"
+0 0 24 29 1 #"\n"
+0 0 17 3 35 #";(define (render-poly-better img p)"
+0 0 24 29 1 #"\n"
+0 0 17 3 41 #";  (connect-dots-helper img p (first p)))"
+0 0 24 29 1 #"\n"
+0 0 17 3 1 #";"
+0 0 24 29 1 #"\n"
+0 0 17 3 43 #";(define (connect-dots-helper img p 1-item)"
+0 0 24 29 1 #"\n"
+0 0 17 3 8 #";  (cond"
+0 0 24 29 1 #"\n"
+0 0 17 3 59
+#";    [(empty? (rest p)) (render-line img (first p) 1-item)]"
+0 0 24 29 1 #"\n"
+0 0 17 3 90
+(
+ #";    [else (connect-dots-helper (render-line img (first p) (second p"
+ #")) (rest p) 1-item)]))"
+) 0 0 24 29 1 #"\n"
+0 0 17 3 1 #";"
+0 0 24 29 1 #"\n"
+0 0 17 3 1 #";"
+0 0 24 29 1 #"\n"
+0 0 17 3 30 #";(define (connect-dots2 img p)"
+0 0 24 29 1 #"\n"
+0 0 17 3 8 #";  (cond"
+0 0 24 29 1 #"\n"
+0 0 17 3 28 #";    [(empty? (rest p)) img]"
+0 0 24 29 1 #"\n"
+0 0 17 3 10 #";    [else"
+0 0 24 29 1 #"\n"
+0 0 17 3 18 #";     (render-line"
+0 0 24 29 1 #"\n"
+0 0 17 3 36 #";       (connect-dots2 img (rest p))"
+0 0 24 29 1 #"\n"
+0 0 17 3 17 #";       (first p)"
+0 0 24 29 1 #"\n"
+0 0 17 3 22 #";       (second p))]))"
+0 0 24 29 1 #"\n"
+0 0 17 3 1 #";"
+0 0 24 29 1 #"\n"
+0 0 17 3 8 #";       "
+0 0 24 29 1 #"\n"
+0 0 17 3 36 #";(define (render-poly-better2 img p)"
+0 0 24 29 1 #"\n"
+0 0 17 3 15 #";  (render-line"
+0 0 24 29 1 #"\n"
+0 0 17 3 46 #";   (connect-dots2 img p) (first p) (last p)))"
+0 0 24 29 1 #"\n"
+0 0 17 3 1 #";"
+0 0 24 29 1 #"\n"
+0 0 17 3 17 #";(define (last l)"
+0 0 24 29 1 #"\n"
+0 0 17 3 8 #";  (cond"
+0 0 24 29 1 #"\n"
+0 0 17 3 34 #";    [(empty? (rest l)) (first l)]"
+0 0 24 29 1 #"\n"
+0 0 17 3 29 #";    [else (last (rest l))]))"
+0 0 24 29 1 #"\n"
+0 0 17 3 5 #";;193"
+0 0 24 29 1 #"\n"
+0 0 17 3 36 #";(define (render-poly-better3 img p)"
+0 0 24 29 1 #"\n"
+0 0 17 3 49 #";  (connect-dots2 img (add-at-end p (first p) )))"
+0 0 24 29 1 #"\n"
+0 0 17 3 1 #";"
+0 0 24 29 1 #"\n"
+0 0 17 3 25 #";(define (add-at-end l s)"
+0 0 24 29 1 #"\n"
+0 0 17 3 8 #";  (cond"
+0 0 24 29 1 #"\n"
+0 0 17 3 30 #";    [(empty? l) (cons s '())]"
+0 0 24 29 1 #"\n"
+0 0 17 3 26 #";    [else (cons (first l)"
+0 0 24 29 1 #"\n"
+0 0 17 3 43 #";               (add-at-end (rest l) s))]))"
+0 0 24 29 1 #"\n"
+0 0 24 29 1 #"\n"
+0 0 17 3 13 #";PROJECT 12.1"
+0 0 24 29 1 #"\n"
+0 9        6400 21           0 0           0 916 0 24 3 1 #"("
+0 0 15 3 6 #"define"
+0 0 24 3 1 #" "
+0 0 14 3 8 #"LOCATION"
+0 0 24 3 1 #" "
+0 0 19 3 44 #"\"C:\\\\Users\\\\Ian\\\\Documents\\\\HDTP\\\\words.txt\""
+0 0 24 3 1 #")"
+0 0 24 29 1 #"\n"
+0 0 24 3 1 #"("
+0 0 15 3 6 #"define"
+0 0 24 3 1 #" "
+0 0 14 3 14 #"LOCATION_SMALL"
+0 0 24 3 1 #" "
+0 0 19 3 50
+#"\"C:\\\\Users\\\\Ian\\\\Documents\\\\HDTP\\\\words_small.txt\""
+0 0 24 3 1 #")"
+0 0 24 29 1 #"\n"
+0 0 17 3 36 #"; A Dictionary is a List-of-strings."
+0 0 24 29 1 #"\n"
+0 0 24 3 1 #"("
+0 0 15 3 6 #"define"
+0 0 24 3 1 #" "
+0 0 14 3 7 #"AS-LIST"
+0 0 24 3 2 #" ("
+0 0 14 3 10 #"read-lines"
+0 0 24 3 1 #" "
+0 0 14 3 8 #"LOCATION"
+0 0 24 3 2 #"))"
+0 0 24 29 1 #"\n"
+0 0 24 3 1 #"("
+0 0 15 3 6 #"define"
+0 0 24 3 1 #" "
+0 0 14 3 13 #"AS-LIST-SMALL"
+0 0 24 3 2 #" ("
+0 0 14 3 10 #"read-lines"
+0 0 24 3 1 #" "
+0 0 14 3 14 #"LOCATION_SMALL"
+0 0 24 3 2 #"))"
+0 0 24 29 1 #"\n"
+0 0 17 3 45 #"; A Letter is one of the following 1Strings: "
+0 0 24 29 1 #"\n"
+0 0 17 3 9 #"; \342\200\223 \"a\""
+0 0 24 29 1 #"\n"
+0 0 17 3 10 #"; \342\200\223 ... "
+0 0 24 29 1 #"\n"
+0 0 17 3 9 #"; \342\200\223 \"z\""
+0 0 24 29 1 #"\n"
+0 0 17 3 44 #"; or, equivalently, a member? of this list: "
+0 0 24 29 1 #"\n"
+0 0 24 3 1 #"("
+0 0 15 3 6 #"define"
+0 0 24 3 1 #" "
+0 0 14 3 7 #"LETTERS"
+0 0 24 29 1 #"\n"
+0 0 24 3 3 #"  ("
+0 0 14 3 7 #"explode"
+0 0 24 3 1 #" "
+0 0 19 3 28 #"\"abcdefghijklmnopqrstuvwxyz\""
+0 0 24 3 2 #"))"
+0 0 24 29 1 #"\n"
+0 0 17 3 4 #";195"
+0 0 24 29 1 #"\n"
+0 0 17 3 9 #";1-string"
+0 0 24 29 1 #"\n"
+0 0 24 3 1 #"("
+0 0 15 3 6 #"define"
+0 0 24 3 2 #" ("
+0 0 14 3 12 #"starts-with#"
+0 0 24 3 1 #" "
+0 0 14 3 4 #"dict"
+0 0 24 3 1 #" "
+0 0 14 3 6 #"letter"
+0 0 24 3 1 #")"
+0 0 24 29 1 #"\n"
+0 0 24 3 3 #"  ("
+0 0 15 3 4 #"cond"
+0 0 24 29 1 #"\n"
+0 0 24 3 6 #"    [("
+0 0 14 3 6 #"empty?"
+0 0 24 3 1 #" "
+0 0 14 3 4 #"dict"
+0 0 24 3 2 #") "
+0 0 21 3 1 #"0"
+0 0 24 3 1 #"]"
+0 0 24 29 1 #"\n"
+0 0 24 3 6 #"    [("
+0 0 14 3 8 #"string=?"
+0 0 24 3 1 #" "
+0 0 14 3 6 #"letter"
+0 0 24 3 2 #" ("
+0 0 14 3 10 #"string-ith"
+0 0 24 3 2 #" ("
+0 0 14 3 5 #"first"
+0 0 24 3 1 #" "
+0 0 14 3 4 #"dict"
+0 0 24 3 2 #") "
+0 0 21 3 1 #"0"
+0 0 24 3 4 #")) ("
+0 0 14 3 1 #"+"
+0 0 24 3 1 #" "
+0 0 21 3 1 #"1"
+0 0 24 3 2 #" ("
+0 0 14 3 12 #"starts-with#"
+0 0 24 3 2 #" ("
+0 0 14 3 4 #"rest"
+0 0 24 3 1 #" "
+0 0 14 3 4 #"dict"
+0 0 24 3 2 #") "
+0 0 14 3 6 #"letter"
+0 0 24 3 3 #"))]"
+0 0 24 29 1 #"\n"
+0 0 24 3 5 #"    ["
+0 0 14 3 4 #"else"
+0 0 24 3 2 #" ("
+0 0 14 3 12 #"starts-with#"
+0 0 24 3 2 #" ("
+0 0 14 3 4 #"rest"
+0 0 24 3 1 #" "
+0 0 14 3 4 #"dict"
+0 0 24 3 2 #") "
+0 0 14 3 6 #"letter"
+0 0 24 3 2 #")]"
+0 0 24 29 1 #"\n"
+0 0 24 3 6 #"    ))"
+0 0 24 29 1 #"\n"
+0 0 17 3 45 #";checks for any length of string for a letter"
+0 0 24 29 1 #"\n"
+0 0 17 3 78
+(
+ #";returns a number of count of words in dictionary that start with gi"
+ #"ven letter"
+) 0 0 24 29 1 #"\n"
+0 0 24 3 1 #"("
+0 0 15 3 6 #"define"
+0 0 24 3 2 #" ("
+0 0 14 3 13 #"starts-with#2"
+0 0 24 3 1 #" "
+0 0 14 3 4 #"dict"
+0 0 24 3 1 #" "
+0 0 14 3 6 #"letter"
+0 0 24 3 1 #")"
+0 0 24 29 1 #"\n"
+0 0 24 3 3 #"  ("
+0 0 15 3 4 #"cond"
+0 0 24 29 1 #"\n"
+0 0 24 3 6 #"    [("
+0 0 14 3 6 #"empty?"
+0 0 24 3 1 #" "
+0 0 14 3 4 #"dict"
+0 0 24 3 2 #") "
+0 0 21 3 1 #"0"
+0 0 24 3 1 #"]"
+0 0 24 29 1 #"\n"
+0 0 24 3 6 #"    [("
+0 0 14 3 1 #"<"
+0 0 24 3 2 #" ("
+0 0 14 3 13 #"string-length"
+0 0 24 3 2 #" ("
+0 0 14 3 5 #"first"
+0 0 24 3 1 #" "
+0 0 14 3 4 #"dict"
+0 0 24 3 4 #")) ("
+0 0 14 3 13 #"string-length"
+0 0 24 3 1 #" "
+0 0 14 3 6 #"letter"
+0 0 24 3 4 #")) ("
+0 0 14 3 13 #"starts-with#2"
+0 0 24 3 2 #" ("
+0 0 14 3 4 #"rest"
+0 0 24 3 1 #" "
+0 0 14 3 4 #"dict"
+0 0 24 3 2 #") "
+0 0 14 3 6 #"letter"
+0 0 24 3 3 #")] "
+0 0 17 3 55 #";if word in dict is less than size of letter, ignore it"
+0 0 24 29 1 #"\n"
+0 0 24 3 6 #"    [("
+0 0 14 3 8 #"string=?"
+0 0 24 3 1 #" "
+0 0 14 3 6 #"letter"
+0 0 24 3 2 #" ("
+0 0 14 3 9 #"substring"
+0 0 24 3 2 #" ("
+0 0 14 3 5 #"first"
+0 0 24 3 1 #" "
+0 0 14 3 4 #"dict"
+0 0 24 3 2 #") "
+0 0 21 3 1 #"0"
+0 0 24 3 2 #" ("
+0 0 14 3 13 #"string-length"
+0 0 24 3 1 #" "
+0 0 14 3 6 #"letter"
+0 0 24 3 5 #"))) ("
+0 0 14 3 1 #"+"
+0 0 24 3 1 #" "
+0 0 21 3 1 #"1"
+0 0 24 3 2 #" ("
+0 0 14 3 13 #"starts-with#2"
+0 0 24 3 2 #" ("
+0 0 14 3 4 #"rest"
+0 0 24 3 1 #" "
+0 0 14 3 4 #"dict"
+0 0 24 3 2 #") "
+0 0 14 3 6 #"letter"
+0 0 24 3 4 #"))] "
+0 0 17 3 28 #";if a match, increment count"
+0 0 24 29 1 #"\n"
+0 0 24 3 5 #"    ["
+0 0 14 3 4 #"else"
+0 0 24 3 2 #" ("
+0 0 14 3 13 #"starts-with#2"
+0 0 24 3 2 #" ("
+0 0 14 3 4 #"rest"
+0 0 24 3 1 #" "
+0 0 14 3 4 #"dict"
+0 0 24 3 2 #") "
+0 0 14 3 6 #"letter"
+0 0 24 3 2 #")]"
+0 0 24 29 1 #"\n"
+0 0 24 3 6 #"    ))"
+0 0 24 29 1 #"\n"
+0 0 17 3 4 #";196"
+0 0 24 29 1 #"\n"
+0 0 24 3 1 #"("
+0 0 15 3 13 #"define-struct"
+0 0 24 3 1 #" "
+0 0 14 3 12 #"letter-count"
+0 0 24 3 2 #" ["
+0 0 14 3 6 #"letter"
+0 0 24 3 1 #" "
+0 0 14 3 5 #"count"
+0 0 24 3 2 #"])"
+0 0 24 29 1 #"\n"
+0 0 24 3 1 #"("
+0 0 15 3 6 #"define"
+0 0 24 3 2 #" ("
+0 0 14 3 15 #"count-by-letter"
+0 0 24 3 1 #" "
+0 0 14 3 4 #"dict"
+0 0 24 3 1 #")"
+0 0 24 29 1 #"\n"
+0 0 24 3 3 #"  ("
+0 0 14 3 22 #"count-by-letter-helper"
+0 0 24 3 1 #" "
+0 0 14 3 4 #"dict"
+0 0 24 3 1 #" "
+0 0 14 3 7 #"LETTERS"
+0 0 24 3 2 #"))"
+0 0 24 29 1 #"\n"
+0 0 24 3 1 #"("
+0 0 15 3 6 #"define"
+0 0 24 3 2 #" ("
+0 0 14 3 22 #"count-by-letter-helper"
+0 0 24 3 1 #" "
+0 0 14 3 4 #"dict"
+0 0 24 3 1 #" "
+0 0 14 3 11 #"letter-list"
+0 0 24 3 1 #")"
+0 0 24 29 1 #"\n"
+0 0 24 3 3 #"  ("
+0 0 15 3 4 #"cond"
+0 0 24 29 1 #"\n"
+0 0 24 3 6 #"    [("
+0 0 14 3 6 #"empty?"
+0 0 24 3 1 #" "
+0 0 14 3 11 #"letter-list"
+0 0 24 3 2 #") "
+0 0 21 3 1 #"'"
+0 0 24 3 3 #"()]"
+0 0 24 29 1 #"\n"
+0 0 24 3 5 #"    ["
+0 0 14 3 4 #"else"
+0 0 24 3 2 #" ("
+0 0 14 3 4 #"cons"
+0 0 24 3 2 #" ("
+0 0 14 3 17 #"make-letter-count"
+0 0 24 3 2 #" ("
+0 0 14 3 5 #"first"
+0 0 24 3 1 #" "
+0 0 14 3 11 #"letter-list"
+0 0 24 3 3 #") ("
+0 0 14 3 13 #"starts-with#2"
+0 0 24 3 1 #" "
+0 0 14 3 4 #"dict"
+0 0 24 3 2 #" ("
+0 0 14 3 5 #"first"
+0 0 24 3 1 #" "
+0 0 14 3 11 #"letter-list"
+0 0 24 3 5 #"))) ("
+0 0 14 3 22 #"count-by-letter-helper"
+0 0 24 3 1 #" "
+0 0 14 3 4 #"dict"
+0 0 24 3 2 #" ("
+0 0 14 3 4 #"rest"
+0 0 24 3 1 #" "
+0 0 14 3 11 #"letter-list"
+0 0 24 3 6 #")))]))"
+0 0 24 29 1 #"\n"
+0 9         901 21           0 0           0 149 0 24 3 1 #"("
+0 0 15 3 6 #"define"
+0 0 24 3 2 #" ("
+0 0 14 3 15 #"count-by-letter"
+0 0 24 3 1 #" "
+0 0 14 3 4 #"dict"
+0 0 24 3 1 #")"
+0 0 24 29 1 #"\n"
+0 0 24 3 3 #"  ("
+0 0 14 3 22 #"count-by-letter-helper"
+0 0 24 3 1 #" "
+0 0 14 3 4 #"dict"
+0 0 24 3 1 #" "
+0 0 21 3 1 #"'"
+0 0 24 3 4 #"()))"
+0 0 24 29 1 #"\n"
+0 0 24 3 1 #"("
+0 0 15 3 6 #"define"
+0 0 24 3 2 #" ("
+0 0 14 3 22 #"count-by-letter-helper"
+0 0 24 3 1 #" "
+0 0 14 3 4 #"dict"
+0 0 24 3 1 #" "
+0 0 14 3 9 #"countList"
+0 0 24 3 1 #")"
+0 0 24 29 1 #"\n"
+0 0 24 3 3 #"  ("
+0 0 15 3 4 #"cond"
+0 0 24 29 1 #"\n"
+0 0 24 3 6 #"    [("
+0 0 14 3 6 #"empty?"
+0 0 24 3 1 #" "
+0 0 14 3 4 #"dict"
+0 0 24 3 2 #") "
+0 0 21 3 1 #"'"
+0 0 24 3 3 #"()]"
+0 0 24 29 1 #"\n"
+0 0 24 3 5 #"    ["
+0 0 14 3 4 #"else"
+0 0 24 3 2 #" ("
+0 0 14 3 4 #"cons"
+0 0 24 3 2 #" ("
+0 0 14 3 9 #"add-count"
+0 0 24 3 2 #" ("
+0 0 14 3 10 #"string-ith"
+0 0 24 3 2 #" ("
+0 0 14 3 5 #"first"
+0 0 24 3 1 #" "
+0 0 14 3 4 #"dict"
+0 0 24 3 2 #") "
+0 0 21 3 1 #"0"
+0 0 24 3 2 #") "
+0 0 14 3 9 #"countList"
+0 0 24 3 1 #" "
+0 0 21 3 6 #"#false"
+0 0 24 3 3 #") ("
+0 0 14 3 22 #"count-by-letter-helper"
+0 0 24 3 2 #" ("
+0 0 14 3 4 #"rest"
+0 0 24 3 1 #" "
+0 0 14 3 4 #"dict"
+0 0 24 3 2 #") "
+0 0 14 3 9 #"countList"
+0 0 24 3 5 #"))]))"
+0 0 24 29 1 #"\n"
+0 0 17 3 97
+(
+ #";may not need the countAdded flag. should be able to just stop recur"
+ #"sing when the letter is found"
+) 0 0 24 29 1 #"\n"
+0 0 24 3 1 #"("
+0 0 15 3 6 #"define"
+0 0 24 3 2 #" ("
+0 0 14 3 9 #"add-count"
+0 0 24 3 1 #" "
+0 0 14 3 6 #"letter"
+0 0 24 3 1 #" "
+0 0 14 3 9 #"countList"
+0 0 24 3 1 #" "
+0 0 14 3 10 #"countAdded"
+0 0 24 3 1 #")"
+0 0 24 29 1 #"\n"
+0 0 24 3 3 #"  ("
+0 0 15 3 4 #"cond"
+0 0 24 29 1 #"\n"
+0 0 24 3 6 #"    [("
+0 0 14 3 6 #"empty?"
+0 0 24 3 1 #" "
+0 0 14 3 9 #"countList"
+0 0 24 3 3 #") ("
+0 0 14 3 4 #"cons"
+0 0 24 3 2 #" ("
+0 0 14 3 17 #"make-letter-count"
+0 0 24 3 1 #" "
+0 0 14 3 6 #"letter"
+0 0 24 3 1 #" "
+0 0 21 3 1 #"1"
+0 0 24 3 2 #") "
+0 0 21 3 1 #"'"
+0 0 24 3 4 #"())]"
+0 0 24 29 1 #"\n"
+0 0 24 3 6 #"    [("
+0 0 14 3 8 #"string=?"
+0 0 24 3 1 #" "
+0 0 14 3 6 #"letter"
+0 0 24 3 2 #" ("
+0 0 14 3 19 #"letter-count-letter"
+0 0 24 3 2 #" ("
+0 0 14 3 5 #"first"
+0 0 24 3 1 #" "
+0 0 14 3 9 #"countList"
+0 0 24 3 5 #"))) ("
+0 0 14 3 4 #"cons"
+0 0 24 3 2 #" ("
+0 0 14 3 17 #"make-letter-count"
+0 0 24 3 1 #" "
+0 0 14 3 6 #"letter"
+0 0 24 3 2 #" ("
+0 0 14 3 1 #"+"
+0 0 24 3 2 #" ("
+0 0 14 3 18 #"letter-count-count"
+0 0 24 3 2 #" ("
+0 0 14 3 5 #"first"
+0 0 24 3 1 #" "
+0 0 14 3 9 #"countList"
+0 0 24 3 3 #")) "
+0 0 21 3 1 #"1"
+0 0 24 3 4 #")) ("
+0 0 14 3 4 #"rest"
+0 0 24 3 1 #" "
+0 0 14 3 9 #"countList"
+0 0 24 3 3 #"))]"
+0 0 24 29 1 #"\n"
+0 0 24 3 5 #"    ["
+0 0 14 3 4 #"else"
+0 0 24 3 2 #" ("
+0 0 14 3 4 #"cons"
+0 0 24 3 2 #" ("
+0 0 14 3 5 #"first"
+0 0 24 3 1 #" "
+0 0 14 3 9 #"countList"
+0 0 24 3 3 #") ("
+0 0 14 3 9 #"add-count"
+0 0 24 3 1 #" "
+0 0 14 3 6 #"letter"
+0 0 24 3 2 #" ("
+0 0 14 3 4 #"rest"
+0 0 24 3 1 #" "
+0 0 14 3 9 #"countList"
+0 0 24 3 2 #") "
+0 0 21 3 6 #"#false"
+0 0 24 3 5 #"))]))"
+0           0 0 0 24 29 1 #"\n"
+0 0 24 29 1 #"\n"
+0 0 17 3 4 #";197"
+0 0 24 29 1 #"\n"
+0 0 24 3 1 #"("
+0 0 15 3 6 #"define"
+0 0 24 3 2 #" ("
+0 0 14 3 13 #"most-frequent"
+0 0 24 3 1 #" "
+0 0 14 3 4 #"dict"
+0 0 24 3 1 #")"
+0 0 24 29 1 #"\n"
+0 0 24 3 3 #"  ("
+0 0 14 3 20 #"most-frequent-helper"
+0 0 24 3 2 #" ("
+0 0 14 3 15 #"count-by-letter"
+0 0 24 3 1 #" "
+0 0 14 3 4 #"dict"
+0 0 24 3 3 #") ("
+0 0 14 3 17 #"make-letter-count"
+0 0 24 3 1 #" "
+0 0 19 3 3 #"\"a\""
+0 0 24 3 1 #" "
+0 0 21 3 1 #"0"
+0 0 24 3 3 #")))"
+0 0 24 29 1 #"\n"
+0 0 24 3 1 #"("
+0 0 15 3 6 #"define"
+0 0 24 3 2 #" ("
+0 0 14 3 20 #"most-frequent-helper"
+0 0 24 3 1 #" "
+0 0 14 3 11 #"letterCount"
+0 0 24 3 1 #" "
+0 0 14 3 5 #"maxLC"
+0 0 24 3 1 #")"
+0 0 24 29 1 #"\n"
+0 0 24 3 3 #"  ("
+0 0 15 3 4 #"cond"
+0 0 24 29 1 #"\n"
+0 0 24 3 6 #"    [("
+0 0 14 3 6 #"empty?"
+0 0 24 3 1 #" "
+0 0 14 3 11 #"letterCount"
+0 0 24 3 2 #") "
+0 0 14 3 5 #"maxLC"
+0 0 24 3 1 #"]"
+0 0 24 29 1 #"\n"
+0 0 24 3 6 #"    [("
+0 0 14 3 1 #">"
+0 0 24 3 2 #" ("
+0 0 14 3 18 #"letter-count-count"
+0 0 24 3 2 #" ("
+0 0 14 3 5 #"first"
+0 0 24 3 1 #" "
+0 0 14 3 11 #"letterCount"
+0 0 24 3 4 #")) ("
+0 0 14 3 18 #"letter-count-count"
+0 0 24 3 1 #" "
+0 0 14 3 5 #"maxLC"
+0 0 24 3 2 #"))"
+0 0 24 29 1 #"\n"
+0 0 24 3 10 #"         ("
+0 0 14 3 20 #"most-frequent-helper"
+0 0 24 3 2 #" ("
+0 0 14 3 4 #"rest"
+0 0 24 3 1 #" "
+0 0 14 3 11 #"letterCount"
+0 0 24 3 1 #")"
+0 0 24 29 1 #"\n"
+0 0 24 3 32 #"                               ("
+0 0 14 3 5 #"first"
+0 0 24 3 1 #" "
+0 0 14 3 11 #"letterCount"
+0 0 24 3 3 #"))]"
+0 0 24 29 1 #"\n"
+0 0 24 3 5 #"    ["
+0 0 14 3 4 #"else"
+0 0 24 3 2 #" ("
+0 0 14 3 20 #"most-frequent-helper"
+0 0 24 3 2 #" ("
+0 0 14 3 4 #"rest"
+0 0 24 3 1 #" "
+0 0 14 3 11 #"letterCount"
+0 0 24 3 2 #") "
+0 0 14 3 5 #"maxLC"
+0 0 24 3 4 #")]))"
+0 0 24 29 1 #"\n"
+0 0 17 3 4 #";198"
+0 0 24 29 1 #"\n"
+0 0 24 3 1 #"("
+0 0 15 3 6 #"define"
+0 0 24 3 2 #" ("
+0 0 14 3 21 #"words-by-first-letter"
+0 0 24 3 1 #" "
+0 0 14 3 4 #"dict"
+0 0 24 3 1 #")"
+0 0 24 29 1 #"\n"
+0 0 24 3 3 #"  ("
+0 0 14 3 28 #"words-by-first-letter-helper"
+0 0 24 3 1 #" "
+0 0 14 3 4 #"dict"
+0 0 24 3 1 #" "
+0 0 21 3 1 #"'"
+0 0 24 3 4 #"()))"
+0 0 24 29 1 #"\n"
+0 0 17 3 31 #";returns a list of dictionaries"
+0 0 24 29 1 #"\n"
+0 0 24 3 1 #"("
+0 0 15 3 6 #"define"
+0 0 24 3 2 #" ("
+0 0 14 3 28 #"words-by-first-letter-helper"
+0 0 24 3 1 #" "
+0 0 14 3 4 #"dict"
+0 0 24 3 1 #" "
+0 0 14 3 8 #"lo-dicts"
+0 0 24 3 1 #")"
+0 0 24 29 1 #"\n"
+0 0 24 3 3 #"  ("
+0 0 15 3 4 #"cond"
+0 0 24 29 1 #"\n"
+0 0 24 3 6 #"    [("
+0 0 14 3 6 #"empty?"
+0 0 24 3 1 #" "
+0 0 14 3 4 #"dict"
+0 0 24 3 2 #") "
+0 0 14 3 8 #"lo-dicts"
+0 0 24 3 1 #"]"
+0 0 24 29 1 #"\n"
+0 0 24 3 5 #"    ["
+0 0 14 3 4 #"else"
+0 0 24 3 2 #" ("
+0 0 14 3 28 #"words-by-first-letter-helper"
+0 0 24 3 2 #" ("
+0 0 14 3 4 #"rest"
+0 0 24 3 1 #" "
+0 0 14 3 4 #"dict"
+0 0 24 3 3 #") ("
+0 0 14 3 20 #"find-and-add-to-list"
+0 0 24 3 1 #" "
+0 0 14 3 8 #"lo-dicts"
+0 0 24 3 2 #" ("
+0 0 14 3 5 #"first"
+0 0 24 3 1 #" "
+0 0 14 3 4 #"dict"
+0 0 24 3 6 #")))]))"
+0 0 24 29 1 #"\n"
+0 0 17 3 72
+(
+ #";finds the correct lo-words in the lo-dicts to add the passed in wor"
+ #"d to"
+) 0 0 24 29 1 #"\n"
+0 0 17 3 31 #";returns a list of dictionaries"
+0 0 24 29 1 #"\n"
+0 0 24 3 1 #"("
+0 0 15 3 6 #"define"
+0 0 24 3 2 #" ("
+0 0 14 3 20 #"find-and-add-to-list"
+0 0 24 3 1 #" "
+0 0 14 3 8 #"lo-dicts"
+0 0 24 3 1 #" "
+0 0 14 3 4 #"word"
+0 0 24 3 1 #")"
+0 0 24 29 1 #"\n"
+0 0 24 3 3 #"  ("
+0 0 15 3 4 #"cond"
+0 0 24 29 1 #"\n"
+0 0 24 3 6 #"    [("
+0 0 14 3 6 #"empty?"
+0 0 24 3 1 #" "
+0 0 14 3 8 #"lo-dicts"
+0 0 24 3 3 #") ("
+0 0 14 3 4 #"cons"
+0 0 24 3 2 #" ("
+0 0 14 3 11 #"add-to-dict"
+0 0 24 3 1 #" "
+0 0 21 3 1 #"'"
+0 0 24 3 3 #"() "
+0 0 14 3 4 #"word"
+0 0 24 3 2 #") "
+0 0 21 3 1 #"'"
+0 0 24 3 4 #"())]"
+0 0 24 29 1 #"\n"
+0 0 24 3 6 #"    [("
+0 0 14 3 8 #"string=?"
+0 0 24 3 2 #" ("
+0 0 14 3 10 #"string-ith"
+0 0 24 3 2 #" ("
+0 0 14 3 5 #"first"
+0 0 24 3 2 #" ("
+0 0 14 3 5 #"first"
+0 0 24 3 1 #" "
+0 0 14 3 8 #"lo-dicts"
+0 0 24 3 3 #")) "
+0 0 21 3 1 #"0"
+0 0 24 3 3 #") ("
+0 0 14 3 10 #"string-ith"
+0 0 24 3 1 #" "
+0 0 14 3 4 #"word"
+0 0 24 3 1 #" "
+0 0 21 3 1 #"0"
+0 0 24 3 4 #")) ("
+0 0 14 3 4 #"cons"
+0 0 24 3 2 #" ("
+0 0 14 3 11 #"add-to-dict"
+0 0 24 3 2 #" ("
+0 0 14 3 5 #"first"
+0 0 24 3 1 #" "
+0 0 14 3 8 #"lo-dicts"
+0 0 24 3 2 #") "
+0 0 14 3 4 #"word"
+0 0 24 3 3 #") ("
+0 0 14 3 4 #"rest"
+0 0 24 3 1 #" "
+0 0 14 3 8 #"lo-dicts"
+0 0 24 3 3 #"))]"
+0 0 24 29 1 #"\n"
+0 0 24 3 5 #"    ["
+0 0 14 3 4 #"else"
+0 0 24 3 2 #" ("
+0 0 14 3 4 #"cons"
+0 0 24 3 2 #" ("
+0 0 14 3 5 #"first"
+0 0 24 3 1 #" "
+0 0 14 3 8 #"lo-dicts"
+0 0 24 3 3 #") ("
+0 0 14 3 20 #"find-and-add-to-list"
+0 0 24 3 2 #" ("
+0 0 14 3 4 #"rest"
+0 0 24 3 1 #" "
+0 0 14 3 8 #"lo-dicts"
+0 0 24 3 2 #") "
+0 0 14 3 4 #"word"
+0 0 24 3 5 #"))]))"
+0 0 24 29 1 #"\n"
+0 0 17 3 21 #";returns a dictionary"
+0 0 24 29 1 #"\n"
+0 0 24 3 1 #"("
+0 0 15 3 6 #"define"
+0 0 24 3 2 #" ("
+0 0 14 3 11 #"add-to-dict"
+0 0 24 3 1 #" "
+0 0 14 3 8 #"currDict"
+0 0 24 3 1 #" "
+0 0 14 3 4 #"word"
+0 0 24 3 1 #")"
+0 0 24 29 1 #"\n"
+0 0 24 3 3 #"  ("
+0 0 14 3 4 #"cons"
+0 0 24 3 1 #" "
+0 0 14 3 4 #"word"
+0 0 24 3 1 #" "
+0 0 14 3 8 #"currDict"
+0 0 24 3 2 #"))"
+0 0 24 29 1 #"\n"
+0 0 24 29 1 #"\n"
+0 0 24 3 1 #"("
+0 0 15 3 6 #"define"
+0 0 24 3 2 #" ("
+0 0 14 3 16 #"most-frequent.v2"
+0 0 24 3 1 #" "
+0 0 14 3 4 #"dict"
+0 0 24 3 1 #")"
+0 0 24 29 1 #"\n"
+0 0 24 3 3 #"  ("
+0 0 14 3 23 #"most-frequent.v2-helper"
+0 0 24 3 2 #" ("
+0 0 14 3 21 #"words-by-first-letter"
+0 0 24 3 1 #" "
+0 0 14 3 4 #"dict"
+0 0 24 3 3 #") ("
+0 0 14 3 17 #"make-letter-count"
+0 0 24 3 1 #" "
+0 0 19 3 2 #"\"\""
+0 0 24 3 1 #" "
+0 0 21 3 1 #"0"
+0 0 24 3 3 #")))"
+0 0 24 29 1 #"\n"
+0 0 24 3 1 #"("
+0 0 15 3 6 #"define"
+0 0 24 3 2 #" ("
+0 0 14 3 23 #"most-frequent.v2-helper"
+0 0 24 3 1 #" "
+0 0 14 3 8 #"lo-dicts"
+0 0 24 3 1 #" "
+0 0 14 3 2 #"lc"
+0 0 24 3 1 #")"
+0 0 24 29 1 #"\n"
+0 0 24 3 3 #"  ("
+0 0 15 3 4 #"cond"
+0 0 24 29 1 #"\n"
+0 0 24 3 6 #"    [("
+0 0 14 3 6 #"empty?"
+0 0 24 3 1 #" "
+0 0 14 3 8 #"lo-dicts"
+0 0 24 3 2 #") "
+0 0 14 3 2 #"lc"
+0 0 24 3 1 #"]"
+0 0 24 29 1 #"\n"
+0 0 24 3 6 #"    [("
+0 0 14 3 1 #">"
+0 0 24 3 2 #" ("
+0 0 14 3 6 #"length"
+0 0 24 3 2 #" ("
+0 0 14 3 5 #"first"
+0 0 24 3 1 #" "
+0 0 14 3 8 #"lo-dicts"
+0 0 24 3 4 #")) ("
+0 0 14 3 18 #"letter-count-count"
+0 0 24 3 1 #" "
+0 0 14 3 2 #"lc"
+0 0 24 3 4 #")) ("
+0 0 14 3 23 #"most-frequent.v2-helper"
+0 0 24 3 2 #" ("
+0 0 14 3 4 #"rest"
+0 0 24 3 1 #" "
+0 0 14 3 8 #"lo-dicts"
+0 0 24 3 3 #") ("
+0 0 14 3 17 #"make-letter-count"
+0 0 24 3 2 #" ("
+0 0 14 3 10 #"string-ith"
+0 0 24 3 2 #" ("
+0 0 14 3 5 #"first"
+0 0 24 3 2 #" ("
+0 0 14 3 5 #"first"
+0 0 24 3 1 #" "
+0 0 14 3 8 #"lo-dicts"
+0 0 24 3 3 #")) "
+0 0 21 3 1 #"0"
+0 0 24 3 3 #") ("
+0 0 14 3 6 #"length"
+0 0 24 3 2 #" ("
+0 0 14 3 5 #"first"
+0 0 24 3 1 #" "
+0 0 14 3 8 #"lo-dicts"
+0 0 24 3 5 #"))))]"
+0 0 24 29 1 #"\n"
+0 0 24 3 5 #"    ["
+0 0 14 3 4 #"else"
+0 0 24 3 2 #" ("
+0 0 14 3 23 #"most-frequent.v2-helper"
+0 0 24 3 2 #" ("
+0 0 14 3 4 #"rest"
+0 0 24 3 1 #" "
+0 0 14 3 8 #"lo-dicts"
+0 0 24 3 2 #") "
+0 0 14 3 2 #"lc"
+0 0 24 3 4 #")]))"
+0 0 24 29 1 #"\n"
+0 0 17 3 170
+(
+ #";198 retry (i think the updates i made to 198 above make it a bit be"
+ #"tter, however both have a reverse order issue that can be solved by "
+ #"reversing the dictionary initially"
+) 0 0 24 29 1 #"\n"
+0 0 24 3 1 #"("
+0 0 15 3 6 #"define"
+0 0 24 3 2 #" ("
+0 0 14 3 22 #"words-by-single-letter"
+0 0 24 3 1 #" "
+0 0 14 3 4 #"dict"
+0 0 24 3 1 #" "
+0 0 14 3 6 #"letter"
+0 0 24 3 1 #")"
+0 0 24 29 1 #"\n"
+0 0 24 3 3 #"  ("
+0 0 15 3 4 #"cond"
+0 0 24 29 1 #"\n"
+0 0 24 3 6 #"    [("
+0 0 14 3 6 #"empty?"
+0 0 24 3 1 #" "
+0 0 14 3 4 #"dict"
+0 0 24 3 2 #") "
+0 0 21 3 1 #"'"
+0 0 24 3 3 #"()]"
+0 0 24 29 1 #"\n"
+0 0 24 3 6 #"    [("
+0 0 14 3 11 #"string-ci=?"
+0 0 24 3 1 #" "
+0 0 14 3 6 #"letter"
+0 0 24 3 2 #" ("
+0 0 14 3 10 #"string-ith"
+0 0 24 3 2 #" ("
+0 0 14 3 5 #"first"
+0 0 24 3 1 #" "
+0 0 14 3 4 #"dict"
+0 0 24 3 2 #") "
+0 0 21 3 1 #"0"
+0 0 24 3 4 #")) ("
+0 0 14 3 4 #"cons"
+0 0 24 3 2 #" ("
+0 0 14 3 5 #"first"
+0 0 24 3 1 #" "
+0 0 14 3 4 #"dict"
+0 0 24 3 3 #") ("
+0 0 14 3 22 #"words-by-single-letter"
+0 0 24 3 2 #" ("
+0 0 14 3 4 #"rest"
+0 0 24 3 1 #" "
+0 0 14 3 4 #"dict"
+0 0 24 3 2 #") "
+0 0 14 3 6 #"letter"
+0 0 24 3 3 #"))]"
+0 0 24 29 1 #"\n"
+0 0 24 3 5 #"    ["
+0 0 14 3 4 #"else"
+0 0 24 3 2 #" ("
+0 0 14 3 22 #"words-by-single-letter"
+0 0 24 3 2 #" ("
+0 0 14 3 4 #"rest"
+0 0 24 3 1 #" "
+0 0 14 3 4 #"dict"
+0 0 24 3 2 #") "
+0 0 14 3 6 #"letter"
+0 0 24 3 2 #")]"
+0 0 24 29 1 #"\n"
+0 0 24 3 5 #"    )"
+0 0 24 29 1 #"\n"
+0 0 24 3 3 #"  )"
+0 0 24 29 1 #"\n"
+0 0 24 3 1 #"("
+0 0 15 3 6 #"define"
+0 0 24 3 2 #" ("
+0 0 14 3 22 #"get-dictionary-letters"
+0 0 24 3 1 #" "
+0 0 14 3 4 #"dict"
+0 0 24 3 1 #")"
+0 0 24 29 1 #"\n"
+0 0 24 3 3 #"  ("
+0 0 14 3 29 #"get-dictionary-letters-helper"
+0 0 24 3 1 #" "
+0 0 14 3 4 #"dict"
+0 0 24 3 1 #" "
+0 0 21 3 1 #"'"
+0 0 24 3 4 #"()))"
+0 0 24 29 1 #"\n"
+0 0 24 3 1 #"("
+0 0 15 3 6 #"define"
+0 0 24 3 2 #" ("
+0 0 14 3 29 #"get-dictionary-letters-helper"
+0 0 24 3 1 #" "
+0 0 14 3 4 #"dict"
+0 0 24 3 1 #" "
+0 0 14 3 10 #"lo-letters"
+0 0 24 3 1 #")"
+0 0 24 29 1 #"\n"
+0 0 24 3 3 #"  ("
+0 0 15 3 4 #"cond"
+0 0 24 29 1 #"\n"
+0 0 24 3 6 #"    [("
+0 0 14 3 6 #"empty?"
+0 0 24 3 1 #" "
+0 0 14 3 4 #"dict"
+0 0 24 3 2 #") "
+0 0 14 3 10 #"lo-letters"
+0 0 24 3 1 #"]"
+0 0 24 29 1 #"\n"
+0 0 24 3 5 #"    ["
+0 0 14 3 4 #"else"
+0 0 24 3 2 #" ("
+0 0 14 3 29 #"get-dictionary-letters-helper"
+0 0 24 3 2 #" ("
+0 0 14 3 4 #"rest"
+0 0 24 3 1 #" "
+0 0 14 3 4 #"dict"
+0 0 24 3 3 #") ("
+0 0 14 3 21 #"exists-in-lo-letters?"
+0 0 24 3 2 #" ("
+0 0 14 3 10 #"string-ith"
+0 0 24 3 2 #" ("
+0 0 14 3 5 #"first"
+0 0 24 3 1 #" "
+0 0 14 3 4 #"dict"
+0 0 24 3 2 #") "
+0 0 21 3 1 #"0"
+0 0 24 3 2 #") "
+0 0 14 3 10 #"lo-letters"
+0 0 24 3 5 #"))]))"
+0 0 24 29 1 #"\n"
+0 0 17 3 75
+(
+ #";returns a new list of letters if letter is new, otherwise returns o"
+ #"ld list"
+) 0 0 24 29 1 #"\n"
+0 0 24 3 1 #"("
+0 0 15 3 6 #"define"
+0 0 24 3 2 #" ("
+0 0 14 3 21 #"exists-in-lo-letters?"
+0 0 24 3 1 #" "
+0 0 14 3 6 #"letter"
+0 0 24 3 1 #" "
+0 0 14 3 10 #"lo-letters"
+0 0 24 3 1 #")"
+0 0 24 29 1 #"\n"
+0 0 24 3 3 #"  ("
+0 0 15 3 4 #"cond"
+0 0 24 29 1 #"\n"
+0 0 24 3 6 #"    [("
+0 0 14 3 14 #"letter-exists?"
+0 0 24 3 1 #" "
+0 0 14 3 6 #"letter"
+0 0 24 3 1 #" "
+0 0 14 3 10 #"lo-letters"
+0 0 24 3 2 #") "
+0 0 14 3 10 #"lo-letters"
+0 0 24 3 1 #"]"
+0 0 24 29 1 #"\n"
+0 0 24 3 5 #"    ["
+0 0 14 3 4 #"else"
+0 0 24 3 2 #" ("
+0 0 14 3 4 #"cons"
+0 0 24 3 1 #" "
+0 0 14 3 6 #"letter"
+0 0 24 3 1 #" "
+0 0 14 3 10 #"lo-letters"
+0 0 24 3 4 #")]))"
+0 0 24 29 1 #"\n"
+0 0 17 3 51 #";determines whether a letter exists in a lo letters"
+0 0 24 29 1 #"\n"
+0 0 24 3 1 #"("
+0 0 15 3 6 #"define"
+0 0 24 3 2 #" ("
+0 0 14 3 14 #"letter-exists?"
+0 0 24 3 1 #" "
+0 0 14 3 6 #"letter"
+0 0 24 3 1 #" "
+0 0 14 3 10 #"lo-letters"
+0 0 24 3 1 #")"
+0 0 24 29 1 #"\n"
+0 0 24 3 3 #"  ("
+0 0 15 3 4 #"cond"
+0 0 24 29 1 #"\n"
+0 0 24 3 6 #"    [("
+0 0 14 3 6 #"empty?"
+0 0 24 3 1 #" "
+0 0 14 3 10 #"lo-letters"
+0 0 24 3 2 #") "
+0 0 21 3 6 #"#false"
+0 0 24 3 1 #"]"
+0 0 24 29 1 #"\n"
+0 0 24 3 6 #"    [("
+0 0 14 3 11 #"string-ci=?"
+0 0 24 3 1 #" "
+0 0 14 3 6 #"letter"
+0 0 24 3 2 #" ("
+0 0 14 3 5 #"first"
+0 0 24 3 1 #" "
+0 0 14 3 10 #"lo-letters"
+0 0 24 3 3 #")) "
+0 0 21 3 5 #"#true"
+0 0 24 3 1 #"]"
+0 0 24 29 1 #"\n"
+0 0 24 3 5 #"    ["
+0 0 14 3 4 #"else"
+0 0 24 3 2 #" ("
+0 0 14 3 14 #"letter-exists?"
+0 0 24 3 1 #" "
+0 0 14 3 6 #"letter"
+0 0 24 3 2 #" ("
+0 0 14 3 4 #"rest"
+0 0 24 3 1 #" "
+0 0 14 3 10 #"lo-letters"
+0 0 24 3 5 #"))]))"
+0 0 24 29 1 #"\n"
+0 0 17 3 111
+(
+ #";the problem with this, is that the function as a whole, will loop t"
+ #"hrough the dictionary once for each letter."
+) 0 0 24 29 1 #"\n"
+0 0 17 3 76
+(
+ #";would like to create a function that only loops through the diction"
+ #"ary once"
+) 0 0 24 29 1 #"\n"
+0 0 17 3 100
+(
+ #";dont think we can do that unless we assume that the dictionary is i"
+ #"n sorted order, which it isnt..."
+) 0 0 24 29 1 #"\n"
+0 0 24 3 1 #"("
+0 0 15 3 6 #"define"
+0 0 24 3 2 #" ("
+0 0 14 3 22 #"words-by-first-letter2"
+0 0 24 3 1 #" "
+0 0 14 3 4 #"dict"
+0 0 24 3 1 #")"
+0 0 24 29 1 #"\n"
+0 0 24 3 3 #"  ("
+0 0 14 3 29 #"words-by-first-letter2-helper"
+0 0 24 3 1 #" "
+0 0 14 3 4 #"dict"
+0 0 24 3 2 #" ("
+0 0 14 3 22 #"get-dictionary-letters"
+0 0 24 3 1 #" "
+0 0 14 3 4 #"dict"
+0 0 24 3 3 #")))"
+0 0 24 29 1 #"\n"
+0 0 24 3 2 #"  "
+0 0 24 29 1 #"\n"
+0 0 24 3 1 #"("
+0 0 15 3 6 #"define"
+0 0 24 3 2 #" ("
+0 0 14 3 29 #"words-by-first-letter2-helper"
+0 0 24 3 1 #" "
+0 0 14 3 4 #"dict"
+0 0 24 3 1 #" "
+0 0 14 3 10 #"lo-letters"
+0 0 24 3 1 #")"
+0 0 24 29 1 #"\n"
+0 0 24 3 3 #"  ("
+0 0 15 3 4 #"cond"
+0 0 24 29 1 #"\n"
+0 0 24 3 6 #"    [("
+0 0 14 3 6 #"empty?"
+0 0 24 3 1 #" "
+0 0 14 3 10 #"lo-letters"
+0 0 24 3 2 #") "
+0 0 21 3 1 #"'"
+0 0 24 3 3 #"()]"
+0 0 24 29 1 #"\n"
+0 0 24 3 5 #"    ["
+0 0 14 3 4 #"else"
+0 0 24 3 2 #" ("
+0 0 14 3 4 #"cons"
+0 0 24 3 2 #" ("
+0 0 14 3 22 #"words-by-single-letter"
+0 0 24 3 1 #" "
+0 0 14 3 4 #"dict"
+0 0 24 3 2 #" ("
+0 0 14 3 5 #"first"
+0 0 24 3 1 #" "
+0 0 14 3 10 #"lo-letters"
+0 0 24 3 4 #")) ("
+0 0 14 3 29 #"words-by-first-letter2-helper"
+0 0 24 3 1 #" "
+0 0 14 3 4 #"dict"
+0 0 24 3 2 #" ("
+0 0 14 3 4 #"rest"
+0 0 24 3 1 #" "
+0 0 14 3 10 #"lo-letters"
+0 0 24 3 6 #")))]))"
+0           0 0 0 24 29 1 #"\n"
+0 0 24 29 1 #"\n"
+0 0 24 29 1 #"\n"
+0 0 17 3 13 #";Project 12.2"
+0 0 24 29 1 #"\n"
+0 0 24 3 1 #"("
+0 0 15 3 7 #"require"
+0 0 24 3 1 #" "
+0 0 14 3 12 #"2htdp/itunes"
+0 0 24 3 1 #")"
+0 0 24 29 1 #"\n"
+0 0 24 29 1 #"\n"
+0 0 17 3 46 #"; modify the following to use your chosen name"
+0 0 24 29 1 #"\n"
+0 0 24 3 1 #"("
+0 0 15 3 6 #"define"
+0 0 24 3 1 #" "
+0 0 14 3 15 #"ITUNES-LOCATION"
+0 0 24 3 1 #" "
+0 0 19 3 45 #"\"C:\\\\Users\\\\Ian\\\\Documents\\\\HDTP\\\\itunes.xml\""
+0 0 24 3 1 #")"
+0 0 24 29 1 #"\n"
+0 0 24 3 1 #" "
+0 0 24 29 1 #"\n"
+0 0 17 3 9 #"; LTracks"
+0 0 24 29 1 #"\n"
+0 0 24 3 1 #"("
+0 0 15 3 6 #"define"
+0 0 24 3 1 #" "
+0 0 14 3 13 #"itunes-tracks"
+0 0 24 29 1 #"\n"
+0 0 24 3 3 #"  ("
+0 0 14 3 21 #"read-itunes-as-tracks"
+0 0 24 3 1 #" "
+0 0 14 3 15 #"ITUNES-LOCATION"
+0 0 24 3 2 #"))"
+0 0 24 29 1 #"\n"
+0 0 24 29 1 #"\n"
+0 0 17 3 7 #";ex 200"
+0 0 24 29 1 #"\n"
+0 0 24 3 1 #"("
+0 0 15 3 6 #"define"
+0 0 24 3 2 #" ("
+0 0 14 3 10 #"total-time"
+0 0 24 3 1 #" "
+0 0 14 3 7 #"ltracks"
+0 0 24 3 1 #")"
+0 0 24 29 1 #"\n"
+0 0 24 3 3 #"  ("
+0 0 15 3 4 #"cond"
+0 0 24 29 1 #"\n"
+0 0 24 3 6 #"    [("
+0 0 14 3 6 #"empty?"
+0 0 24 3 1 #" "
+0 0 14 3 7 #"ltracks"
+0 0 24 3 2 #") "
+0 0 21 3 1 #"0"
+0 0 24 3 1 #"]"
+0 0 24 29 1 #"\n"
+0 0 24 3 5 #"    ["
+0 0 14 3 4 #"else"
+0 0 24 3 2 #" ("
+0 0 14 3 1 #"+"
+0 0 24 3 2 #" ("
+0 0 14 3 10 #"track-time"
+0 0 24 3 2 #" ("
+0 0 14 3 5 #"first"
+0 0 24 3 1 #" "
+0 0 14 3 7 #"ltracks"
+0 0 24 3 4 #")) ("
+0 0 14 3 10 #"total-time"
+0 0 24 3 2 #" ("
+0 0 14 3 4 #"rest"
+0 0 24 3 1 #" "
+0 0 14 3 7 #"ltracks"
+0 0 24 3 6 #")))]))"
+0 0 24 29 1 #"\n"
+0 0 24 3 1 #"("
+0 0 15 3 6 #"define"
+0 0 24 3 2 #" ("
+0 0 14 3 18 #"total-time-minutes"
+0 0 24 3 1 #" "
+0 0 14 3 7 #"ltracks"
+0 0 24 3 1 #")"
+0 0 24 29 1 #"\n"
+0 0 24 3 3 #"  ("
+0 0 14 3 1 #"/"
+0 0 24 3 2 #" ("
+0 0 14 3 10 #"total-time"
+0 0 24 3 1 #" "
+0 0 14 3 7 #"ltracks"
+0 0 24 3 2 #") "
+0 0 21 3 4 #"1000"
+0 0 24 3 1 #" "
+0 0 21 3 2 #"60"
+0 0 24 3 2 #"))"
+0 0 24 29 1 #"\n"
+0 0 24 29 1 #"\n"
+0 0 17 3 7 #";ex 201"
+0 0 24 29 1 #"\n"
+0 0 24 3 1 #"("
+0 0 15 3 6 #"define"
+0 0 24 3 2 #" ("
+0 0 14 3 23 #"select-all-album-titles"
+0 0 24 3 1 #" "
+0 0 14 3 7 #"ltracks"
+0 0 24 3 1 #")"
+0 0 24 29 1 #"\n"
+0 0 24 3 3 #"  ("
+0 0 15 3 4 #"cond"
+0 0 24 29 1 #"\n"
+0 0 24 3 6 #"    [("
+0 0 14 3 6 #"empty?"
+0 0 24 3 1 #" "
+0 0 14 3 7 #"ltracks"
+0 0 24 3 2 #") "
+0 0 21 3 1 #"'"
+0 0 24 3 3 #"()]"
+0 0 24 29 1 #"\n"
+0 0 24 3 5 #"    ["
+0 0 14 3 4 #"else"
+0 0 24 3 2 #" ("
+0 0 14 3 4 #"cons"
+0 0 24 3 2 #" ("
+0 0 14 3 11 #"track-album"
+0 0 24 3 2 #" ("
+0 0 14 3 5 #"first"
+0 0 24 3 1 #" "
+0 0 14 3 7 #"ltracks"
+0 0 24 3 4 #")) ("
+0 0 14 3 23 #"select-all-album-titles"
+0 0 24 3 2 #" ("
+0 0 14 3 4 #"rest"
+0 0 24 3 1 #" "
+0 0 14 3 7 #"ltracks"
+0 0 24 3 6 #")))]))"
+0 0 24 29 1 #"\n"
+0 0 24 3 1 #"("
+0 0 15 3 6 #"define"
+0 0 24 3 2 #" ("
+0 0 14 3 10 #"create-set"
+0 0 24 3 1 #" "
+0 0 14 3 9 #"lostrings"
+0 0 24 3 1 #")"
+0 0 24 29 1 #"\n"
+0 0 24 3 3 #"  ("
+0 0 15 3 4 #"cond"
+0 0 24 29 1 #"\n"
+0 0 24 3 6 #"    [("
+0 0 14 3 6 #"empty?"
+0 0 24 3 1 #" "
+0 0 14 3 9 #"lostrings"
+0 0 24 3 2 #") "
+0 0 21 3 1 #"'"
+0 0 24 3 3 #"()]"
+0 0 24 29 1 #"\n"
+0 0 24 3 5 #"    ["
+0 0 14 3 4 #"else"
+0 0 24 3 2 #" ("
+0 0 14 3 4 #"cons"
+0 0 24 3 2 #" ("
+0 0 14 3 5 #"first"
+0 0 24 3 1 #" "
+0 0 14 3 9 #"lostrings"
+0 0 24 3 3 #") ("
+0 0 14 3 10 #"create-set"
+0 0 24 3 2 #" ("
+0 0 14 3 16 #"remove-instances"
+0 0 24 3 2 #" ("
+0 0 14 3 5 #"first"
+0 0 24 3 1 #" "
+0 0 14 3 9 #"lostrings"
+0 0 24 3 2 #") "
+0 0 14 3 9 #"lostrings"
+0 0 24 3 6 #")))]))"
+0 0 24 29 1 #"\n"
+0 0 24 3 1 #"("
+0 0 15 3 6 #"define"
+0 0 24 3 2 #" ("
+0 0 14 3 16 #"remove-instances"
+0 0 24 3 1 #" "
+0 0 14 3 4 #"word"
+0 0 24 3 1 #" "
+0 0 14 3 9 #"lostrings"
+0 0 24 3 1 #")"
+0 0 24 29 1 #"\n"
+0 0 24 3 3 #"  ("
+0 0 15 3 4 #"cond"
+0 0 24 29 1 #"\n"
+0 0 24 3 6 #"    [("
+0 0 14 3 6 #"empty?"
+0 0 24 3 1 #" "
+0 0 14 3 9 #"lostrings"
+0 0 24 3 2 #") "
+0 0 21 3 1 #"'"
+0 0 24 3 3 #"()]"
+0 0 24 29 1 #"\n"
+0 0 24 3 6 #"    [("
+0 0 14 3 8 #"string=?"
+0 0 24 3 2 #" ("
+0 0 14 3 5 #"first"
+0 0 24 3 1 #" "
+0 0 14 3 9 #"lostrings"
+0 0 24 3 2 #") "
+0 0 14 3 4 #"word"
+0 0 24 3 3 #") ("
+0 0 14 3 16 #"remove-instances"
+0 0 24 3 1 #" "
+0 0 14 3 4 #"word"
+0 0 24 3 2 #" ("
+0 0 14 3 4 #"rest"
+0 0 24 3 1 #" "
+0 0 14 3 9 #"lostrings"
+0 0 24 3 3 #"))]"
+0 0 24 29 1 #"\n"
+0 0 24 3 5 #"    ["
+0 0 14 3 4 #"else"
+0 0 24 3 2 #" ("
+0 0 14 3 4 #"cons"
+0 0 24 3 2 #" ("
+0 0 14 3 5 #"first"
+0 0 24 3 1 #" "
+0 0 14 3 9 #"lostrings"
+0 0 24 3 3 #") ("
+0 0 14 3 16 #"remove-instances"
+0 0 24 3 1 #" "
+0 0 14 3 4 #"word"
+0 0 24 3 2 #" ("
+0 0 14 3 4 #"rest"
+0 0 24 3 1 #" "
+0 0 14 3 9 #"lostrings"
+0 0 24 3 6 #")))]))"
+0 0 24 29 1 #"\n"
+0 0 24 3 1 #"("
+0 0 15 3 6 #"define"
+0 0 24 3 2 #" ("
+0 0 14 3 19 #"unique-album-titles"
+0 0 24 3 1 #" "
+0 0 14 3 7 #"ltracks"
+0 0 24 3 1 #")"
+0 0 24 29 1 #"\n"
+0 0 24 3 3 #"  ("
+0 0 14 3 10 #"create-set"
+0 0 24 3 2 #" ("
+0 0 14 3 23 #"select-all-album-titles"
+0 0 24 3 1 #" "
+0 0 14 3 7 #"ltracks"
+0 0 24 3 3 #")))"
+0 0 24 29 1 #"\n"
+0 0 17 3 4 #";202"
+0 0 24 29 1 #"\n"
+0 0 24 3 1 #"("
+0 0 15 3 6 #"define"
+0 0 24 3 2 #" ("
+0 0 14 3 12 #"select-album"
+0 0 24 3 1 #" "
+0 0 14 3 5 #"title"
+0 0 24 3 1 #" "
+0 0 14 3 7 #"ltracks"
+0 0 24 3 1 #")"
+0 0 24 29 1 #"\n"
+0 0 24 3 3 #"  ("
+0 0 15 3 4 #"cond"
+0 0 24 29 1 #"\n"
+0 0 24 3 6 #"    [("
+0 0 14 3 6 #"empty?"
+0 0 24 3 1 #" "
+0 0 14 3 7 #"ltracks"
+0 0 24 3 2 #") "
+0 0 21 3 1 #"'"
+0 0 24 3 3 #"()]"
+0 0 24 29 1 #"\n"
+0 0 24 3 6 #"    [("
+0 0 14 3 8 #"string=?"
+0 0 24 3 2 #" ("
+0 0 14 3 11 #"track-album"
+0 0 24 3 2 #" ("
+0 0 14 3 5 #"first"
+0 0 24 3 1 #" "
+0 0 14 3 7 #"ltracks"
+0 0 24 3 3 #")) "
+0 0 14 3 5 #"title"
+0 0 24 3 3 #") ("
+0 0 14 3 4 #"cons"
+0 0 24 3 2 #" ("
+0 0 14 3 5 #"first"
+0 0 24 3 1 #" "
+0 0 14 3 7 #"ltracks"
+0 0 24 3 3 #") ("
+0 0 14 3 12 #"select-album"
+0 0 24 3 1 #" "
+0 0 14 3 5 #"title"
+0 0 24 3 2 #" ("
+0 0 14 3 4 #"rest"
+0 0 24 3 1 #" "
+0 0 14 3 7 #"ltracks"
+0 0 24 3 4 #")))]"
+0 0 24 29 1 #"\n"
+0 0 24 3 5 #"    ["
+0 0 14 3 4 #"else"
+0 0 24 3 2 #" ("
+0 0 14 3 12 #"select-album"
+0 0 24 3 1 #" "
+0 0 14 3 5 #"title"
+0 0 24 3 2 #" ("
+0 0 14 3 4 #"rest"
+0 0 24 3 1 #" "
+0 0 14 3 7 #"ltracks"
+0 0 24 3 5 #"))]))"
+0 0 24 29 1 #"\n"
+0 0 24 29 1 #"\n"
+0 0 17 3 4 #";203"
+0 0 24 29 1 #"\n"
+0 0 17 3 37 #";returns true if d1 is sooner than d2"
+0 0 24 29 1 #"\n"
+0 0 24 3 1 #"("
+0 0 15 3 6 #"define"
+0 0 24 3 2 #" ("
+0 0 14 3 12 #"date-compare"
+0 0 24 3 1 #" "
+0 0 14 3 2 #"d1"
+0 0 24 3 1 #" "
+0 0 14 3 2 #"d2"
+0 0 24 3 1 #")"
+0 0 24 29 1 #"\n"
+0 0 24 3 3 #"  ("
+0 0 15 3 4 #"cond"
+0 0 24 29 1 #"\n"
+0 0 24 3 6 #"    [("
+0 0 14 3 1 #">"
+0 0 24 3 2 #" ("
+0 0 14 3 9 #"date-year"
+0 0 24 3 1 #" "
+0 0 14 3 2 #"d1"
+0 0 24 3 3 #") ("
+0 0 14 3 9 #"date-year"
+0 0 24 3 1 #" "
+0 0 14 3 2 #"d2"
+0 0 24 3 3 #")) "
+0 0 21 3 5 #"#true"
+0 0 24 3 1 #"]"
+0 0 24 29 1 #"\n"
+0 0 24 3 6 #"    [("
+0 0 14 3 1 #"<"
+0 0 24 3 2 #" ("
+0 0 14 3 9 #"date-year"
+0 0 24 3 1 #" "
+0 0 14 3 2 #"d1"
+0 0 24 3 3 #") ("
+0 0 14 3 9 #"date-year"
+0 0 24 3 1 #" "
+0 0 14 3 2 #"d2"
+0 0 24 3 3 #")) "
+0 0 21 3 6 #"#false"
+0 0 24 3 1 #"]"
+0 0 24 29 1 #"\n"
+0 0 24 3 4 #"    "
+0 0 24 29 1 #"\n"
+0 0 24 3 6 #"    [("
+0 0 14 3 1 #">"
+0 0 24 3 2 #" ("
+0 0 14 3 10 #"date-month"
+0 0 24 3 1 #" "
+0 0 14 3 2 #"d1"
+0 0 24 3 3 #") ("
+0 0 14 3 10 #"date-month"
+0 0 24 3 1 #" "
+0 0 14 3 2 #"d2"
+0 0 24 3 3 #")) "
+0 0 21 3 5 #"#true"
+0 0 24 3 1 #"]"
+0 0 24 29 1 #"\n"
+0 0 24 3 6 #"    [("
+0 0 14 3 1 #"<"
+0 0 24 3 2 #" ("
+0 0 14 3 10 #"date-month"
+0 0 24 3 1 #" "
+0 0 14 3 2 #"d1"
+0 0 24 3 3 #") ("
+0 0 14 3 10 #"date-month"
+0 0 24 3 1 #" "
+0 0 14 3 2 #"d2"
+0 0 24 3 3 #")) "
+0 0 21 3 6 #"#false"
+0 0 24 3 1 #"]"
+0 0 24 29 1 #"\n"
+0 0 24 29 1 #"\n"
+0 0 24 3 6 #"    [("
+0 0 14 3 1 #">"
+0 0 24 3 2 #" ("
+0 0 14 3 8 #"date-day"
+0 0 24 3 1 #" "
+0 0 14 3 2 #"d1"
+0 0 24 3 3 #") ("
+0 0 14 3 8 #"date-day"
+0 0 24 3 1 #" "
+0 0 14 3 2 #"d2"
+0 0 24 3 3 #")) "
+0 0 21 3 5 #"#true"
+0 0 24 3 1 #"]"
+0 0 24 29 1 #"\n"
+0 0 24 3 6 #"    [("
+0 0 14 3 1 #"<"
+0 0 24 3 2 #" ("
+0 0 14 3 8 #"date-day"
+0 0 24 3 1 #" "
+0 0 14 3 2 #"d1"
+0 0 24 3 3 #") ("
+0 0 14 3 8 #"date-day"
+0 0 24 3 1 #" "
+0 0 14 3 2 #"d2"
+0 0 24 3 3 #")) "
+0 0 21 3 6 #"#false"
+0 0 24 3 1 #"]"
+0 0 24 29 1 #"\n"
+0 0 24 29 1 #"\n"
+0 0 24 3 6 #"    [("
+0 0 14 3 1 #">"
+0 0 24 3 2 #" ("
+0 0 14 3 9 #"date-hour"
+0 0 24 3 1 #" "
+0 0 14 3 2 #"d1"
+0 0 24 3 3 #") ("
+0 0 14 3 9 #"date-hour"
+0 0 24 3 1 #" "
+0 0 14 3 2 #"d2"
+0 0 24 3 3 #")) "
+0 0 21 3 5 #"#true"
+0 0 24 3 1 #"]"
+0 0 24 29 1 #"\n"
+0 0 24 3 6 #"    [("
+0 0 14 3 1 #"<"
+0 0 24 3 2 #" ("
+0 0 14 3 9 #"date-hour"
+0 0 24 3 1 #" "
+0 0 14 3 2 #"d1"
+0 0 24 3 3 #") ("
+0 0 14 3 9 #"date-hour"
+0 0 24 3 1 #" "
+0 0 14 3 2 #"d2"
+0 0 24 3 3 #")) "
+0 0 21 3 6 #"#false"
+0 0 24 3 1 #"]"
+0 0 24 29 1 #"\n"
+0 0 24 29 1 #"\n"
+0 0 24 3 6 #"    [("
+0 0 14 3 1 #">"
+0 0 24 3 2 #" ("
+0 0 14 3 11 #"date-minute"
+0 0 24 3 1 #" "
+0 0 14 3 2 #"d1"
+0 0 24 3 3 #") ("
+0 0 14 3 11 #"date-minute"
+0 0 24 3 1 #" "
+0 0 14 3 2 #"d2"
+0 0 24 3 3 #")) "
+0 0 21 3 5 #"#true"
+0 0 24 3 1 #"]"
+0 0 24 29 1 #"\n"
+0 0 24 3 6 #"    [("
+0 0 14 3 1 #"<"
+0 0 24 3 2 #" ("
+0 0 14 3 11 #"date-minute"
+0 0 24 3 1 #" "
+0 0 14 3 2 #"d1"
+0 0 24 3 3 #") ("
+0 0 14 3 11 #"date-minute"
+0 0 24 3 1 #" "
+0 0 14 3 2 #"d2"
+0 0 24 3 3 #")) "
+0 0 21 3 6 #"#false"
+0 0 24 3 1 #"]"
+0 0 24 29 1 #"\n"
+0 0 24 29 1 #"\n"
+0 0 24 3 6 #"    [("
+0 0 14 3 1 #">"
+0 0 24 3 2 #" ("
+0 0 14 3 11 #"date-second"
+0 0 24 3 1 #" "
+0 0 14 3 2 #"d1"
+0 0 24 3 3 #") ("
+0 0 14 3 11 #"date-second"
+0 0 24 3 1 #" "
+0 0 14 3 2 #"d2"
+0 0 24 3 3 #")) "
+0 0 21 3 5 #"#true"
+0 0 24 3 1 #"]"
+0 0 24 29 1 #"\n"
+0 0 24 3 6 #"    [("
+0 0 14 3 1 #"<"
+0 0 24 3 2 #" ("
+0 0 14 3 11 #"date-second"
+0 0 24 3 1 #" "
+0 0 14 3 2 #"d1"
+0 0 24 3 3 #") ("
+0 0 14 3 11 #"date-second"
+0 0 24 3 1 #" "
+0 0 14 3 2 #"d2"
+0 0 24 3 3 #")) "
+0 0 21 3 5 #"#true"
+0 0 24 3 1 #"]"
+0 0 24 29 1 #"\n"
+0 0 24 3 4 #"    "
+0 0 24 29 1 #"\n"
+0 0 24 3 5 #"    ["
+0 0 14 3 4 #"else"
+0 0 24 3 1 #" "
+0 0 21 3 5 #"#true"
+0 0 24 3 3 #"]))"
+0 0 24 29 1 #"\n"
+0 0 24 3 1 #"("
+0 0 15 3 6 #"define"
+0 0 24 3 2 #" ("
+0 0 14 3 17 #"select-album-date"
+0 0 24 3 1 #" "
+0 0 14 3 2 #"d2"
+0 0 24 3 1 #" "
+0 0 14 3 7 #"ltracks"
+0 0 24 3 1 #")"
+0 0 24 29 1 #"\n"
+0 0 24 3 3 #"  ("
+0 0 15 3 4 #"cond"
+0 0 24 29 1 #"\n"
+0 0 24 3 6 #"    [("
+0 0 14 3 6 #"empty?"
+0 0 24 3 1 #" "
+0 0 14 3 7 #"ltracks"
+0 0 24 3 2 #") "
+0 0 21 3 1 #"'"
+0 0 24 3 3 #"()]"
+0 0 24 29 1 #"\n"
+0 0 24 3 6 #"    [("
+0 0 14 3 9 #"boolean=?"
+0 0 24 3 1 #" "
+0 0 21 3 5 #"#true"
+0 0 24 3 2 #" ("
+0 0 14 3 12 #"date-compare"
+0 0 24 3 2 #" ("
+0 0 14 3 11 #"track-added"
+0 0 24 3 2 #" ("
+0 0 14 3 5 #"first"
+0 0 24 3 1 #" "
+0 0 14 3 7 #"ltracks"
+0 0 24 3 3 #")) "
+0 0 14 3 2 #"d2"
+0 0 24 3 4 #")) ("
+0 0 14 3 4 #"cons"
+0 0 24 3 2 #" ("
+0 0 14 3 4 #"cons"
+0 0 24 3 2 #" ("
+0 0 14 3 5 #"first"
+0 0 24 3 1 #" "
+0 0 14 3 7 #"ltracks"
+0 0 24 3 2 #") "
+0 0 21 3 1 #"'"
+0 0 24 3 5 #"()) ("
+0 0 14 3 17 #"select-album-date"
+0 0 24 3 1 #" "
+0 0 14 3 2 #"d2"
+0 0 24 3 2 #" ("
+0 0 14 3 4 #"rest"
+0 0 24 3 1 #" "
+0 0 14 3 7 #"ltracks"
+0 0 24 3 4 #")))]"
+0 0 24 29 1 #"\n"
+0 0 24 3 5 #"    ["
+0 0 14 3 4 #"else"
+0 0 24 3 2 #" ("
+0 0 14 3 17 #"select-album-date"
+0 0 24 3 1 #" "
+0 0 14 3 2 #"d2"
+0 0 24 3 2 #" ("
+0 0 14 3 4 #"rest"
+0 0 24 3 1 #" "
+0 0 14 3 7 #"ltracks"
+0 0 24 3 5 #"))]))"
+0 0 24 29 1 #"\n"
+0 0 17 3 4 #";204"
+0 0 24 29 1 #"\n"
+0 0 24 3 1 #"("
+0 0 15 3 6 #"define"
+0 0 24 3 2 #" ("
+0 0 14 3 13 #"select-albums"
+0 0 24 3 1 #" "
+0 0 14 3 7 #"ltracks"
+0 0 24 3 1 #")"
+0 0 24 29 1 #"\n"
+0 0 24 3 3 #"  ("
+0 0 14 3 20 #"select-albums-helper"
+0 0 24 3 1 #" "
+0 0 14 3 7 #"ltracks"
+0 0 24 3 2 #" ("
+0 0 14 3 19 #"unique-album-titles"
+0 0 24 3 1 #" "
+0 0 14 3 7 #"ltracks"
+0 0 24 3 3 #")))"
+0 0 24 29 1 #"\n"
+0 0 24 3 1 #"("
+0 0 15 3 6 #"define"
+0 0 24 3 2 #" ("
+0 0 14 3 20 #"select-albums-helper"
+0 0 24 3 1 #" "
+0 0 14 3 7 #"ltracks"
+0 0 24 3 1 #" "
+0 0 14 3 12 #"track-titles"
+0 0 24 3 1 #")"
+0 0 24 29 1 #"\n"
+0 0 24 3 3 #"  ("
+0 0 15 3 4 #"cond"
+0 0 24 29 1 #"\n"
+0 0 24 3 6 #"    [("
+0 0 14 3 6 #"empty?"
+0 0 24 3 1 #" "
+0 0 14 3 12 #"track-titles"
+0 0 24 3 2 #") "
+0 0 21 3 1 #"'"
+0 0 24 3 3 #"()]"
+0 0 24 29 1 #"\n"
+0 0 24 3 5 #"    ["
+0 0 14 3 4 #"else"
+0 0 24 3 2 #" ("
+0 0 14 3 4 #"cons"
+0 0 24 3 2 #" ("
+0 0 14 3 15 #"make-album-list"
+0 0 24 3 2 #" ("
+0 0 14 3 5 #"first"
+0 0 24 3 1 #" "
+0 0 14 3 12 #"track-titles"
+0 0 24 3 3 #") ("
+0 0 14 3 12 #"select-album"
+0 0 24 3 2 #" ("
+0 0 14 3 5 #"first"
+0 0 24 3 1 #" "
+0 0 14 3 12 #"track-titles"
+0 0 24 3 2 #") "
+0 0 14 3 7 #"ltracks"
+0 0 24 3 4 #")) ("
+0 0 14 3 20 #"select-albums-helper"
+0 0 24 3 1 #" "
+0 0 14 3 7 #"ltracks"
+0 0 24 3 2 #" ("
+0 0 14 3 4 #"rest"
+0 0 24 3 1 #" "
+0 0 14 3 12 #"track-titles"
+0 0 24 3 6 #")))]))"
+0 0 24 29 1 #"\n"
+0 0 17 3 35 #";an album is a [{title} {LOtracks}]"
+0 0 24 29 1 #"\n"
+0 0 24 3 1 #"("
+0 0 15 3 13 #"define-struct"
+0 0 24 3 1 #" "
+0 0 14 3 10 #"album-list"
+0 0 24 29 1 #"\n"
+0 0 24 3 3 #"  ["
+0 0 14 3 4 #"name"
+0 0 24 3 1 #" "
+0 0 14 3 5 #"songs"
+0 0 24 3 2 #"])"
+0           0
