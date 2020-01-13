@@ -1,0 +1,78 @@
+;; The first three lines of this file were inserted by DrRacket. They record metadata
+;; about the language level of this file in a form that our tools can easily process.
+#reader(lib "htdp-intermediate-reader.ss" "lang")((modname HTDP_part3) (read-case-sensitive #t) (teachpacks ()) (htdp-settings #(#t constructor repeating-decimal #f #t none #f () #f)))
+;236
+; Lon -> Lon
+; adds 1 to each item on l
+(define (add1* l)
+  (add-n l 1))
+	
+(check-expect (add1* (list 1 2 3)) (list 2 3 4))
+
+	
+; Lon -> Lon
+; adds 5 to each item on l
+(define (plus5 l)
+  (add-n l 5))
+(check-expect (plus5 (list 1 2 3)) (list 6 7 8))
+
+(define (add-n l n)
+  (cond
+    [(empty? l) '()]
+    [else (cons (+ (first l) n) (add-n (rest l) n))]))
+(check-expect (add-n (list 1 2 3) 4) (list 5 6 7))
+
+(define (sub2 l)
+  (add-n l -2))
+
+(define (extract R l t)
+  (cond
+    [(empty? l) '()]
+    [else (cond
+            [(R (first l) t)
+             (cons (first l)
+                   (extract R (rest l) t))]
+            [else
+             (extract R (rest l) t)])]))
+(define (squared>? x c)
+  (> (* x x) c))
+;238
+(define (extract-single-compare R l)
+  (cond
+    [(empty? (rest l)) (first l)]
+    [else
+     (if (R (first l) (extract-single-compare R (rest l)))
+         (first l)
+         (extract-single-compare R (rest l)))]))
+(define (inf l)
+  (extract-single-compare < l))
+(define (sup l)
+  (extract-single-compare > l))
+(define (extract-single-compare2 R l)
+  (cond
+    [(empty? (rest l)) (first l)]
+    [else (R (first l) (extract-single-compare2 R (rest l)))]))
+
+(define (inf-2 l)
+  (extract-single-compare2 min l))
+(define (sup-2 l)
+  (extract-single-compare2 max l))
+
+;242
+(define (occurs s los)
+  (occurs-helper s los #f))
+(define (occurs-helper s los present)
+  (cond
+    [(and (empty? los) (false? present)) #false]
+    [(empty? los) '()]
+    [(and (string=? s (first los)) (false? present)) (occurs-helper s (rest los) #true)]
+    [(and (not (string=? s (first los))) (false? present)) (occurs-helper s (rest los) present)]
+    [else (cons (first los) (occurs-helper s (rest los) present))]))
+;245
+(define (function=at-1.2-3-and-5.775 f1 f2)
+  (and
+   (= (f1 1.2) (f2 1.2))
+   (= (f1 3) (f2 3))
+   (= (f1 5.775) (f2 5.775))))
+;we can determine whether two functions are equal to within some constant by seeing
+;if their derivatives are equal(?)

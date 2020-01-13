@@ -1,0 +1,29 @@
+;; The first three lines of this file were inserted by DrRacket. They record metadata
+;; about the language level of this file in a form that our tools can easily process.
+#reader(lib "htdp-beginner-abbr-reader.ss" "lang")((modname intermezzo2-make-table) (read-case-sensitive #t) (teachpacks ()) (htdp-settings #(#t constructor repeating-decimal #f #t none #f () #f)))
+(define (make-table l)
+  `(table ((border "1"))
+          ,(make-rows l)))
+(define (make-rows l)
+  (cond
+    [(empty? l) '()]
+    [else (cons `(tr ,@(make-row (first l))) (make-rows (rest l)))]))
+(define (make-row l)
+  (cond
+    [(empty? l) '()]
+    [else (cons (make-cell (first l))
+                (make-row (rest l)))]))
+ 
+; Number -> ... nested list ...
+; creates a cell for an HTML table from a number 
+(define (make-cell n)
+  `(td , n))
+
+(define (ranking los)
+  (reverse (add-ranks (reverse los))))
+ 
+(define (add-ranks los)
+  (cond
+    [(empty? los) '()]
+    [else (cons (list (length los) (first los))
+                (add-ranks (rest los)))]))
