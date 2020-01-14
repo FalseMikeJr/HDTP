@@ -2056,7 +2056,7 @@
 0 0 -1 -1 0 1 #"\0"
 0 75 10 #"Monospace\0"
 0.0 24 90 -1 90 -1 3 -1 0 1 0 1 0 0 0.0 0.0 0.0 0.0 0.0 0.0 0 0 0 255
-255 255 1 -1           0 375 0 4 3 85
+255 255 1 -1           0 396 0 4 3 85
 (
  #";; The first three lines of this file were inserted by DrRacket. The"
  #"y record metadata"
@@ -3119,4 +3119,35 @@
 0 0 19 3 5 #"\"red\""
 0 0 24 3 2 #"))"
 0 0 24 29 1 #"\n"
+0 0 17 3 4 #";254"
+0 0 24 29 1 #"\n"
+0 0 17 3 65
+#"; [List-of Number] [Number Number -> Boolean] -> [List-of Number]"
+0 0 24 29 1 #"\n"
+0 0 17 3 67
+#"; [List-of Strings] [String String -> Boolean] -> [List-of Strings]"
+0 0 24 29 1 #"\n"
+0 0 17 3 49 #"; [X] [List-of X] [X X -> Boolean] -> [List-of X]"
+0 0 24 29 1 #"\n"
+0 0 17 3 85
+(
+ #"; Substitue IR for X and viola -> it works as a signature for a sort"
+ #" function for IRs"
+) 0 0 24 29 1 #"\n"
+0 0 17 3 4 #";255"
+0 0 24 29 1 #"\n"
+0 0 17 3 59
+#"; [List-of numbers] [number -> number] -> [List-of Numbers]"
+0 0 24 29 1 #"\n"
+0 0 17 3 59
+#"; [List-of strings] [string -> string] -> [List-of Strings]"
+0 0 24 29 1 #"\n"
+0 0 17 3 41 #"; [X] [List-of X] [X -> X] -> [List-of X]"
+0 0 24 29 1 #"\n"
+0 0 17 3 78
+(
+ #";map1 takes a list-of vals and a function of val -> and returns a li"
+ #"st-of vals"
+) 0 0 24 29 1 #"\n"
+0 0 17 3 13 #";self evident"
 0           0
