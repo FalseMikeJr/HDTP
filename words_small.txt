@@ -2,8 +2,10 @@ apple
 banana
 char
 dog
+ecar
 elephant
 energized
 'e
 Irate
 irate
+race
