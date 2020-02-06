@@ -4,6 +4,9 @@
 (define WIDTH 20)
 (define HEIGHT 20)
 (define BOARD-SIZE (* WIDTH HEIGHT))
+(require 2htdp/batch-io)
+(require 2htdp/image)
+(require 2htdp/universe)
 (define GAME-BOARD (empty-scene BOARD-SIZE BOARD-SIZE))
 (define UFO_CIRC 10)
 (define UFO_BASE_WIDTH WIDTH)
@@ -159,8 +162,8 @@
    (make-tank
     (+ (tank-loc (sigs-tank sigsCurr))
        (cond
-         [(string=? dir "left") -1]
-         [(string=? dir "right") 1]
+         [(and (string=? dir "left") (< 0 (tank-loc (sigs-tank sigsCurr)))) -1]
+         [(and (string=? dir "right") (> (- WIDTH 1) (tank-loc (sigs-tank sigsCurr)))) 1]
          [else 0])))
    (sigs-ufo-x-dir sigsCurr)))
 (define (fire-missile sigsCurr)
