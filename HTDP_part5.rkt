@@ -43,4 +43,115 @@
 (define (bundle.v2 l n)
   (map (lambda (x) (implode x)) (list->chunks l n)))
 ;423
+(define (partition s n)
+  (cond
+    [(equal? "" s) '()]
+    [(or (> n (string-length s)) (zero? n)) (cons s '())]
+    [else (cons (substring s 0 n) (partition (substring s n (string-length s)) n))]))
+
+; [List-of Number] -> [List-of Number]
+; produces a sorted version of alon
+; assume the numbers are all distinct
+;426
+(define (quick-sort< alon)
+  (cond
+    [(empty? alon) '()]
+    [(empty? (rest alon)) (cons (first alon) '())]
+    [else (local ((define pivot (first alon)))
+            (append (quick-sort< (smallers alon pivot))
+                    (list pivot)
+                    (quick-sort< (largers alon pivot))))]))
+ 
+; [List-of Number] Number -> [List-of Number]
+(define (largers alon n)
+  (cond
+    [(empty? (rest alon)) (if (> n (first alon)) '() (cons (first alon) '()))]
+    [else (if (> (first alon) n)
+              (cons (first alon) (largers (rest alon) n))
+              (largers (rest alon) n))]))
+ 
+; [List-of Number] Number -> [List-of Number]
+(define (smallers alon n)
+  (cond
+    [(empty? (rest alon)) (if (< n (first alon)) '() (cons (first alon) '()))]
+    [else (if (< (first alon) n)
+              (cons (first alon) (smallers (rest alon) n))
+              (smallers (rest alon) n))]))
+;427
+; List-of-numbers -> List-of-numbers
+; produces a sorted version of l
+(define (sort> l)
+  (cond
+    [(empty? l) '()]
+    [(cons? l) (insert (first l) (sort> (rest l)))]))
+ 
+; Number List-of-numbers -> List-of-numbers
+; inserts n into the sorted list of numbers l 
+(define (insert n l)
+  (cond
+    [(empty? l) (cons n '())]
+    [else (if (>= n (first l))
+              (cons n l)
+              (cons (first l) (insert n (rest l))))]))
+(define (quick-sort.v2< alon threshold)
+  (cond
+    [(< (length alon) threshold) (sort> alon)]
+    [else (local ((define pivot (first alon)))
+            (append (quick-sort.v2< (smallers alon pivot) threshold)
+                    (list pivot)
+                    (quick-sort.v2< (largers alon pivot) threshold)))]))
+;428
+(define (quick-sort.v3< alon)
+  (cond
+    [(empty? alon) '()]
+    [(empty? (rest alon)) (cons (first alon) '())]
+    [else (local ((define pivot (first alon)))
+            (append (quick-sort.v3< (smallers.v4 alon pivot))
+                    (quick-sort.v3< (largers.v4 alon pivot))))]))
+;429
+(define (smallers.v4 alon pivot)
+  (filter (lambda (x) (< x pivot)) alon))
+(define (largers.v4 alon pivot)
+  (filter (lambda (x) (> x pivot)) alon))
+;430
+(define (quick-sort<.v5 alon)
+  (cond
+    [(empty? alon) '()]
+    [else (local ((define pivot (first alon)))
+            (separate alon pivot '() '()))]))
+(define (separate alon pivot smalls larges)
+  (cond
+    [(empty? alon) (append (quick-sort<.v5 smalls) (list pivot) (quick-sort<.v5 larges))]
+    [(> (first alon) pivot) (separate (rest alon) pivot smalls (cons (first alon) larges))]
+    [(< (first alon) pivot) (separate (rest alon) pivot (cons (first alon) smalls) larges)]
+    [else (separate (rest alon) pivot smalls larges)]))
+;428/430 final
+(define (quick-sort.v6 alon compare)
+  (cond
+    [(empty? alon) '()]
+    [else (local (
+                 (define pivot (first alon))
+                 (define (separate alon pivots smalls larges)
+                   (cond
+                     ;using (rest pivots) because we want to exclude 1 pivot value to avoid the duplicate in the list from grabbing the pivot initially, then looping over it in the list
+                     [(and (empty? alon) (equal? > compare)) (append (quick-sort.v6 larges compare) (rest pivots) (quick-sort.v6 smalls compare))]
+                     [(empty? alon) (append (quick-sort.v6 smalls compare) (rest pivots) (quick-sort.v6 larges compare))]
+                     [(> (first alon) (first pivots)) (separate (rest alon) pivots smalls (cons (first alon) larges))]
+                     [(< (first alon) (first pivots)) (separate (rest alon) pivots (cons (first alon) smalls) larges)]
+                     [else (separate (rest alon) (cons (first alon) pivots) smalls larges)])))
+            (separate alon (list pivot) '() '()))]))
+
+;431
+;1)bundling an empty/1-item list, or bundling where n = 0
+;2)an empty list or the entire list
+;3)separates it into removing a sub-list of n items, and dropping a sub-list of n items from the main list
+;4)we need to combine, and we just need the n value
+;1)sorting an empty/1-item list
+;2)returning the empty/1-item list
+;3)separates it into finding the larger/smaller values than a pivot value (and may collect pivot values too)
+
+;433 pretty sure i wrote a checked version originally, if n = 0, it terminates
+;434 the pivot is never removed from the list, so the list will not get smaller and smaller. This is due to the if (<= (first l) n) piece of code
+;435
+;idea is to use quick-sort.v6, but pass (rest alon) to the functions
 
