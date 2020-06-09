@@ -93,9 +93,20 @@
     [else (if (>= n (first l))
               (cons n l)
               (cons (first l) (insert n (rest l))))]))
+
+(define (sort< l)
+  (cond
+    [(empty? l) '()]
+    [(cons? l) (insert< (first l) (sort< (rest l)))]))
+(define (insert< n l)
+  (cond
+    [(empty? l) (cons n '())]
+    [else (if (<= n (first l))
+               (cons n l)
+               (cons (first l) (insert< n (rest l))))]))
 (define (quick-sort.v2< alon threshold)
   (cond
-    [(< (length alon) threshold) (sort> alon)]
+    [(< (length alon) threshold) (sort< alon)]
     [else (local ((define pivot (first alon)))
             (append (quick-sort.v2< (smallers alon pivot) threshold)
                     (list pivot)
@@ -154,4 +165,87 @@
 ;434 the pivot is never removed from the list, so the list will not get smaller and smaller. This is due to the if (<= (first l) n) piece of code
 ;435
 ;idea is to use quick-sort.v6, but pass (rest alon) to the functions
+(define (quick-sort.v7 alon compare)
+  (cond
+    [(empty? alon) '()]
+    [else (local (
+                 (define (separate alon pivots smalls larges)
+                   (cond
+                     [(and (empty? alon) (equal? > compare)) (append (quick-sort.v6 larges compare) pivots (quick-sort.v6 smalls compare))]
+                     [(empty? alon) (append (quick-sort.v6 smalls compare) pivots (quick-sort.v6 larges compare))]
+                     [(> (first alon) (first pivots)) (separate (rest alon) pivots smalls (cons (first alon) larges))]
+                     [(< (first alon) (first pivots)) (separate (rest alon) pivots (cons (first alon) smalls) larges)]
+                     [else (separate (rest alon) (cons (first alon) pivots) smalls larges)])))
+            (separate (rest alon) (list (first alon)) '() '()))]))
+;437
+(define (special P)
+  (cond
+    [(empty? P) (solve.v3 P)]
+    [else
+     (combine-solutions.v3
+      P
+      (special (rest P)))]))
+(define (solve arg)
+  0)
+(define (combine-solutions arg1 arg2)
+  (+ 1 arg2))
+(define (solve.v2 arg)
+  '())
+(define (combine-solutions.v2 arg1 arg2)
+  (cons (* -1 (first arg1)) arg2))
+(define (solve.v3 arg)
+  '())
+(define (combine-solutions.v3 arg1 arg2)
+  (cons (string-upcase (first arg1)) arg2))
+;for structural recursion, and an empty list, solve is EXTREMELY trivial
+
+;438
+;starts off at the min value between 2 numbers, and checks if both are divisible by it
+;if so, returns the number, else recurses and checks the next smallest number 
+
+(define (gcd-structural n m)
+  (local (; N -> N
+          ; determines the gcd of n and m less than i
+          (define (greatest-divisor-<= i)
+            (cond
+              [(= i 1) 1]
+              [else
+               (if (= (remainder n i) (remainder m i) 0)
+                   i
+                   (greatest-divisor-<= (- i 1)))])))
+    (greatest-divisor-<= (min n m))))
+
+(define (gcd-generative n m)
+  (local (; N[>= 1] N[>=1] -> N
+          ; generative recursion
+          ; (gcd L S) == (gcd S (remainder L S)) 
+          (define (clever-gcd L S)
+            (cond
+              [(= S 0) L]
+              [else (clever-gcd S (remainder L S))])))
+    (clever-gcd (max m n) (min m n))))
+
+;442
+(define (create-tests size)
+  (local (
+          (define (create-tests-loc curr size)
+            (cond
+              [(= size 0) curr]
+              [else (create-tests-loc (cons (random 1000) curr) (+ size -1))])))
+    (create-tests-loc '() size)))
+(define (sorted? l)
+  (cond
+    [(empty? (rest l)) #true]
+    [else (and (<= (first l) (second l)) (sorted? (rest l)))]))
+;443
+;you'd have an indefinite number of conditions
+
+;444
+;the function is called twice, first for the set of divisors in S,
+;and next for the set of divisors in L. Since L is larger than S,
+;we pass S in the L function call because a valid divisor of L which is larger than S
+;will never be a divisor of S since S / divisor < 1
+
+
+
 
