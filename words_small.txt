@@ -1,11 +1,11 @@
-apple
-banana
-char
-dog
-ecar
-elephant
-energized
-'e
-Irate
-irate
-race
+apple apple banana apple
+banana pear banana banana
+char char character character
+dog cat cat cat dog dog
+ecar carey racey ruck
+elephant triumphant irrigate soliloque
+energized mesmerized stupified controlling
+'e 'f 'g' h
+Irate teriyaki funky town monkey balloon
+irate pirate fire interrogate left right
+race pace mace lace face contract

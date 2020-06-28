@@ -561,17 +561,279 @@
    (list 'E (list 'C 'F))
    (list 'F (list 'D 'G))
    (list 'G '())))
+(define simple-graph
+  (list
+   (list 'A (list 'B))
+   (list 'B (list 'A))))
+(define cyclic-graph
+  (list
+   (list 'A (list 'B 'E))
+   (list 'B (list 'E 'F))
+   (list 'E (list 'C 'F))
+   (list 'C (list 'B 'D))
+   (list 'F (list 'D 'G))
+   (list 'D '())
+   (list 'G '())))
 
 (define (neighbors n g)
   (cond
     [(empty? g) (error "node not found")]
-    [(equal? n (first (first g))) (rest (first g))]
+    [(equal? n (first (first g))) (first (rest (first g)))]
     [else (neighbors n (rest g))]))
 
-; Node Node Graph -> [List-of Node]
+; Node Node Graph -> [Maybe Path]
 ; finds a path from origination to destination in G
+; if there is no path, the function produces #false
 (define (find-path origination destination G)
-  '())
-  
-  
-  
+  (cond
+    [(symbol=? origination destination) (list destination)]
+    [else (local ((define next (neighbors origination G))
+                  (define candidate
+                    (find-path/list.v2 next destination G)))
+            (cond
+              [(boolean? candidate) #false]
+              [else (cons origination candidate)]))]))
+ 
+; [List-of Node] Node Graph -> [Maybe Path]
+; finds a path from some node on lo-Os to D
+; if there is no path, the function produces #false
+(define (find-path/list lo-Os D G)
+  (cond
+    [(empty? lo-Os) #false]
+    [else (local ((define candidate
+                    (find-path (first lo-Os) D G)))
+            (cond
+              [(boolean? candidate)
+               (find-path/list (rest lo-Os) D G)]
+              [else candidate]))]))
+;472
+;it finds the longer path A -> B -> E -> F -> G
+;instead of A -> B -> F -> G
+;it finds it because it is the first successful path it finds, and it doesnt continue to look for more paths after it
+;successfully finds this one
+(define (test-on-all-nodes g)
+  ;grabs all nodes
+  (andmap (lambda (x)
+            ;and compares each with all other nodes to see if a path exists
+            (andmap (lambda (y) (not (boolean? (find-path (first x) (first y) g)))) g)) g))
+
+;473
+;find-path works from 'B to 'C but infinitely recurses for test-on-all-nodes because it wont find a path from
+;B to A and so will keep looping
+;474
+; Node Node Graph -> [Maybe Path]
+; finds a path from origination to destination in G
+; if there is no path, the function produces #false
+(define (find-path.v2 origination destination G)
+  (local (
+          (define next (neighbors origination G))
+          
+          (define (find-path/list lo-Os D G)
+            (cond
+              [(empty? lo-Os) #f]
+              [else (local (
+                           (define candidate (find-path (first lo-Os) D G)))
+                    (cond
+                      [(boolean? candidate)
+                       (find-path/list (rest lo-Os) D G)]
+                      [else candidate]))]))
+          
+          (define candidate (find-path/list next destination G)))
+    
+    (cond
+      [(boolean? candidate) #f]
+      [else (cons origination candidate)])))
+;475
+(define (find-path/list.v2 lo-Os D G)
+  (cond
+    [(empty? lo-Os) #f]
+    [else
+     ;this will return the last path, unlike the v1 version which will return the first
+     (foldr (lambda (x agg) (if (boolean? agg) (find-path x D G) agg)) #f lo-Os)]))
+;the racket ormap function would definitely be helpful here. we'd be able to use it in place of the foldr function
+
+;476
+(define-struct transition [current key next])
+(define-struct fsm [initial transitions final])
+ 
+; An FSM is a structure:
+;   (make-fsm FSM-State [List-of 1Transition] FSM-State)
+; A 1Transition is a structure:
+;   (make-transition FSM-State 1String FSM-State)
+; An FSM-State is String.
+ 
+; data example: see exercise 109
+ 
+(define fsm-a-bc*-d
+  (make-fsm
+   "AA"
+   (list (make-transition "AA" "a" "BC")
+         (make-transition "BC" "b" "BC")
+         (make-transition "BC" "c" "BC")
+         (make-transition "BC" "d" "DD"))
+   "DD"))
+
+(define (fsm-match? an-fsm a-string)
+  (local (
+          (define (match-local curr prev)
+            (local (
+                    (define this-trans (find-in-fsm curr))
+                    (define prev-trans (find-in-fsm prev)))
+              (cond
+                ;if first item and it matches with the initial state, return the initial state, otherwise false
+                [(equal? prev #f) (if (equal? (fsm-initial an-fsm) (transition-current this-trans)) (transition-current this-trans) #f)]
+                ;if it's the final, and previous' next equal to current's current, return the final state, otherwise false
+                [(equal? (transition-next this-trans) (fsm-final an-fsm)) (if (equal? (transition-next prev-trans) (transition-current this-trans)) (transition-next this-trans) #f)]
+                ;if previous's next equal to currents current, return the transition, otherwise false
+                [(equal? (transition-next prev-trans) (transition-current this-trans)) (transition-current this-trans)]
+                [else #f])))
+          ;returns the transition based on the given key
+          ;or false if not found
+          (define (find-in-fsm key)
+            (foldr (lambda (trans match) (if (equal? (transition-key trans) key) trans match)) #f (fsm-transitions an-fsm)))
+          ;returns the list of transitions like (list "AA" "BC "BC" "DD")
+          ;false if the regular expression doesnt match at some point
+          (define folded-expr
+            (foldl (lambda (curr prev accum)
+                       (cond
+                         [(boolean? accum) #f]
+                         [else
+                          (local ((define match-so-far (match-local curr prev)))
+                            (if (boolean? match-so-far) #f (cons match-so-far accum)))])) '() (explode a-string) (cons #f (reverse (rest (reverse (explode a-string))))))))
+    ;if folded-expr is boolean, false, else return true if first value = "AA" and last value = "DD", otherwise false
+    (if (boolean? folded-expr) #f (and (equal? (first folded-expr) (fsm-final an-fsm)) (equal? (first (reverse folded-expr)) (fsm-initial an-fsm))))))
+;477
+(define (arrangements w)
+  (cond
+    [(empty? w) '(())]
+    [else
+      (foldr (lambda (item others)
+               (local ((define without-item
+                         (arrangements (remove item w)))
+                       (define add-item-to-front
+                         (map (lambda (a) (cons item a))
+                              without-item)))
+                 (append add-item-to-front others)))
+        '()
+        w)]))
+;478
+;these arrangements are rotationally equivalent to the ones given
+
+(define QUEENS 8)
+; A QP is a structure:
+;   (make-posn CI CI)
+; A CI is an N in [0,QUEENS).
+; interpretation (make-posn r c) denotes the square at 
+; the r-th row and c-th column
+
+;479
+(define (threatening? qp1 qp2)
+  (or (= (posn-x qp1) (posn-x qp2)) (= (posn-y qp1) (posn-y qp2)) (= (abs (- (posn-x qp1) (posn-x qp2))) (abs (- (posn-y qp1) (posn-y qp2))))))
+;480
+;dont really care about rendering the board
+(define (render-queens n qp-list q-img)
+  n)
+;481
+;creates a function for a board of size n to check if a solution is valid
+(define (n-queens-solution? n)
+  (lambda(qp-list)
+    (if (not (equal? (length qp-list) n)) #f
+    (foldr (lambda (qp valid)
+             (if (not valid)
+                 valid
+                 ;this can probably be made into another foldr or an andmap function
+                 (local (
+                         (define (goodness-check qp-loc qp-list-loc coord-match-count)
+                           (cond
+                             [(empty? qp-list-loc) #t]
+                             [(> coord-match-count 1) #f]
+                             ;needed a way to make sure it didnt invalidate a solution on a collision with qp-loc and itself within qp-list-loc
+                             [(and (= (posn-x qp-loc) (posn-x (first qp-list-loc))) (= (posn-y qp-loc) (posn-y (first qp-list-loc)))) (goodness-check qp-loc (rest qp-list-loc) (+ 1 coord-match-count))]
+                             [(threatening? qp-loc (first qp-list-loc)) #f]
+                             [else (goodness-check qp-loc (rest qp-list-loc) coord-match-count)])))
+                   (and valid (goodness-check qp qp-list 0))))) #t qp-list))))
+
+(define 4soln (list (make-posn 0 1) (make-posn 1 3) (make-posn 2 0) (make-posn 3 2)))
+(define 4soln-bad1 (list (make-posn 1 1) (make-posn 1 3) (make-posn 2 0) (make-posn 3 2)))
+(define (set=? list1 list2)
+  (cond
+    [(not (equal? (length list1) (length list2))) #f]
+    [else
+     (foldr (lambda (item1 valid)
+              (local (
+                      (define (contained-in-other item other-list)
+                        (cond
+                          [(empty? other-list) #f]
+                          [(equal? item (first other-list)) #t]
+                          [else (contained-in-other item (rest other-list))])))
+                (and valid (contained-in-other item1 list2))))
+            #t
+            list1)]))
+;a board collects those positions where a queen can still be placed
+;a board is a list of posns
+;482
+;takes a loc on a-board, checks if it can produce a solution with all remaining safe pieces
+;returns #f if it can't, and takes a new loc, and checks if it can produce a solution with it and all remaining safe pieces
+;positive exit condition: n-loc = 0
+;negative exit condition 1: safe-board is empty and n-loc > 0
+;negative exit condition 2: board-length < n-loc
+(define (place-queens.v2 a-board n)
+  (local (
+          ;queen-spots-loc is essentially being folded, so this could probably be converted into a foldr function,
+          ;though i'm unsure of the process of handing queen-spots-loc between the outer .v2 and inner -loc functions if they were to be converted to foldr
+          ;nothing special about n-loc vs n-loc1, just avoiding name collisions
+          (define (place-queens.v2-loc a-board-loc queen-spots-loc n-loc1)
+            (local (
+                    (define (place-queens-loc safe-board queen-spots n-loc)
+                      (cond
+                        [(= 0 n-loc) queen-spots]
+                        [(and (empty? safe-board) (> n-loc 0)) #f] ;exit condition for a particular qp
+                        ;calling the outer function acts as a "save point" to recurse back to if we end up with a false
+                        [else (place-queens.v2-loc (add-queen (rest safe-board) (first safe-board)) (cons (first safe-board) queen-spots) (- n-loc 1))]))
+                    (define first-move (place-queens-loc a-board-loc queen-spots-loc n-loc1)))
+              (cond
+                ;this should be checked before first-move is calculated
+                ;if the board is less than the number of queens left to be placed, it won't work
+                ;this could be improved to exit sooner but it's not bad
+                [(< (length a-board-loc) n-loc1) #f] ;final exit condition + exit condition for a particular qp
+                [(boolean? first-move) (place-queens.v2-loc (rest a-board-loc) queen-spots-loc n-loc1)]
+                [else first-move]))))
+    (place-queens.v2-loc a-board '() n)))
+                            
+
+;483
+;removes all the unsafe posns from a-board based on the qp posn
+(define (add-queen a-board qp)
+  (filter (lambda (coords) (not (threatening? coords qp))) a-board))
+(define (board0 n)
+  (local (
+    (define (make-board width height)
+      (cond
+        [(= n height) '()]
+        [(= (- n 1) width) (cons (make-posn width height) (make-board 0 (+ 1 height)))]
+        [else (cons (make-posn width height) (make-board (+ 1 width) height))])))
+    (make-board 0 0)))
+
+;;;;INTERMEZZO 5 ;;;;;
+(define (searchL x l)
+  (cond
+    [(empty? l) #false]
+    [else
+     (or (= (first l) x)
+         (searchL
+           x (rest l)))]))
+
+(define (searchS x l)
+  (cond
+    [(= (length l) 0) #false]
+    [else
+     (or (= (first l) x)
+         (searchS
+           x (rest l)))]))
+
+(define (timing n)
+  (local ((define long-list
+            (build-list n (lambda (x) x))))
+    (list
+      (time (searchS n long-list))
+      (time (searchL n long-list)))))

@@ -772,25 +772,37 @@
 ;a board collects those positions where a queen can still be placed
 ;a board is a list of posns
 ;482
-
+;takes a loc on a-board, checks if it can produce a solution with all remaining safe pieces
+;returns #f if it can't, and takes a new loc, and checks if it can produce a solution with it and all remaining safe pieces
+;positive exit condition: n-loc = 0
+;negative exit condition 1: safe-board is empty and n-loc > 0
+;negative exit condition 2: board-length < n-loc
 (define (place-queens.v2 a-board n)
   (local (
+          ;queen-spots-loc is essentially being folded, so this could probably be converted into a foldr function,
+          ;though i'm unsure of the process of handing queen-spots-loc between the outer .v2 and inner -loc functions if they were to be converted to foldr
+          ;nothing special about n-loc vs n-loc1, just avoiding name collisions
           (define (place-queens.v2-loc a-board-loc queen-spots-loc n-loc1)
             (local (
                     (define (place-queens-loc safe-board queen-spots n-loc)
                       (cond
                         [(= 0 n-loc) queen-spots]
-                        [(and (empty? safe-board) (> n-loc 0)) #f]
+                        [(and (empty? safe-board) (> n-loc 0)) #f] ;exit condition for a particular qp
+                        ;calling the outer function acts as a "save point" to recurse back to if we end up with a false
                         [else (place-queens.v2-loc (add-queen (rest safe-board) (first safe-board)) (cons (first safe-board) queen-spots) (- n-loc 1))]))
                     (define first-move (place-queens-loc a-board-loc queen-spots-loc n-loc1)))
               (cond
-                [(< (length a-board-loc) n-loc1) #f]
+                ;this should be checked before first-move is calculated
+                ;if the board is less than the number of queens left to be placed, it won't work
+                ;this could be improved to exit sooner but it's not bad
+                [(< (length a-board-loc) n-loc1) #f] ;final exit condition + exit condition for a particular qp
                 [(boolean? first-move) (place-queens.v2-loc (rest a-board-loc) queen-spots-loc n-loc1)]
                 [else first-move]))))
     (place-queens.v2-loc a-board '() n)))
                             
 
 ;483
+;removes all the unsafe posns from a-board based on the qp posn
 (define (add-queen a-board qp)
   (filter (lambda (coords) (not (threatening? coords qp))) a-board))
 (define (board0 n)
@@ -801,4 +813,27 @@
         [(= (- n 1) width) (cons (make-posn width height) (make-board 0 (+ 1 height)))]
         [else (cons (make-posn width height) (make-board (+ 1 width) height))])))
     (make-board 0 0)))
-      
+
+;;;;INTERMEZZO 5 ;;;;;
+(define (searchL x l)
+  (cond
+    [(empty? l) #false]
+    [else
+     (or (= (first l) x)
+         (searchL
+           x (rest l)))]))
+
+(define (searchS x l)
+  (cond
+    [(= (length l) 0) #false]
+    [else
+     (or (= (first l) x)
+         (searchS
+           x (rest l)))]))
+
+(define (timing n)
+  (local ((define long-list
+            (build-list n (lambda (x) x))))
+    (list
+      (time (searchS n long-list))
+      (time (searchL n long-list)))))
